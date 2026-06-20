@@ -75,6 +75,10 @@ function App() {
     );
   };
 
+  const handleClearCart = () => {
+    setCart([]);
+  };
+
   // Get total count of items in the cart
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -120,6 +124,7 @@ function App() {
         cartItems={cart}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
+        onClearCart={handleClearCart}
       />
     </div>
   );
