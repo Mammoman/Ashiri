@@ -108,7 +108,7 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
           }}>
             <img
               src={product.image}
-              alt={`₦{product.name} ₦{activeView} view`}
+              alt={`${product.name} ${activeView} view`}
               style={{
                 position: 'absolute',
                 top: 0,

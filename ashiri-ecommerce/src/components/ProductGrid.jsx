@@ -74,6 +74,8 @@ const ProductGrid = ({ onProductSelect, onAddToCart, searchQuery }) => {
           }} className="category-scroll">
 
             {/* 'All' category circle */}
+            <div
+              onClick={() => setActiveCategory('All')}
               className={`circle-category ${activeCategory === 'All' ? 'active' : ''}`}
             >
               <div
