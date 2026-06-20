@@ -22,7 +22,7 @@ const Footer = () => {
       color: 'var(--text-muted)'
     }} id="about">
       <div className="container">
-        
+
         {/* Columns Grid */}
         <div className="footer-grid" style={{
           display: 'grid',
@@ -30,7 +30,7 @@ const Footer = () => {
           gap: '40px',
           marginBottom: '40px'
         }}>
-          
+
           {/* Brand Column */}
           <div>
             <h3 style={{
@@ -69,20 +69,15 @@ const Footer = () => {
                   <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
                 </svg>
               </a>
-              <a href="#" aria-label="YouTube" className="social-icon-link">
+              <a href="#" aria-label="Whatsapp" className="social-icon-link">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
                   height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
                 >
-                  <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17" />
-                  <polygon points="10 15 15 12 10 9" />
+                  <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.618-4.934c-.198-.1-1.17-.578-1.353-.646-.182-.068-.315-.1-.447.1-.132.2-.512.647-.628.78-.114.132-.23.149-.427.05a5.4 5.4 0 0 1-1.583-1.007 5.7 5.7 0 0 1-1.096-1.365c-.114-.197-.012-.305.087-.404.089-.09.197-.23.297-.346a1.2 1.2 0 0 0 .198-.33c.066-.134.034-.251-.017-.35-.052-.1-.447-1.077-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232" />
                 </svg>
               </a>
             </div>
@@ -115,29 +110,7 @@ const Footer = () => {
           </div>
 
           {/* Links Column 2: Service */}
-          <div>
-            <h4 style={{
-              fontSize: '0.8rem',
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              color: 'var(--text-dark)',
-              marginBottom: '16px'
-            }}>
-              Services
-            </h4>
-            <ul style={{
-              listStyle: 'none',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '10px',
-              fontSize: '0.85rem'
-            }} className="footer-list">
-              <li><a href="#">Size Consultations</a></li>
-              <li><a href="#">Garment Care Guide</a></li>
-              <li><a href="#">Shipping & Returns</a></li>
-              <li><a href="#">Atelier Contact</a></li>
-            </ul>
-          </div>
+
 
           {/* Newsletter Column */}
           <div>
@@ -148,7 +121,7 @@ const Footer = () => {
               color: 'var(--text-dark)',
               marginBottom: '16px'
             }}>
-              Atelier Newsletter
+              Ashiri Newsletter
             </h4>
             <p style={{
               fontSize: '0.85rem',
@@ -239,7 +212,8 @@ const Footer = () => {
 
       </div>
 
-      <style dangerouslySetInnerHTML={{__html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         .footer-list a:hover {
           color: var(--text-dark) !important;
           padding-left: 2px;
