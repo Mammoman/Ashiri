@@ -45,7 +45,7 @@ const Navbar = ({ cartCount, onCartClick, searchQuery, onSearchChange }) => {
           }}>
             <input
               type="text"
-              placeholder="Search Men's Fashion..."
+              placeholder="Search Our Shop..."
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
               className="input-premium"
@@ -73,7 +73,7 @@ const Navbar = ({ cartCount, onCartClick, searchQuery, onSearchChange }) => {
         {/* Right Side Actions */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           {/* Mobile Search Trigger */}
-          <button 
+          <button
             onClick={() => setIsMobileSearchOpen(true)}
             className="mobile-only"
             aria-label="Open search"
@@ -144,7 +144,7 @@ const Navbar = ({ cartCount, onCartClick, searchQuery, onSearchChange }) => {
           animation: 'fadeIn 0.15s ease-out',
           zIndex: 1001
         }}>
-          <button 
+          <button
             onClick={() => {
               setIsMobileSearchOpen(false);
               onSearchChange('');
@@ -154,11 +154,11 @@ const Navbar = ({ cartCount, onCartClick, searchQuery, onSearchChange }) => {
           >
             <ArrowLeft size={22} />
           </button>
-          
+
           <div style={{ position: 'relative', flexGrow: 1 }}>
             <input
               type="text"
-              placeholder="Search Men's Fashion..."
+              placeholder="Search Our Shop..."
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
               className="input-premium"
@@ -183,7 +183,8 @@ const Navbar = ({ cartCount, onCartClick, searchQuery, onSearchChange }) => {
       )}
 
       {/* Media Query Overrides */}
-      <style dangerouslySetInnerHTML={{__html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         @media (max-width: 768px) {
           .desktop-only {
             display: none !important;

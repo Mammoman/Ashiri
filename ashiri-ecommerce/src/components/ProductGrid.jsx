@@ -129,12 +129,6 @@ const ProductGrid = ({ onProductSelect, onAddToCart, searchQuery }) => {
             maxWidth: '100%'
           }} className="category-scroll">
             <button className="filter-btn">
-              <SlidersHorizontal size={13} /> Filter
-            </button>
-            <button className="filter-btn">
-              Ratings <ChevronDown size={13} />
-            </button>
-            <button className="filter-btn">
               Size <ChevronDown size={13} />
             </button>
             <button className="filter-btn">
