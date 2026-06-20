@@ -1,43 +1,19 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Star, ShoppingBag, Check } from 'lucide-react';
+import { ArrowLeft, Star, ShoppingBag, Check, Heart, HelpCircle } from 'lucide-react';
 
 const ProductModal = ({ product, onClose, onAddToCart }) => {
   if (!product) return null;
 
   const [selectedSize, setSelectedSize] = useState(product.sizes ? product.sizes[0] : 'S');
-  const [selectedColor, setSelectedColor] = useState(product.colors ? product.colors[0] : 'Ochre');
+  const [activeView, setActiveView] = useState('front'); // 'front' or 'back'
   const [isAdded, setIsAdded] = useState(false);
-
-  // Mapping string colors to hex/background values for styling circular buttons
-  const getColorHex = (colorName) => {
-    const maps = {
-      'Ochre': '#b45309',
-      'Charcoal': '#374151',
-      'Bone': '#f5f5f4',
-      'Indigo/White': '#1e3a8a',
-      'Noir/Gold': '#111827',
-      'Bone/Gold': '#eab308',
-      'Terracotta/Gold': '#c2410c',
-      'Sand': '#d1fae5',
-      'Olive': '#3f6212',
-      'Sahara Gold': '#ca8a04',
-      'Bronze Spark': '#854d0e',
-      'Indigo': '#1e40af',
-      'Faded Indigo': '#60a5fa',
-      'Terracotta': '#b91c1c',
-      'Clay': '#ea580c',
-      'Oatmeal': '#e7e5e4',
-      'Noir': '#000000',
-      'Ivory': '#f8fafc'
-    };
-    return maps[colorName] || '#9ca3af';
-  };
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const handleAddToCart = () => {
     onAddToCart({
       ...product,
       selectedSize,
-      selectedColor
+      selectedColor: 'Standard' // No color selection, default to Standard
     });
     setIsAdded(true);
     setTimeout(() => {
@@ -57,26 +33,26 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'rgba(17, 24, 39, 0.4)',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
+        background: 'rgba(0, 0, 0, 0.4)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
         padding: '16px',
-        animation: 'fadeIn 0.2s ease-out'
+        animation: 'fadeIn 0.25s ease-out'
       }}
       onClick={onClose}
     >
-      {/* Modal Container */}
+      {/* Modal Card */}
       <div 
         className="glass-panel"
         style={{
           width: '100%',
-          maxWidth: '520px',
-          maxHeight: '92vh',
-          borderRadius: 'var(--radius-lg)',
+          maxWidth: '960px', // Wider desktop container matching split layout
+          maxHeight: '90vh',
+          borderRadius: 'var(--radius-md)',
           overflowY: 'auto',
           position: 'relative',
-          display: 'flex',
-          flexDirection: 'column',
+          display: 'grid',
+          gridTemplateColumns: '1.1fr 1fr',
           background: '#ffffff',
           animation: 'slideUp 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
           boxShadow: 'var(--shadow-premium)',
@@ -85,306 +61,409 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
         onClick={(e) => e.stopPropagation()}
       >
         
-        {/* Header - Mockup Detail Product Header */}
+        {/* Close Button Top Left (Back Arrow) */}
+        <button 
+          onClick={onClose}
+          aria-label="Back to collection"
+          style={{
+            position: 'absolute',
+            top: '20px',
+            left: '20px',
+            zIndex: 10,
+            background: '#ffffff',
+            border: '1px solid var(--color-border)',
+            color: 'var(--text-dark)',
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: 'var(--shadow-subtle)'
+          }}
+          className="modal-close-btn"
+        >
+          <ArrowLeft size={18} />
+        </button>
+
+        {/* Left Side: Product Image & View Switcher (Front/Back) */}
         <div style={{
-          padding: '16px 20px',
-          borderBottom: '1px solid var(--color-border)',
+          padding: '40px 30px 30px 30px',
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'space-between',
-          position: 'sticky',
-          top: 0,
-          background: '#ffffff',
-          zIndex: 10
-        }}>
-          <button 
-            onClick={onClose}
-            aria-label="Back"
-            style={{
-              color: 'var(--text-dark)',
+          gap: '20px',
+          borderRight: '1px solid var(--color-border)'
+        }} className="modal-left-panel">
+          
+          {/* Large Main Preview Image with Warm Cream Background */}
+          <div style={{
+            position: 'relative',
+            width: '100%',
+            paddingTop: '90%', // Landscape ratio matching mockup
+            background: '#f4f3f0', // Warm cream background
+            borderRadius: 'var(--radius-md)',
+            overflow: 'hidden',
+            border: '1px solid rgba(0,0,0,0.02)'
+          }}>
+            <img 
+              src={product.image} 
+              alt={`${product.name} ${activeView} view`}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+                padding: '24px',
+                transition: 'transform 0.4s ease',
+                // Flip image to mock back view as requested
+                transform: activeView === 'back' ? 'scaleX(-1)' : 'scaleX(1)'
+              }}
+            />
+          </div>
+
+          {/* Thumbnails Row: Front & Back Only */}
+          <div style={{
+            display: 'flex',
+            gap: '12px',
+            width: '100%',
+            justifyContent: 'flex-start'
+          }}>
+            {/* Front View Thumbnail */}
+            <button
+              onClick={() => setActiveView('front')}
+              style={{
+                width: '76px',
+                height: '84px',
+                background: '#f4f3f0',
+                borderRadius: 'var(--radius-sm)',
+                border: '2px solid',
+                borderColor: activeView === 'front' ? 'var(--text-dark)' : 'transparent',
+                overflow: 'hidden',
+                padding: '6px'
+              }}
+              className="thumbnail-btn"
+            >
+              <img 
+                src={product.image} 
+                alt="Front view thumbnail" 
+                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+              />
+            </button>
+
+            {/* Back View Thumbnail (Flipped) */}
+            <button
+              onClick={() => setActiveView('back')}
+              style={{
+                width: '76px',
+                height: '84px',
+                background: '#f4f3f0',
+                borderRadius: 'var(--radius-sm)',
+                border: '2px solid',
+                borderColor: activeView === 'back' ? 'var(--text-dark)' : 'transparent',
+                overflow: 'hidden',
+                padding: '6px'
+              }}
+              className="thumbnail-btn"
+            >
+              <img 
+                src={product.image} 
+                alt="Back view thumbnail" 
+                style={{ 
+                  width: '100%', 
+                  height: '100%', 
+                  objectFit: 'contain',
+                  transform: 'scaleX(-1)' 
+                }}
+              />
+            </button>
+          </div>
+
+        </div>
+
+        {/* Right Side: Product Details & Size Grid */}
+        <div style={{
+          padding: '40px 30px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between'
+        }} className="modal-right-panel">
+          
+          <div>
+            {/* Breadcrumbs Navigation */}
+            <div style={{
+              fontSize: '0.75rem',
+              color: 'var(--text-muted)',
+              marginBottom: '16px',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center',
-              width: '36px',
-              height: '36px',
-              borderRadius: '50%',
-              background: '#f3f4f6'
-            }}
-            className="back-btn-hover"
-          >
-            <ArrowLeft size={18} />
-          </button>
-          
-          <span style={{
-            fontSize: '0.95rem',
-            fontWeight: 700,
-            color: 'var(--text-dark)'
-          }}>
-            Detail Product
-          </span>
+              gap: '6px',
+              fontWeight: 500
+            }}>
+              <span>Apparel</span>
+              <span>&gt;</span>
+              <span>Tops</span>
+              <span>&gt;</span>
+              <span style={{ color: 'var(--text-dark)' }}>{product.category}</span>
+            </div>
 
-          <div style={{ width: '36px' }} /> {/* Spacer matching mockup */}
-        </div>
-
-        {/* Product Image Section */}
-        <div style={{
-          position: 'relative',
-          width: '100%',
-          paddingTop: '90%', // landscape/square-ish crop for details
-          background: '#f3f4f6',
-          borderBottom: '1px solid var(--color-border)'
-        }}>
-          <img 
-            src={product.image} 
-            alt={product.name} 
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              objectFit: 'contain',
-              padding: '20px'
-            }}
-          />
-        </div>
-
-        {/* Info & Options Form */}
-        <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          
-          {/* Metadata & Title */}
-          <div>
+            {/* Brand Logo & Product Code */}
             <div style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              marginBottom: '6px'
+              marginBottom: '10px'
             }}>
-              <span style={{
-                fontSize: '0.75rem',
-                fontWeight: 700,
-                color: 'var(--text-muted)',
-                textTransform: 'uppercase'
-              }}>
-                ASHIRI
-              </span>
-
-              {/* Rating */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <Star size={12} fill="var(--color-sale)" stroke="var(--color-sale)" />
-                <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>
-                  {product.rating}
-                </span>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                  ({product.reviews})
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{
+                  fontSize: '0.85rem',
+                  fontWeight: 800,
+                  letterSpacing: '0.05em',
+                  color: 'var(--text-dark)',
+                  textTransform: 'uppercase'
+                }}>
+                  ASHIRI ATELIER
                 </span>
               </div>
+              <span style={{
+                fontSize: '0.7rem',
+                color: 'var(--text-muted)',
+                fontFamily: 'monospace',
+                letterSpacing: '0.05em'
+              }}>
+                AS-2026-RI
+              </span>
             </div>
 
+            {/* Product Name */}
             <h2 style={{
-              fontSize: '1.25rem',
+              fontSize: '1.65rem',
               fontWeight: 700,
               color: 'var(--text-dark)',
-              lineHeight: 1.3,
+              lineHeight: 1.25,
               marginBottom: '10px',
               letterSpacing: '-0.02em'
             }}>
               {product.name}
             </h2>
 
-            {/* Price layout: active and original crossed-out */}
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-              <span style={{
-                fontSize: '1.3rem',
-                fontWeight: 700,
-                color: 'var(--color-sale)'
-              }}>
-                ${product.price}.00
-              </span>
-              {product.originalPrice && (
-                <span style={{
-                  fontSize: '0.9rem',
-                  color: 'var(--text-muted)',
-                  textDecoration: 'line-through'
-                }}>
-                  ${product.originalPrice}.00
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* Description */}
-          <p style={{
-            fontSize: '0.85rem',
-            color: 'var(--text-muted)',
-            lineHeight: 1.5
-          }}>
-            {product.description}
-          </p>
-
-          {/* Option Pickers wrapper */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1.2fr',
-            gap: '20px',
-            padding: '12px 0',
-            borderTop: '1px solid var(--color-border)',
-            borderBottom: '1px solid var(--color-border)'
-          }}>
-            
-            {/* Colors picker */}
-            <div>
-              <span style={{
-                fontSize: '0.75rem',
-                fontWeight: 700,
-                color: 'var(--text-muted)',
-                display: 'block',
-                marginBottom: '8px',
-                textTransform: 'uppercase'
-              }}>
-                Colors
-              </span>
-              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                {product.colors.map(color => {
-                  const isActive = selectedColor === color;
-                  const isLight = color === 'Bone' || color === 'Ivory' || color === 'Oatmeal';
-                  return (
-                    <button
-                      key={color}
-                      onClick={() => setSelectedColor(color)}
-                      title={color}
-                      style={{
-                        width: '28px',
-                        height: '28px',
-                        borderRadius: '50%',
-                        background: getColorHex(color),
-                        border: '2px solid',
-                        borderColor: isActive ? 'var(--text-dark)' : 'transparent',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: isLight ? '#000000' : '#ffffff',
-                        boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.1)'
-                      }}
-                    >
-                      {isActive && <Check size={12} />}
-                    </button>
-                  );
-                })}
+            {/* Ratings Stars Row */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              marginBottom: '20px'
+            }}>
+              <div style={{ display: 'flex', color: '#fbbf24' }}>
+                {[...Array(5)].map((_, i) => (
+                  <Star 
+                    key={i} 
+                    size={13} 
+                    fill={i < Math.floor(product.rating) ? "currentColor" : "none"} 
+                    stroke="currentColor" 
+                  />
+                ))}
               </div>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 500 }}>
+                {product.rating} ({product.reviews} reviews)
+              </span>
             </div>
 
-            {/* Size picker */}
-            <div>
-              <span style={{
-                fontSize: '0.75rem',
-                fontWeight: 700,
-                color: 'var(--text-muted)',
-                display: 'block',
-                marginBottom: '8px',
-                textTransform: 'uppercase'
+            {/* Large Bold Price */}
+            <div style={{
+              fontSize: '2rem',
+              fontWeight: 700,
+              color: 'var(--text-dark)',
+              marginBottom: '24px',
+              letterSpacing: '-0.03em'
+            }}>
+              ${product.price}.00
+            </div>
+
+            {/* Square Grid Size Selector */}
+            <div style={{ marginBottom: '24px' }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '10px'
               }}>
-                Size
-              </span>
-              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                <span style={{
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                  color: 'var(--text-dark)'
+                }}>
+                  Size <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>— EU Men</span>
+                </span>
+                
+                {/* Size guide link */}
+                <button style={{
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  color: 'var(--text-muted)',
+                  textDecoration: 'underline',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '3px'
+                }}>
+                  Size guide
+                </button>
+              </div>
+
+              {/* Grid of Square Buttons */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(4, 1fr)',
+                gap: '8px'
+              }}>
                 {product.sizes ? (
-                  product.sizes.map(size => (
-                    <button
-                      key={size}
-                      onClick={() => setSelectedSize(size)}
-                      style={{
-                        padding: '6px 12px',
-                        border: '1px solid',
-                        borderColor: selectedSize === size ? 'var(--text-dark)' : 'var(--color-border)',
-                        background: selectedSize === size ? 'var(--text-dark)' : 'transparent',
-                        color: selectedSize === size ? '#ffffff' : 'var(--text-dark)',
-                        fontSize: '0.75rem',
-                        fontWeight: 600,
-                        borderRadius: 'var(--radius-pill)',
-                        minWidth: '36px'
-                      }}
-                      className="size-pill-btn"
-                    >
-                      {size}
-                    </button>
-                  ))
+                  product.sizes.map(size => {
+                    const isActive = selectedSize === size;
+                    return (
+                      <button
+                        key={size}
+                        onClick={() => setSelectedSize(size)}
+                        style={{
+                          height: '44px',
+                          border: '1px solid',
+                          borderColor: isActive ? 'var(--text-dark)' : 'var(--color-border)',
+                          background: isActive ? 'var(--text-dark)' : '#ffffff',
+                          color: isActive ? '#ffffff' : 'var(--text-dark)',
+                          fontSize: '0.85rem',
+                          fontWeight: isActive ? 700 : 500,
+                          borderRadius: '4px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          transition: 'var(--transition-fast)'
+                        }}
+                        className="size-square-btn"
+                      >
+                        {size}
+                      </button>
+                    );
+                  })
                 ) : (
-                  <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Standard</span>
+                  ['S', 'M', 'L'].map(size => (
+                    <button key={size} className="size-square-btn">{size}</button>
+                  ))
                 )}
               </div>
             </div>
 
           </div>
 
-          {/* Action CTAs: Add to Cart and Buy Now side-by-side */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '12px',
-            marginTop: '8px'
-          }}>
-            <button
-              onClick={handleAddToCart}
-              style={{
-                border: '1px solid var(--text-dark)',
-                borderRadius: 'var(--radius-pill)',
-                background: isAdded ? '#48bb78' : 'transparent',
-                color: isAdded ? '#ffffff' : 'var(--text-dark)',
-                borderColor: isAdded ? '#48bb78' : 'var(--text-dark)',
-                fontWeight: 700,
-                fontSize: '0.8rem',
-                height: '48px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px'
-              }}
-              className="add-cart-outline-btn"
-            >
-              {isAdded ? (
-                <>
-                  <Check size={15} /> Added
-                </>
-              ) : (
-                <>
-                  <ShoppingBag size={15} /> Add To Cart
-                </>
-              )}
-            </button>
+          {/* Action CTAs: Add to Cart and Favorite side-by-side */}
+          <div>
+            <div style={{
+              display: 'flex',
+              gap: '10px',
+              width: '100%',
+              marginBottom: '16px'
+            }}>
+              {/* Wide Add to Cart Button */}
+              <button
+                onClick={handleAddToCart}
+                style={{
+                  flexGrow: 1,
+                  background: isAdded ? '#10b981' : 'var(--text-dark)',
+                  color: '#ffffff',
+                  fontWeight: 700,
+                  fontSize: '0.85rem',
+                  height: '50px',
+                  borderRadius: '4px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  boxShadow: 'var(--shadow-subtle)'
+                }}
+                className="cart-action-solid-btn"
+              >
+                {isAdded ? (
+                  <>
+                    <Check size={16} /> Added to Cart
+                  </>
+                ) : (
+                  <>
+                    <ShoppingBag size={16} /> Add to cart
+                  </>
+                )}
+              </button>
 
-            <button
-              onClick={() => alert(`Proceeding to Buy ${product.name} now!`)}
-              style={{
-                borderRadius: 'var(--radius-pill)',
-                background: 'var(--text-dark)',
-                color: '#ffffff',
-                fontWeight: 700,
-                fontSize: '0.8rem',
-                height: '48px'
-              }}
-              className="buy-now-solid-btn"
-            >
-              Buy Now
-            </button>
+              {/* Heart Favorite Button */}
+              <button
+                onClick={() => setIsFavorite(!isFavorite)}
+                aria-label="Add to wishlist"
+                style={{
+                  width: '50px',
+                  height: '50px',
+                  borderRadius: '4px',
+                  border: '1px solid var(--color-border)',
+                  background: isFavorite ? '#fef2f2' : '#ffffff',
+                  color: isFavorite ? '#ef4444' : 'var(--text-dark)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'var(--transition-fast)'
+                }}
+                className="heart-action-btn"
+              >
+                <Heart size={18} fill={isFavorite ? "currentColor" : "none"} />
+              </button>
+            </div>
+
+            {/* Delivery terms info */}
+            <p style={{
+              fontSize: '0.75rem',
+              color: 'var(--text-muted)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              justifyContent: 'center'
+            }}>
+              Free delivery on orders over $100.00
+            </p>
           </div>
 
         </div>
 
       </div>
 
-      {/* Modal specific styling */}
+      {/* Styles for hover interactions */}
       <style dangerouslySetInnerHTML={{__html: `
-        .back-btn-hover:hover {
-          background: #e5e7eb !important;
+        .modal-close-btn:hover {
+          background: #f3f4f6 !important;
+          transform: scale(1.05);
         }
-        .size-pill-btn:hover {
+        .thumbnail-btn:hover {
+          border-color: #cbd5e1 !important;
+        }
+        .size-square-btn:hover {
           border-color: var(--text-dark) !important;
         }
-        .add-cart-outline-btn:hover {
-          background: var(--color-accent-light) !important;
-        }
-        .buy-now-solid-btn:hover {
+        .cart-action-solid-btn:hover {
           background: #1f2937 !important;
+        }
+        .heart-action-btn:hover {
+          border-color: var(--text-dark) !important;
+          background: #f9fafb !important;
+        }
+        @media (max-width: 768px) {
+          .glass-panel {
+            grid-template-columns: 1fr !important;
+            max-height: 95vh !important;
+          }
+          .modal-left-panel {
+            border-right: none !important;
+            border-bottom: 1px solid var(--color-border);
+            padding: 50px 20px 20px 20px !important;
+          }
+          .modal-right-panel {
+            padding: 20px !important;
+          }
         }
       `}} />
     </div>
