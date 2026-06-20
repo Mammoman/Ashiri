@@ -69,6 +69,8 @@ const ProductGrid = ({ onProductSelect, onAddToCart, searchQuery }) => {
             display: 'flex',
             gap: '24px',
             overflowX: 'auto',
+            paddingTop: '5px',
+            paddingLeft: '5px',
             paddingBottom: '8px',
             scrollbarWidth: 'none'
           }} className="category-scroll">
