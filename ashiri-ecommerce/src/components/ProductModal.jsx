@@ -22,7 +22,7 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
   };
 
   return (
-    <div 
+    <div
       style={{
         position: 'fixed',
         top: 0,
@@ -42,7 +42,7 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
       onClick={onClose}
     >
       {/* Modal Card */}
-      <div 
+      <div
         className="glass-panel"
         style={{
           width: '100%',
@@ -60,9 +60,9 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        
+
         {/* Close Button Top Left (Back Arrow) */}
-        <button 
+        <button
           onClick={onClose}
           aria-label="Back to collection"
           style={{
@@ -95,7 +95,7 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
           gap: '20px',
           borderRight: '1px solid var(--color-border)'
         }} className="modal-left-panel">
-          
+
           {/* Large Main Preview Image with Warm Cream Background */}
           <div style={{
             position: 'relative',
@@ -106,9 +106,9 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
             overflow: 'hidden',
             border: '1px solid rgba(0,0,0,0.02)'
           }}>
-            <img 
-              src={product.image} 
-              alt={`${product.name} ${activeView} view`}
+            <img
+              src={product.image}
+              alt={`₦{product.name} ₦{activeView} view`}
               style={{
                 position: 'absolute',
                 top: 0,
@@ -146,9 +146,9 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
               }}
               className="thumbnail-btn"
             >
-              <img 
-                src={product.image} 
-                alt="Front view thumbnail" 
+              <img
+                src={product.image}
+                alt="Front view thumbnail"
                 style={{ width: '100%', height: '100%', objectFit: 'contain' }}
               />
             </button>
@@ -168,14 +168,14 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
               }}
               className="thumbnail-btn"
             >
-              <img 
-                src={product.image} 
-                alt="Back view thumbnail" 
-                style={{ 
-                  width: '100%', 
-                  height: '100%', 
+              <img
+                src={product.image}
+                alt="Back view thumbnail"
+                style={{
+                  width: '100%',
+                  height: '100%',
                   objectFit: 'contain',
-                  transform: 'scaleX(-1)' 
+                  transform: 'scaleX(-1)'
                 }}
               />
             </button>
@@ -190,7 +190,7 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
           flexDirection: 'column',
           justifyContent: 'space-between'
         }} className="modal-right-panel">
-          
+
           <div>
             {/* Breadcrumbs Navigation */}
             <div style={{
@@ -258,11 +258,11 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
             }}>
               <div style={{ display: 'flex', color: '#fbbf24' }}>
                 {[...Array(5)].map((_, i) => (
-                  <Star 
-                    key={i} 
-                    size={13} 
-                    fill={i < Math.floor(product.rating) ? "currentColor" : "none"} 
-                    stroke="currentColor" 
+                  <Star
+                    key={i}
+                    size={13}
+                    fill={i < Math.floor(product.rating) ? "currentColor" : "none"}
+                    stroke="currentColor"
                   />
                 ))}
               </div>
@@ -279,7 +279,7 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
               marginBottom: '24px',
               letterSpacing: '-0.03em'
             }}>
-              ${product.price}.00
+              ₦ {product.price}
             </div>
 
             {/* Square Grid Size Selector */}
@@ -295,21 +295,10 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
                   fontWeight: 700,
                   color: 'var(--text-dark)'
                 }}>
-                  Size <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>— EU Men</span>
+                  Size <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}></span>
                 </span>
-                
-                {/* Size guide link */}
-                <button style={{
-                  fontSize: '0.75rem',
-                  fontWeight: 600,
-                  color: 'var(--text-muted)',
-                  textDecoration: 'underline',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '3px'
-                }}>
-                  Size guide
-                </button>
+
+
               </div>
 
               {/* Grid of Square Buttons */}
@@ -424,7 +413,7 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
               gap: '6px',
               justifyContent: 'center'
             }}>
-              Free delivery on orders over $100.00
+              Free delivery on orders over ₦50,000
             </p>
           </div>
 
@@ -433,7 +422,8 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
       </div>
 
       {/* Styles for hover interactions */}
-      <style dangerouslySetInnerHTML={{__html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         .modal-close-btn:hover {
           background: #f3f4f6 !important;
           transform: scale(1.05);

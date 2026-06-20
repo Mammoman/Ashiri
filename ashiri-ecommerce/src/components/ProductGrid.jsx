@@ -20,7 +20,7 @@ const ProductGrid = ({ onProductSelect, onAddToCart, searchQuery }) => {
   const filteredProducts = products.filter(product => {
     const matchesCategory = activeCategory === 'All' || product.category === activeCategory;
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          product.description.toLowerCase().includes(searchQuery.toLowerCase());
+      product.description.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
@@ -34,7 +34,7 @@ const ProductGrid = ({ onProductSelect, onAddToCart, searchQuery }) => {
   return (
     <section id="collection" style={{ padding: '30px 0 60px 0', background: 'var(--bg-main)' }}>
       <div className="container">
-        
+
         {/* Shop By Category (Mockup Circular Category Row) */}
         <div style={{ marginBottom: '32px' }}>
           <div style={{
@@ -52,7 +52,7 @@ const ProductGrid = ({ onProductSelect, onAddToCart, searchQuery }) => {
             }}>
               Shop By Category
             </h2>
-            <button 
+            <button
               onClick={() => setActiveCategory('All')}
               style={{
                 fontSize: '0.8rem',
@@ -72,14 +72,12 @@ const ProductGrid = ({ onProductSelect, onAddToCart, searchQuery }) => {
             paddingBottom: '8px',
             scrollbarWidth: 'none'
           }} className="category-scroll">
-            
+
             {/* 'All' category circle */}
-            <div 
-              onClick={() => setActiveCategory('All')}
               className={`circle-category ${activeCategory === 'All' ? 'active' : ''}`}
             >
-              <div 
-                className="circle-img-wrap flex-center" 
+              <div
+                className="circle-img-wrap flex-center"
                 style={{
                   background: activeCategory === 'All' ? 'var(--color-accent)' : '#ffffff',
                   color: activeCategory === 'All' ? '#ffffff' : 'var(--text-dark)'
@@ -91,15 +89,15 @@ const ProductGrid = ({ onProductSelect, onAddToCart, searchQuery }) => {
             </div>
 
             {circularCategories.map(cat => (
-              <div 
+              <div
                 key={cat.name}
                 onClick={() => setActiveCategory(cat.name)}
                 className={`circle-category ${activeCategory === cat.name ? 'active' : ''}`}
               >
                 <div className="circle-img-wrap">
-                  <img 
-                    src={cat.image} 
-                    alt={cat.name} 
+                  <img
+                    src={cat.image}
+                    alt={cat.name}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                 </div>
@@ -208,8 +206,8 @@ const ProductGrid = ({ onProductSelect, onAddToCart, searchQuery }) => {
         ) : (
           <div className="product-grid-layout">
             {sortedProducts.map(product => (
-              <div 
-                key={product.id} 
+              <div
+                key={product.id}
                 className="product-card"
                 onClick={() => onProductSelect(product)}
                 style={{
@@ -240,7 +238,7 @@ const ProductGrid = ({ onProductSelect, onAddToCart, searchQuery }) => {
                       objectFit: 'cover'
                     }}
                   />
-                  
+
                   {/* Floating heart icon matching mockup */}
                   <button
                     onClick={(e) => toggleFavorite(product.id, e)}
@@ -281,7 +279,6 @@ const ProductGrid = ({ onProductSelect, onAddToCart, searchQuery }) => {
                       ASHIRI
                     </span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
-                      <Star size={11} fill="var(--color-sale)" stroke="var(--color-sale)" />
                       <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-dark)' }}>
                         {product.rating}
                       </span>
@@ -318,7 +315,7 @@ const ProductGrid = ({ onProductSelect, onAddToCart, searchQuery }) => {
                       fontWeight: 700,
                       color: 'var(--color-sale)'
                     }}>
-                      ${product.price}.00
+                      ₦{product.price}
                     </span>
                     {product.originalPrice && (
                       <span style={{
@@ -326,7 +323,7 @@ const ProductGrid = ({ onProductSelect, onAddToCart, searchQuery }) => {
                         color: 'var(--text-muted)',
                         textDecoration: 'line-through'
                       }}>
-                        ${product.originalPrice}.00
+                        ₦{product.originalPrice}
                       </span>
                     )}
                   </div>
@@ -338,7 +335,8 @@ const ProductGrid = ({ onProductSelect, onAddToCart, searchQuery }) => {
       </div>
 
       {/* Grid specific Styles */}
-      <style dangerouslySetInnerHTML={{__html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         .product-grid-layout {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
