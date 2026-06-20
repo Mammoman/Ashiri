@@ -105,7 +105,7 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
             borderRadius: 'var(--radius-md)',
             overflow: 'hidden',
             border: '1px solid rgba(0,0,0,0.02)'
-          }}>
+          }} className="main-image-wrap">
             <img
               src={product.image}
               alt={`${product.name} ${activeView} view`}
@@ -121,6 +121,7 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
                 // Flip image to mock back view as requested
                 transform: activeView === 'back' ? 'scaleX(-1)' : 'scaleX(1)'
               }}
+              className="main-image"
             />
           </div>
 
@@ -130,7 +131,7 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
             gap: '12px',
             width: '100%',
             justifyContent: 'flex-start'
-          }}>
+          }} className="thumbnails-row">
             {/* Front View Thumbnail */}
             <button
               onClick={() => setActiveView('front')}
@@ -201,7 +202,7 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
               alignItems: 'center',
               gap: '6px',
               fontWeight: 500
-            }}>
+            }} className="modal-breadcrumbs">
               <span>Apparel</span>
               <span>&gt;</span>
               <span>Tops</span>
@@ -215,7 +216,7 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
               alignItems: 'center',
               justifyContent: 'space-between',
               marginBottom: '10px'
-            }}>
+            }} className="modal-brand-row">
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <span style={{
                   fontSize: '0.85rem',
@@ -245,7 +246,7 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
               lineHeight: 1.25,
               marginBottom: '10px',
               letterSpacing: '-0.02em'
-            }}>
+            }} className="modal-title">
               {product.name}
             </h2>
 
@@ -255,7 +256,7 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
               alignItems: 'center',
               gap: '6px',
               marginBottom: '20px'
-            }}>
+            }} className="modal-rating-row">
               <div style={{ display: 'flex', color: '#fbbf24' }}>
                 {[...Array(5)].map((_, i) => (
                   <Star
@@ -278,12 +279,12 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
               color: 'var(--text-dark)',
               marginBottom: '24px',
               letterSpacing: '-0.03em'
-            }}>
+            }} className="modal-price-tag">
               ₦ {product.price}
             </div>
 
             {/* Square Grid Size Selector */}
-            <div style={{ marginBottom: '24px' }}>
+            <div style={{ marginBottom: '24px' }} className="modal-size-section">
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -306,7 +307,7 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
                 display: 'grid',
                 gridTemplateColumns: 'repeat(4, 1fr)',
                 gap: '8px'
-              }}>
+              }} className="size-grid">
                 {product.sizes ? (
                   product.sizes.map(size => {
                     const isActive = selectedSize === size;
@@ -351,7 +352,7 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
               gap: '10px',
               width: '100%',
               marginBottom: '16px'
-            }}>
+            }} className="modal-actions-row">
               {/* Wide Add to Cart Button */}
               <button
                 onClick={handleAddToCart}
@@ -412,7 +413,7 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
               alignItems: 'center',
               gap: '6px',
               justifyContent: 'center'
-            }}>
+            }} className="modal-delivery-text">
               Free delivery on orders over ₦50,000
             </p>
           </div>
@@ -444,15 +445,81 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
         @media (max-width: 768px) {
           .glass-panel {
             grid-template-columns: 1fr !important;
-            max-height: 95vh !important;
+            max-height: 90vh !important;
+            width: 95% !important;
+            margin: auto !important;
           }
           .modal-left-panel {
             border-right: none !important;
             border-bottom: 1px solid var(--color-border);
-            padding: 50px 20px 20px 20px !important;
+            padding: 40px 12px 10px 12px !important;
+            gap: 12px !important;
+          }
+          .main-image-wrap {
+            padding-top: 65% !important;
+          }
+          .main-image {
+            padding: 12px !important;
+          }
+          .thumbnail-btn {
+            width: 52px !important;
+            height: 58px !important;
+            padding: 4px !important;
+          }
+          .thumbnails-row {
+            gap: 8px !important;
           }
           .modal-right-panel {
-            padding: 20px !important;
+            padding: 12px 16px 16px 16px !important;
+          }
+          .modal-breadcrumbs {
+            margin-bottom: 6px !important;
+          }
+          .modal-brand-row {
+            margin-bottom: 4px !important;
+          }
+          .modal-title {
+            font-size: 1.25rem !important;
+            margin-bottom: 6px !important;
+          }
+          .modal-rating-row {
+            margin-bottom: 10px !important;
+          }
+          .modal-price-tag {
+            font-size: 1.45rem !important;
+            margin-bottom: 12px !important;
+          }
+          .modal-size-section {
+            margin-bottom: 14px !important;
+          }
+          .size-grid {
+            gap: 6px !important;
+          }
+          .size-square-btn {
+            height: 36px !important;
+            font-size: 0.8rem !important;
+          }
+          .modal-actions-row {
+            margin-bottom: 10px !important;
+            gap: 8px !important;
+          }
+          .cart-action-solid-btn {
+            height: 42px !important;
+            font-size: 0.8rem !important;
+          }
+          .heart-action-btn {
+            width: 42px !important;
+            height: 42px !important;
+          }
+          .modal-close-btn {
+            top: 10px !important;
+            left: 10px !important;
+            width: 32px !important;
+            height: 32px !important;
+          }
+          .modal-close-btn svg {
+            width: 14px !important;
+            height: 14px !important;
           }
         }
       `}} />
