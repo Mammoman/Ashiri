@@ -1,11 +1,79 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Star, Heart, SlidersHorizontal, ChevronDown, Check } from 'lucide-react';
 import { products, circularCategories } from '../data/mockData';
+
+// Premium Shimmering Skeleton Loader for Product Cards
+const ProductCardSkeleton = () => (
+  <div
+    className="product-card"
+    style={{
+      position: 'relative',
+      overflow: 'hidden',
+      display: 'flex',
+      flexDirection: 'column',
+      pointerEvents: 'none'
+    }}
+  >
+    {/* Shimmer Image Box */}
+    <div
+      style={{
+        position: 'relative',
+        width: '100%',
+        paddingTop: '115%', // Matches product-card image aspect ratio
+        overflow: 'hidden',
+      }}
+      className="shimmer-bg"
+    />
+
+    {/* Details Shimmer Group */}
+    <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      {/* Brand & Star Rating row */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: '4px'
+      }}>
+        {/* Brand placeholder */}
+        <div className="skeleton-text shimmer-bg short" style={{ margin: 0, height: '10px' }} />
+        {/* Rating placeholder */}
+        <div className="skeleton-text shimmer-bg" style={{ margin: 0, height: '10px', width: '40px' }} />
+      </div>
+
+      {/* Product Title (2 lines) */}
+      <div style={{ height: '34px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+        <div className="skeleton-text shimmer-bg long" style={{ margin: 0 }} />
+        <div className="skeleton-text shimmer-bg medium" style={{ margin: 0 }} />
+      </div>
+
+      {/* Price Layout */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'baseline',
+        gap: '8px',
+        marginTop: '4px'
+      }}>
+        <div className="skeleton-text shimmer-bg" style={{ margin: 0, height: '14px', width: '60px' }} />
+      </div>
+    </div>
+  </div>
+);
 
 const ProductGrid = ({ onProductSelect, onAddToCart, searchQuery }) => {
   const [activeCategory, setActiveCategory] = useState('All');
   const [sortBy, setSortBy] = useState('featured');
   const [favorites, setFavorites] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Simulated Loading state on mount, category shift, sorting, or search query changes
+  useEffect(() => {
+    setIsLoading(true);
+    const delay = activeCategory === 'All' ? 800 : 500;
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [activeCategory, sortBy, searchQuery]);
 
   // Toggle favorite state
   const toggleFavorite = (id, e) => {
@@ -185,7 +253,13 @@ const ProductGrid = ({ onProductSelect, onAddToCart, searchQuery }) => {
         </div>
 
         {/* Products Grid */}
-        {sortedProducts.length === 0 ? (
+        {isLoading ? (
+          <div className="product-grid-layout">
+            {[...Array(8)].map((_, i) => (
+              <ProductCardSkeleton key={i} />
+            ))}
+          </div>
+        ) : sortedProducts.length === 0 ? (
           <div className="flex-center" style={{
             flexDirection: 'column',
             padding: '60px 0',

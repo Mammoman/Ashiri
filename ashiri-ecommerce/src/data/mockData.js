@@ -19,7 +19,7 @@ export const products = [
       'Handcrafted in Lagos, Nigeria',
       'Care: Machine wash cold, dry flat'
     ],
-    sizes: ['XS', 'S', 'M', 'L', 'XL'],
+    sizes: ['S', 'M', 'L'],
     colors: ['Ochre', 'Charcoal', 'Bone']
   },
   {
@@ -55,7 +55,7 @@ export const products = [
       'Breathable, layered aesthetic',
       'Care: Hand wash only with gentle detergent'
     ],
-    sizes: ['S', 'M', 'L', 'XL'],
+    sizes: ['S', 'M', 'L'],
     colors: ['Bone/Gold', 'Terracotta/Gold']
   },
   {
@@ -73,7 +73,7 @@ export const products = [
       'Side splits at the hem for ease of movement',
       'Care: Gentle machine wash, warm iron if desired'
     ],
-    sizes: ['XS', 'S', 'M', 'L', 'XL'],
+    sizes: ['S', 'M', 'L'],
     colors: ['Charcoal', 'Sand', 'Olive']
   },
   {
@@ -108,7 +108,7 @@ export const products = [
       'Durable flatlock stitching',
       'Care: Wash separately for first few washes'
     ],
-    sizes: ['XS', 'S', 'M', 'L', 'XL'],
+    sizes: ['S', 'M', 'L'],
     colors: ['Indigo', 'Faded Indigo']
   },
   {
@@ -144,7 +144,7 @@ export const products = [
       'Invisible side zipper closure',
       'Care: Dry clean only'
     ],
-    sizes: ['XS', 'S', 'M', 'L'],
+    sizes: ['S', 'M', 'L'],
     colors: ['Noir', 'Ivory']
   }
 ];
