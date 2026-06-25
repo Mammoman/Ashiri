@@ -7,7 +7,7 @@ export const products = [
   {
     id: 1,
     name: 'The Oba Ribbed Tank',
-    category: 'Ribbed',
+    category: 'Unisex',
     price: 25000,
     originalPrice: 18000,
     image: ribbedTank,
@@ -25,7 +25,7 @@ export const products = [
   {
     id: 2,
     name: 'The Adire Silk Cami',
-    category: 'Silk & Crepe',
+    category: 'Female',
     price: 20000,
     originalPrice: 15000,
     image: silkTank,
@@ -43,7 +43,7 @@ export const products = [
   {
     id: 3,
     name: 'The Heritage Knit Vest',
-    category: 'Knitwear',
+    category: 'Male',
     price: 25000,
     originalPrice: 18000,
     image: knitTank,
@@ -61,7 +61,7 @@ export const products = [
   {
     id: 4,
     name: 'The Safari Linen Tank',
-    category: 'Linen',
+    category: 'Male',
     price: 40000,
     originalPrice: 25000,
     image: linenTank,
@@ -79,7 +79,7 @@ export const products = [
   {
     id: 5,
     name: 'The Sahara Gold Knit',
-    category: 'Knitwear',
+    category: 'Unisex',
     price: 25000,
     originalPrice: 20000,
     image: knitTank,
@@ -96,7 +96,7 @@ export const products = [
   {
     id: 6,
     name: 'The Indigo Ribbed Tank',
-    category: 'Ribbed',
+    category: 'Unisex',
     price: 30000,
     originalPrice: 30000,
     image: silkTank,
@@ -114,7 +114,7 @@ export const products = [
   {
     id: 7,
     name: 'The Nomadic Halter',
-    category: 'Linen',
+    category: 'Female',
     price: 20000,
     originalPrice: 15000,
     image: ribbedTank,
@@ -132,7 +132,7 @@ export const products = [
   {
     id: 8,
     name: 'The Asymmetrical Crepe Tank',
-    category: 'Silk & Crepe',
+    category: 'Female',
     price: 30000,
     originalPrice: 22000,
     image: linenTank,
@@ -149,11 +149,10 @@ export const products = [
   }
 ];
 
-export const categories = ['All', 'Ribbed', 'Silk & Crepe', 'Knitwear', 'Linen'];
+export const categories = ['All', 'Male', 'Female', 'Unisex'];
 
 export const circularCategories = [
-  { name: 'Ribbed', image: ribbedTank },
-  { name: 'Silk & Crepe', image: silkTank },
-  { name: 'Knitwear', image: knitTank },
-  { name: 'Linen', image: linenTank }
+  { name: 'Male', image: knitTank },
+  { name: 'Female', image: silkTank },
+  { name: 'Unisex', image: ribbedTank }
 ];

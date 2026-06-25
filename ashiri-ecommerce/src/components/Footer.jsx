@@ -101,11 +101,10 @@ const Footer = () => {
               gap: '10px',
               fontSize: '0.85rem'
             }} className="footer-list">
-              <li><a href="#collection">All Collection</a></li>
-              <li><a href="#collection">Ribbed Collection</a></li>
-              <li><a href="#collection">Indigo Silk Camis</a></li>
-              <li><a href="#collection">Heritage Knitwear</a></li>
-              <li><a href="#collection">Belgian Linen</a></li>
+              <li><a href="#collection">All Items</a></li>
+              <li><a href="#collection">Male Collection</a></li>
+              <li><a href="#collection">Female Collection</a></li>
+              <li><a href="#collection">Unisex Collection</a></li>
             </ul>
           </div>
 
