@@ -59,10 +59,9 @@ const ProductCardSkeleton = () => (
   </div>
 );
 
-const ProductGrid = ({ onProductSelect, onAddToCart, searchQuery }) => {
+const ProductGrid = ({ onProductSelect, onAddToCart, searchQuery, favorites = {}, onToggleFavorite }) => {
   const [activeCategory, setActiveCategory] = useState('All');
   const [sortBy, setSortBy] = useState('featured');
-  const [favorites, setFavorites] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
   // Simulated Loading state on mount, category shift, sorting, or search query changes
@@ -78,10 +77,7 @@ const ProductGrid = ({ onProductSelect, onAddToCart, searchQuery }) => {
   // Toggle favorite state
   const toggleFavorite = (id, e) => {
     e.stopPropagation(); // Avoid triggering product modal
-    setFavorites(prev => ({
-      ...prev,
-      [id]: !prev[id]
-    }));
+    onToggleFavorite(id);
   };
 
   // Filter products by category & search query

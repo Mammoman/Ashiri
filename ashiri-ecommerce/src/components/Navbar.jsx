@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { ShoppingBag, Search, Menu, X, ArrowLeft } from 'lucide-react';
+import { ShoppingBag, Search, Menu, X, ArrowLeft, Heart } from 'lucide-react';
 
-const Navbar = ({ cartCount, onCartClick, searchQuery, onSearchChange }) => {
+const Navbar = ({ cartCount, onCartClick, wishlistCount, onWishlistClick, searchQuery, onSearchChange }) => {
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
   return (
@@ -87,6 +87,43 @@ const Navbar = ({ cartCount, onCartClick, searchQuery, onSearchChange }) => {
             }}
           >
             <Search size={22} />
+          </button>
+
+          {/* Wishlist Icon Button */}
+          <button
+            onClick={onWishlistClick}
+            aria-label="Open Wishlist"
+            style={{
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '40px',
+              height: '40px',
+              color: 'var(--text-dark)',
+              background: '#f3f4f6',
+              borderRadius: '50%'
+            }}
+            className="wishlist-toggle-btn"
+          >
+            <Heart size={20} />
+            {wishlistCount > 0 && (
+              <span className="flex-center" style={{
+                position: 'absolute',
+                top: '-2px',
+                right: '-2px',
+                background: 'var(--color-sale)',
+                color: '#ffffff',
+                fontSize: '0.65rem',
+                fontWeight: 700,
+                width: '18px',
+                height: '18px',
+                borderRadius: '50%',
+                border: '2px solid #ffffff'
+              }}>
+                {wishlistCount}
+              </span>
+            )}
           </button>
 
           {/* Cart Icon Button */}
@@ -193,7 +230,7 @@ const Navbar = ({ cartCount, onCartClick, searchQuery, onSearchChange }) => {
             display: flex !important;
           }
         }
-        .cart-toggle-btn:hover {
+        .cart-toggle-btn:hover, .wishlist-toggle-btn:hover {
           background: #e5e7eb !important;
           transform: scale(1.05);
         }

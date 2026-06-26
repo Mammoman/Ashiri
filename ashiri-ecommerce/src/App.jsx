@@ -5,12 +5,25 @@ import ProductGrid from './components/ProductGrid';
 import ProductModal from './components/ProductModal';
 import CartSidebar from './components/CartSidebar';
 import Footer from './components/Footer';
+import { products } from './data/mockData';
 
 function App() {
   const [cart, setCart] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [sidebarTab, setSidebarTab] = useState('cart'); // 'cart' or 'wishlist'
+  const [favorites, setFavorites] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
+
+  const handleToggleFavorite = (productId) => {
+    setFavorites((prev) => ({
+      ...prev,
+      [productId]: !prev[productId]
+    }));
+  };
+
+  const wishlistItems = products.filter(product => favorites[product.id]);
+  const wishlistCount = wishlistItems.length;
 
   // Cart operations
   const handleAddToCart = (product) => {
@@ -87,7 +100,9 @@ function App() {
       {/* Premium Navbar */}
       <Navbar
         cartCount={cartCount}
-        onCartClick={() => setIsCartOpen(true)}
+        onCartClick={() => { setSidebarTab('cart'); setIsCartOpen(true); }}
+        wishlistCount={wishlistCount}
+        onWishlistClick={() => { setSidebarTab('wishlist'); setIsCartOpen(true); }}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
       />
@@ -102,6 +117,8 @@ function App() {
           onProductSelect={setSelectedProduct}
           onAddToCart={handleAddToCart}
           searchQuery={searchQuery}
+          favorites={favorites}
+          onToggleFavorite={handleToggleFavorite}
         />
       </main>
 
@@ -114,6 +131,8 @@ function App() {
           product={selectedProduct}
           onClose={() => setSelectedProduct(null)}
           onAddToCart={handleAddToCart}
+          favorites={favorites}
+          onToggleFavorite={handleToggleFavorite}
         />
       )}
 
@@ -125,6 +144,10 @@ function App() {
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
         onClearCart={handleClearCart}
+        onAddToCart={handleAddToCart}
+        defaultTab={sidebarTab}
+        wishlistItems={wishlistItems}
+        onToggleFavorite={handleToggleFavorite}
       />
     </div>
   );
