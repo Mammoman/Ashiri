@@ -1,0 +1,72 @@
+[
+  {
+    "id": "ASH-ORD-1722768",
+    "createdAt": "2026-06-26T00:32:16.334Z",
+    "customerName": "Test Tester",
+    "customerEmail": "test-tester@example.com",
+    "customerAddress": "Atelier 1, Lagos, Nigeria",
+    "subtotal": 45000,
+    "paymentMethod": "Pay on Delivery",
+    "paymentReference": "N/A",
+    "verificationStatus": "Pending (Pay on Delivery)",
+    "cartItems": [
+      {
+        "id": 2,
+        "name": "The Adire Silk Cami",
+        "category": "Female",
+        "price": 20000,
+        "originalPrice": 15000,
+        "image": "/src/assets/silk_tank.png",
+        "description": "An exquisite luxury camisole crafted from fluid mulberry silk. Hand-dyed by Yoruba artisans using traditional indigo resist-dyeing (Adire) techniques, making each piece unique.",
+        "details": [
+          "100% Pure Mulberry Silk Crepe de Chine",
+          "Individually hand-dyed with natural indigo dye",
+          "Adjustable spaghetti straps with brass details",
+          "Relaxed, elegant drape",
+          "Care: Dry clean recommended, or gentle hand wash"
+        ],
+        "sizes": [
+          "S",
+          "M",
+          "L"
+        ],
+        "colors": [
+          "Indigo/White",
+          "Noir/Gold"
+        ],
+        "selectedSize": "S",
+        "selectedColor": "Standard",
+        "quantity": 1
+      },
+      {
+        "id": 1,
+        "name": "The Oba Ribbed Tank",
+        "category": "Unisex",
+        "price": 25000,
+        "originalPrice": 18000,
+        "image": "/src/assets/ribbed_tank.png",
+        "description": "A classic silhouette elevated through superior craftsmanship. Crafted from ultra-soft, heavy-weight organic rib-knit cotton that hugs the body perfectly.",
+        "details": [
+          "100% Organic long-staple cotton",
+          "Thick ribbing that retains its structure",
+          "Naturally dyed with sustainable earth pigments",
+          "Handcrafted in Lagos, Nigeria",
+          "Care: Machine wash cold, dry flat"
+        ],
+        "sizes": [
+          "S",
+          "M",
+          "L"
+        ],
+        "colors": [
+          "Ochre",
+          "Charcoal",
+          "Bone"
+        ],
+        "selectedSize": "S",
+        "selectedColor": "Ochre",
+        "quantity": 1
+      }
+    ]
+  }
+]

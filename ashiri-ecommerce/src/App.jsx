@@ -4,6 +4,8 @@ import Hero from './components/Hero';
 import ProductGrid from './components/ProductGrid';
 import ProductModal from './components/ProductModal';
 import CartSidebar from './components/CartSidebar';
+import Gallery from './components/Gallery';
+import Reviews from './components/Reviews';
 import Footer from './components/Footer';
 import { products } from './data/mockData';
 
@@ -120,6 +122,12 @@ function App() {
           favorites={favorites}
           onToggleFavorite={handleToggleFavorite}
         />
+
+        {/* Lookbook Gallery */}
+        <Gallery />
+
+        {/* Customer Reviews */}
+        <Reviews />
       </main>
 
       {/* Elegant Footer */}
