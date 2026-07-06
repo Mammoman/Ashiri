@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Image } from 'lucide-react';
-import ribbedTank from '../assets/ribbed_tank.png';
-import silkTank from '../assets/silk_tank.png';
-import knitTank from '../assets/knit_tank.png';
-import linenTank from '../assets/linen_tank.png';
+import ribbedTank from '../assets/image1.jpg';
+import silkTank from '../assets/image2.jpg';
+import knitTank from '../assets/seats.jpg';
+import linenTank from '../assets/image3.jpg';
 
 const slides = [
   {
     tag: 'NEW COLLECTION',
-    title: 'THE OBA RIBBED TANK',
+    title: 'THE ASHIRI TANK',
     subtitle: '20% OFF',
     desc: 'Crafted from ultra-soft, heavy-weight organic rib-knit cotton.',
     image: ribbedTank,

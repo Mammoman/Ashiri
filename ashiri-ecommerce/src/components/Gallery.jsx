@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { X, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
-import galleryDyeing from '../assets/gallery/gallery_dyeing.png';
-import galleryKnit from '../assets/gallery/gallery_knit.png';
-import galleryLinen from '../assets/gallery/gallery_linen.png';
-import galleryModel from '../assets/gallery/gallery_model.png';
+import galleryDyeing from '../assets/gallery/greytank.jpg';
+import galleryKnit from '../assets/gallery/purpletank2.jpg';
+import galleryLinen from '../assets/gallery/redtank3.jpg';
+import galleryModel from '../assets/gallery/whitetank2.jpg';
 
 const galleryItems = [
   {
