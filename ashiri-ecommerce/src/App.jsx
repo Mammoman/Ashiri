@@ -5,11 +5,13 @@ import ProductGrid from './components/ProductGrid';
 import ProductModal from './components/ProductModal';
 import CartSidebar from './components/CartSidebar';
 import Gallery from './components/Gallery';
+import GalleryPage from './components/GalleryPage';
 import Reviews from './components/Reviews';
 import Footer from './components/Footer';
 import { products } from './data/mockData';
 
 function App() {
+  const [currentPage, setCurrentPage] = useState('shop');
   const [cart, setCart] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -97,6 +99,11 @@ function App() {
   // Get total count of items in the cart
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+
   return (
     <div className="app-wrapper">
       {/* Premium Navbar */}
@@ -107,31 +114,39 @@ function App() {
         onWishlistClick={() => { setSidebarTab('wishlist'); setIsCartOpen(true); }}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
       />
 
       {/* Main content wrapped */}
       <main className="content-wrapper">
-        {/* Parallax Hero */}
-        <Hero />
+        {currentPage === 'shop' ? (
+          <>
+            {/* Parallax Hero */}
+            <Hero />
 
-        {/* Product Showcase */}
-        <ProductGrid
-          onProductSelect={setSelectedProduct}
-          onAddToCart={handleAddToCart}
-          searchQuery={searchQuery}
-          favorites={favorites}
-          onToggleFavorite={handleToggleFavorite}
-        />
+            {/* Product Showcase */}
+            <ProductGrid
+              onProductSelect={setSelectedProduct}
+              onAddToCart={handleAddToCart}
+              searchQuery={searchQuery}
+              favorites={favorites}
+              onToggleFavorite={handleToggleFavorite}
+            />
 
-        {/* Lookbook Gallery */}
-        <Gallery />
+            {/* Lookbook Gallery */}
+            <Gallery onViewGallery={() => handlePageChange('gallery')} />
 
-        {/* Customer Reviews */}
-        <Reviews />
+            {/* Customer Reviews */}
+            <Reviews />
+          </>
+        ) : (
+          <GalleryPage onBackToShop={() => handlePageChange('shop')} />
+        )}
       </main>
 
       {/* Elegant Footer */}
-      <Footer />
+      <Footer onPageChange={handlePageChange} />
 
       {/* Quick View Details Modal Overlay */}
       {selectedProduct && (

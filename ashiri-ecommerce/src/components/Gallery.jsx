@@ -1,34 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { X, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
-import galleryDyeing from '../assets/gallery/greytank.jpg';
-import galleryKnit from '../assets/gallery/purpletank2.jpg';
-import galleryLinen from '../assets/gallery/redtank3.jpg';
-import galleryModel from '../assets/gallery/whitetank2.jpg';
+import greytank from '../assets/gallery/greytank.jpg';
+import purpletank from '../assets/gallery/purpletank2.jpg';
+import redtank from '../assets/gallery/redtank3.jpg';
+import whitetank from '../assets/gallery/whitetank2.jpg';
+
 
 const galleryItems = [
   {
-    image: galleryDyeing,
-    title: 'Botanical Indigo Dyeing',
-    desc: 'Artisans in Lagos hand-dyeing mulberry silk garments in traditional botanical indigo vats, creating unique organic patterns.'
-  },
+    image: greytank,
+   },
   {
-    image: galleryKnit,
-    title: 'Heritage Crochet Craft',
-    desc: 'Each crochet vest is meticulously hand-knitted, taking up to three days of focused geometric weaving.'
-  },
+    image: purpletank,
+    },
   {
-    image: galleryLinen,
-    title: 'Flax Linen Sourcing',
-    desc: 'Selecting high-grade organic flax linen that is naturally pre-washed to deliver unmatched drape and breathability.'
-  },
+    image: redtank,
+   },
   {
-    image: galleryModel,
-    title: 'Sartorial Modernism',
-    desc: 'Modern silhouettes styled against West African brutalist architecture, merging heritage and contemporary fashion.'
-  }
+    image: whitetank,
+   },
+   {
+    image: greytank,
+   }
 ];
 
-const Gallery = () => {
+const Gallery = ({ onViewGallery }) => {
   const [lightboxIndex, setLightboxIndex] = useState(null);
 
   // Keyboard navigation for Lightbox
@@ -55,7 +51,7 @@ const Gallery = () => {
   return (
     <section id="gallery" style={{ padding: '60px 0', background: 'var(--bg-main)' }}>
       <div className="container">
-        
+
         {/* Header Block */}
         <div style={{ textAlign: 'center', marginBottom: '40px' }}>
           <span style={{
@@ -96,7 +92,7 @@ const Gallery = () => {
           gap: '24px'
         }}>
           {galleryItems.map((item, idx) => (
-            <div 
+            <div
               key={idx}
               className="gallery-card"
               onClick={() => setLightboxIndex(idx)}
@@ -111,9 +107,9 @@ const Gallery = () => {
                 transition: 'var(--transition-smooth)'
               }}
             >
-              <img 
-                src={item.image} 
-                alt={item.title} 
+              <img
+                src={item.image}
+                alt={item.title}
                 style={{
                   width: '100%',
                   height: '100%',
@@ -122,9 +118,9 @@ const Gallery = () => {
                 }}
                 className="gallery-img"
               />
-              
+
               {/* Overlay */}
-              <div 
+              <div
                 className="gallery-overlay"
                 style={{
                   position: 'absolute',
@@ -181,11 +177,33 @@ const Gallery = () => {
           ))}
         </div>
 
+        {/* View Full Archive Button */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '48px' }}>
+          <button
+            onClick={onViewGallery}
+            style={{
+              padding: '14px 36px',
+              fontSize: '0.85rem',
+              fontWeight: 600,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              color: '#ffffff',
+              background: 'var(--color-accent)',
+              borderRadius: 'var(--radius-pill)',
+              boxShadow: 'var(--shadow-subtle)',
+              transition: 'var(--transition-smooth)'
+            }}
+            className="explore-btn"
+          >
+            Explore Full Archive
+          </button>
+        </div>
+
       </div>
 
       {/* Lightbox Modal */}
       {lightboxIndex !== null && (
-        <div 
+        <div
           onClick={() => setLightboxIndex(null)}
           style={{
             position: 'fixed',
@@ -203,7 +221,7 @@ const Gallery = () => {
           }}
         >
           {/* Close Button */}
-          <button 
+          <button
             onClick={() => setLightboxIndex(null)}
             style={{
               position: 'absolute',
@@ -226,7 +244,7 @@ const Gallery = () => {
           </button>
 
           {/* Navigation Controls */}
-          <button 
+          <button
             onClick={(e) => { e.stopPropagation(); handlePrev(); }}
             style={{
               position: 'absolute',
@@ -247,7 +265,7 @@ const Gallery = () => {
             <ChevronLeft size={24} />
           </button>
 
-          <button 
+          <button
             onClick={(e) => { e.stopPropagation(); handleNext(); }}
             style={{
               position: 'absolute',
@@ -269,7 +287,7 @@ const Gallery = () => {
           </button>
 
           {/* Lightbox Content Wrap */}
-          <div 
+          <div
             onClick={(e) => e.stopPropagation()}
             style={{
               display: 'flex',
@@ -280,9 +298,9 @@ const Gallery = () => {
               color: '#ffffff'
             }}
           >
-            <img 
-              src={galleryItems[lightboxIndex].image} 
-              alt={galleryItems[lightboxIndex].title} 
+            <img
+              src={galleryItems[lightboxIndex].image}
+              alt={galleryItems[lightboxIndex].title}
               style={{
                 maxWidth: '100%',
                 maxHeight: '65vh',
@@ -292,7 +310,7 @@ const Gallery = () => {
                 marginBottom: '20px'
               }}
             />
-            
+
             <div style={{ textAlign: 'center', maxWidth: '500px' }}>
               <h3 style={{
                 fontSize: '1.25rem',
@@ -319,6 +337,11 @@ const Gallery = () => {
       {/* Local responsive styling */}
       <style dangerouslySetInnerHTML={{
         __html: `
+        .explore-btn:hover {
+          background: #1f2937 !important;
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-medium);
+        }
         .lightbox-close:hover, .lightbox-arrow:hover {
           background: rgba(255, 255, 255, 0.2) !important;
         }

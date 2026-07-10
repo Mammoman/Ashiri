@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, ArrowRight } from 'lucide-react';
 
-const Footer = () => {
+const Footer = ({ onPageChange }) => {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
@@ -11,6 +11,24 @@ const Footer = () => {
       setSubscribed(true);
       setEmail('');
       setTimeout(() => setSubscribed(false), 3000);
+    }
+  };
+
+  const handleLinkClick = (e, targetId) => {
+    e.preventDefault();
+    if (onPageChange) {
+      onPageChange('shop');
+      setTimeout(() => {
+        const element = document.getElementById(targetId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 50);
+    } else {
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 
@@ -33,13 +51,17 @@ const Footer = () => {
 
           {/* Brand Column */}
           <div>
-            <h3 style={{
-              fontSize: '1.25rem',
-              fontWeight: 700,
-              letterSpacing: '-0.02em',
-              marginBottom: '16px',
-              color: 'var(--text-dark)'
-            }}>
+            <h3 
+              onClick={(e) => handleLinkClick(e, 'collection')}
+              style={{
+                fontSize: '1.25rem',
+                fontWeight: 700,
+                letterSpacing: '-0.02em',
+                marginBottom: '16px',
+                color: 'var(--text-dark)',
+                cursor: 'pointer'
+              }}
+            >
               ASHIRI
             </h3>
             <p style={{
@@ -101,10 +123,10 @@ const Footer = () => {
               gap: '10px',
               fontSize: '0.85rem'
             }} className="footer-list">
-              <li><a href="#collection">All Items</a></li>
-              <li><a href="#collection">Male Collection</a></li>
-              <li><a href="#collection">Female Collection</a></li>
-              <li><a href="#collection">Unisex Collection</a></li>
+              <li><a href="#collection" onClick={(e) => handleLinkClick(e, 'collection')}>All Items</a></li>
+              <li><a href="#collection" onClick={(e) => handleLinkClick(e, 'collection')}>Male Collection</a></li>
+              <li><a href="#collection" onClick={(e) => handleLinkClick(e, 'collection')}>Female Collection</a></li>
+              <li><a href="#collection" onClick={(e) => handleLinkClick(e, 'collection')}>Unisex Collection</a></li>
             </ul>
           </div>
 

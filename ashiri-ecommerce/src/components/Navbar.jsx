@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ShoppingBag, Search, Menu, X, ArrowLeft, Heart } from 'lucide-react';
 
-const Navbar = ({ cartCount, onCartClick, wishlistCount, onWishlistClick, searchQuery, onSearchChange }) => {
+const Navbar = ({ cartCount, onCartClick, wishlistCount, onWishlistClick, searchQuery, onSearchChange, currentPage, onPageChange }) => {
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
   return (
@@ -24,18 +24,54 @@ const Navbar = ({ cartCount, onCartClick, wishlistCount, onWishlistClick, search
         justifyContent: 'space-between',
         width: '100%'
       }}>
-        {/* Left Side: Logo */}
-        <a href="/" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{
-            fontSize: '1.5rem',
-            fontWeight: 700,
-            letterSpacing: '-0.03em',
-            lineHeight: 1,
-            color: 'var(--text-dark)'
-          }}>
-            ASHIRI
-          </span>
-        </a>
+        {/* Left Side: Logo & Navigation */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+          <a href="#" onClick={(e) => { e.preventDefault(); onPageChange('shop'); }} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{
+              fontSize: '1.5rem',
+              fontWeight: 700,
+              letterSpacing: '-0.03em',
+              lineHeight: 1,
+              color: 'var(--text-dark)'
+            }}>
+              ASHIRI
+            </span>
+          </a>
+
+          {/* Nav Links */}
+          <div style={{ display: 'flex', gap: '16px' }}>
+            <a
+              href="#"
+              onClick={(e) => { e.preventDefault(); onPageChange('shop'); }}
+              style={{
+                fontSize: '0.8rem',
+                fontWeight: currentPage === 'shop' ? 700 : 500,
+                color: currentPage === 'shop' ? 'var(--text-dark)' : 'var(--text-muted)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                transition: 'var(--transition-fast)'
+              }}
+              className="nav-link"
+            >
+              Shop
+            </a>
+            <a
+              href="#"
+              onClick={(e) => { e.preventDefault(); onPageChange('gallery'); }}
+              style={{
+                fontSize: '0.8rem',
+                fontWeight: currentPage === 'gallery' ? 700 : 500,
+                color: currentPage === 'gallery' ? 'var(--text-dark)' : 'var(--text-muted)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                transition: 'var(--transition-fast)'
+              }}
+              className="nav-link"
+            >
+              Lookbook
+            </a>
+          </div>
+        </div>
 
         {/* Center: Desktop Search Input (Pill style matching search input in mockup) */}
         {!isMobileSearchOpen && (

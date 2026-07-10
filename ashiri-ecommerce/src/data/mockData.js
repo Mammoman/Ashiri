@@ -38,12 +38,12 @@ export const products = [
       'Care: Machine wash cold, dry flat'
     ],**/
     sizes: ['S', 'M', 'L'],
-    colors: ['Indigo/White', 'Noir/Gold']
+    
   },
   {
     id: 3,
     name: 'The Ashiri Grey Tank',
-    category: 'Unisex',
+    category: 'Male',
     price: 25000,
     /**originalPrice: 25000,**/
     image: purpleTank,
@@ -56,12 +56,12 @@ export const products = [
       'Care: Hand wash only with gentle detergent'
     ],**/
     sizes: ['S', 'M', 'L'],
-    colors: ['Bone/Gold', 'Terracotta/Gold']
+ 
   },
   {
     id: 4,
     name: 'The Ashiri White Tank',
-    category: 'Unisex',
+    category: 'Male',
     price: 20000,
     /**originalPrice: 25000,**/
     image: whiteTank,
@@ -74,12 +74,12 @@ export const products = [
       'Care: Machine wash cold, dry flat'
     ],**/
     sizes: ['S', 'M', 'L'],
-    colors: ['Charcoal', 'Sand', 'Olive']
+    
   },
   {
     id: 5,
     name: 'The Sahara Gold Knit',
-    category: 'Unisex',
+    category: 'Male',
     price: 25000,
      /**originalPrice: 25000,**/
     image: whiteTank,
@@ -91,12 +91,12 @@ export const products = [
       'Handcrafted in Lagos, Nigeria',
       'Care: Machine wash cold, dry flat'
     ],**/
-    colors: ['Sahara Gold', 'Bronze Spark']
+  
   },
   {
     id: 6,
     name: 'The Indigo Ribbed Tank',
-    category: 'Unisex',
+    category: 'Male',
     price: 30000,
      /**originalPrice: 25000,**/
     image: redTank,
@@ -109,7 +109,7 @@ export const products = [
       'Care: Machine wash cold, dry flat'
     ],**/
     sizes: ['S', 'M', 'L'],
-    colors: ['Indigo', 'Faded Indigo']
+    
   },
   {
     id: 7,
@@ -127,7 +127,7 @@ export const products = [
       'Care: Machine wash cold, dry flat'
     ],**/
     sizes: ['S', 'M', 'L'],
-    colors: ['Terracotta', 'Clay', 'Oatmeal']
+    
   },
   {
     id: 8,
@@ -149,10 +149,9 @@ export const products = [
   }
 ];
 
-export const categories = ['Male', 'Female', 'Unisex'];
+export const categories = ['Male', 'Female'];
 
 export const circularCategories = [
   { name: 'Male', image: greyTank },
-  { name: 'Female', image: purpleTank },
-  { name: 'Unisex', image: redTank }
+  { name: 'Female', image: purpleTank }
 ];
