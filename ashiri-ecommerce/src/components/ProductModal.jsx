@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { ArrowLeft, Star, ShoppingBag, Check, Heart, HelpCircle } from 'lucide-react';
 
 const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleFavorite }) => {
-  if (!product) return null;
-
-  const [selectedSize, setSelectedSize] = useState(product.sizes ? product.sizes[0] : 'S');
+  const [selectedSize, setSelectedSize] = useState(product?.sizes ? product.sizes[0] : 'S');
   const [activeView, setActiveView] = useState('front'); // 'front' or 'back'
   const [isAdded, setIsAdded] = useState(false);
+
+  if (!product) return null;
   const isFavorite = !!favorites[product.id];
 
   const handleAddToCart = () => {

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Image } from 'lucide-react';
-import ribbedTank from '../assets/image1.jpg';
-import silkTank from '../assets/image2.jpg';
+import ribbedTank from '../assets/Image1.jpg';
+import silkTank from '../assets/Image2.jpg';
 import knitTank from '../assets/seats.jpg';
-import linenTank from '../assets/image3.jpg';
+import linenTank from '../assets/Image3.jpg';
 
 const slides = [
   {
