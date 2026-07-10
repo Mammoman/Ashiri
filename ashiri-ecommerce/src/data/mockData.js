@@ -1,7 +1,7 @@
-import ribbedTank from '../assets/ribbed_tank.png';
-import silkTank from '../assets/greytank.jpg';
-import knitTank from '../assets/purpletank.jpg';
-import linenTank from '../assets/redtank3.jpg';
+import redTank from '../assets/redtank5.jpg';
+import greyTank from '../assets/greytank.jpg';
+import purpleTank from '../assets/purpletank.jpg';
+import whiteTank from '../assets/whitetank3.jpg';
 
 export const products = [
   {
@@ -10,7 +10,7 @@ export const products = [
     category: 'Female',
     price: 25000,
     /**originalPrice: 25000,**/
-    image: ribbedTank,
+    image: redTank,
     /**description: 'A classic silhouette elevated through superior craftsmanship. Crafted from ultra-soft, heavy-weight organic rib-knit cotton that hugs the body perfectly.',
     details: [
       '100% Organic long-staple cotton',
@@ -28,7 +28,7 @@ export const products = [
     category: 'Female',
     price: 20000,
     /**originalPrice: 25000,**/
-    image: silkTank,
+    image: greyTank,
     /**description: 'A classic silhouette elevated through superior craftsmanship. Crafted from ultra-soft, heavy-weight organic rib-knit cotton that hugs the body perfectly.',
     details: [
       '100% Organic long-staple cotton',
@@ -46,7 +46,7 @@ export const products = [
     category: 'Unisex',
     price: 25000,
     /**originalPrice: 25000,**/
-    image: knitTank,
+    image: purpleTank,
     /**description: 'A statement crochet tank top, meticulously hand-knitted. Features open-weave geometric patterns inspired by historical West African architecture and woven textiles.',
     details: [
       '80% Soft cotton, 20% Lurex metallic yarn',
@@ -64,7 +64,7 @@ export const products = [
     category: 'Unisex',
     price: 20000,
     /**originalPrice: 25000,**/
-    image: linenTank,
+    image: whiteTank,
     /**description: 'A classic silhouette elevated through superior craftsmanship. Crafted from ultra-soft, heavy-weight organic rib-knit cotton that hugs the body perfectly.',
     details: [
       '100% Organic long-staple cotton',
@@ -82,7 +82,7 @@ export const products = [
     category: 'Unisex',
     price: 25000,
      /**originalPrice: 25000,**/
-    image: knitTank,
+    image: whiteTank,
    /**description: 'A classic silhouette elevated through superior craftsmanship. Crafted from ultra-soft, heavy-weight organic rib-knit cotton that hugs the body perfectly.',
     details: [
       '100% Organic long-staple cotton',
@@ -99,7 +99,7 @@ export const products = [
     category: 'Unisex',
     price: 30000,
      /**originalPrice: 25000,**/
-    image: silkTank,
+    image: redTank,
     /**description: 'A classic silhouette elevated through superior craftsmanship. Crafted from ultra-soft, heavy-weight organic rib-knit cotton that hugs the body perfectly.',
     details: [
       '100% Organic long-staple cotton',
@@ -117,7 +117,7 @@ export const products = [
     category: 'Female',
     price: 20000,
      /**originalPrice: 25000,**/
-    image: ribbedTank,
+    image: purpleTank,
    /**description: 'A classic silhouette elevated through superior craftsmanship. Crafted from ultra-soft, heavy-weight organic rib-knit cotton that hugs the body perfectly.',
     details: [
       '100% Organic long-staple cotton',
@@ -135,7 +135,7 @@ export const products = [
     category: 'Female',
     price: 30000,
      /**originalPrice: 25000,**/
-    image: linenTank,
+    image: whiteTank,
   /**description: 'A classic silhouette elevated through superior craftsmanship. Crafted from ultra-soft, heavy-weight organic rib-knit cotton that hugs the body perfectly.',
     details: [
       '100% Organic long-staple cotton',
@@ -149,10 +149,10 @@ export const products = [
   }
 ];
 
-export const categories = ['All', 'Male', 'Female', 'Unisex'];
+export const categories = ['Male', 'Female', 'Unisex'];
 
 export const circularCategories = [
-  { name: 'Male', image: knitTank },
-  { name: 'Female', image: silkTank },
-  { name: 'Unisex', image: ribbedTank }
+  { name: 'Male', image: greyTank },
+  { name: 'Female', image: purpleTank },
+  { name: 'Unisex', image: redTank }
 ];

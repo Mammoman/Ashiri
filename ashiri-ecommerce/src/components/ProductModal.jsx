@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Star, ShoppingBag, Check, Heart, HelpCircle } from 'lucide-react';
+import { ArrowLeft, Star, ShoppingBag, Check, Heart, HelpCircle, Gift } from 'lucide-react';
 
 const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleFavorite }) => {
   const [selectedSize, setSelectedSize] = useState(product?.sizes ? product.sizes[0] : 'S');
   const [activeView, setActiveView] = useState('front'); // 'front' or 'back'
   const [isAdded, setIsAdded] = useState(false);
+  const [isGift, setIsGift] = useState(false);
+  const [giftMessage, setGiftMessage] = useState('');
 
   if (!product) return null;
   const isFavorite = !!favorites[product.id];
@@ -343,6 +345,140 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
               </div>
             </div>
 
+            {/* Gift Option Toggle */}
+            <div style={{
+              marginBottom: '20px',
+              borderRadius: '8px',
+              border: '1px solid',
+              borderColor: isGift ? '#7c3aed' : 'var(--color-border)',
+              overflow: 'hidden',
+              transition: 'border-color 0.2s ease',
+            }}>
+              {/* Toggle row */}
+              <button
+                type="button"
+                onClick={() => setIsGift(prev => !prev)}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '11px 14px',
+                  background: isGift ? '#f5f3ff' : '#fafafa',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'background 0.2s ease',
+                }}
+                className="gift-toggle-btn"
+              >
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{
+                    width: '28px', height: '28px',
+                    borderRadius: '7px',
+                    background: isGift ? '#7c3aed' : '#e5e7eb',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    transition: 'background 0.2s ease',
+                    flexShrink: 0,
+                  }}>
+                    <Gift size={14} color={isGift ? '#fff' : '#6b7280'} />
+                  </span>
+                  <span style={{
+                    fontSize: '0.82rem',
+                    fontWeight: 600,
+                    color: isGift ? '#5b21b6' : 'var(--text-dark)',
+                  }}>
+                    Gift this item
+                  </span>
+                  {isGift && (
+                    <span style={{
+                      fontSize: '0.65rem',
+                      fontWeight: 700,
+                      letterSpacing: '0.08em',
+                      color: '#7c3aed',
+                      background: '#ede9fe',
+                      padding: '2px 7px',
+                      borderRadius: '20px',
+                    }}>ACTIVE</span>
+                  )}
+                </span>
+                {/* Toggle switch pill */}
+                <span style={{
+                  width: '36px', height: '20px',
+                  borderRadius: '20px',
+                  background: isGift ? '#7c3aed' : '#d1d5db',
+                  position: 'relative',
+                  flexShrink: 0,
+                  transition: 'background 0.2s ease',
+                }}>
+                  <span style={{
+                    position: 'absolute',
+                    top: '3px',
+                    left: isGift ? '18px' : '3px',
+                    width: '14px', height: '14px',
+                    borderRadius: '50%',
+                    background: '#ffffff',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+                    transition: 'left 0.2s ease',
+                  }} />
+                </span>
+              </button>
+
+              {/* Expandable gift message input */}
+              {isGift && (
+                <div style={{
+                  padding: '12px 14px',
+                  borderTop: '1px solid #ede9fe',
+                  background: '#fdfcff',
+                }}>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '0.7rem',
+                    fontWeight: 700,
+                    color: '#7c3aed',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.08em',
+                    marginBottom: '6px',
+                  }}>
+                    Personalised Message (optional)
+                  </label>
+                  <textarea
+                    placeholder="E.g. Happy Birthday! Wishing you joy in every outfit ✨"
+                    value={giftMessage}
+                    onChange={(e) => setGiftMessage(e.target.value)}
+                    rows={2}
+                    maxLength={120}
+                    style={{
+                      width: '100%',
+                      resize: 'none',
+                      fontSize: '0.8rem',
+                      fontFamily: 'var(--font-body)',
+                      padding: '8px 10px',
+                      borderRadius: '6px',
+                      border: '1px solid #ddd6fe',
+                      background: '#ffffff',
+                      outline: 'none',
+                      color: 'var(--text-dark)',
+                      lineHeight: 1.5,
+                    }}
+                    className="gift-message-input"
+                  />
+                  <span style={{ fontSize: '0.65rem', color: '#a78bfa', display: 'block', textAlign: 'right', marginTop: '2px' }}>
+                    {giftMessage.length}/120
+                  </span>
+                  <p style={{
+                    fontSize: '0.7rem',
+                    color: '#7c3aed',
+                    marginTop: '6px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                  }}>
+                    <Gift size={10} /> Wrapped in our signature matte kraft box with a handwritten note.
+                  </p>
+                </div>
+              )}
+            </div>
+
           </div>
 
           {/* Action CTAs: Add to Cart and Favorite side-by-side */}
@@ -441,6 +577,13 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
         .heart-action-btn:hover {
           border-color: var(--text-dark) !important;
           background: #f9fafb !important;
+        }
+        .gift-toggle-btn:hover {
+          filter: brightness(0.97);
+        }
+        .gift-message-input:focus {
+          border-color: #a78bfa !important;
+          box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.15);
         }
         @media (max-width: 768px) {
           .glass-panel {

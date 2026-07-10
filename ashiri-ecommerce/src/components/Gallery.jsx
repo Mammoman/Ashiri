@@ -319,19 +319,6 @@ const Gallery = () => {
       {/* Local responsive styling */}
       <style dangerouslySetInnerHTML={{
         __html: `
-        .gallery-card:hover {
-          transform: translateY(-4px);
-          box-shadow: var(--shadow-medium);
-        }
-        .gallery-card:hover .gallery-img {
-          transform: scale(1.05);
-        }
-        .gallery-card:hover .gallery-overlay {
-          opacity: 1 !important;
-        }
-        .gallery-card:hover .zoom-icon {
-          background: rgba(255, 255, 255, 0.4) !important;
-        }
         .lightbox-close:hover, .lightbox-arrow:hover {
           background: rgba(255, 255, 255, 0.2) !important;
         }

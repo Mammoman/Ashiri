@@ -1,420 +1,324 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, ChevronRight, Image } from 'lucide-react';
-import ribbedTank from '../assets/Image1.jpg';
-import silkTank from '../assets/Image2.jpg';
-import knitTank from '../assets/seats.jpg';
-import linenTank from '../assets/Image3.jpg';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import img1 from '../assets/Image1.jpg';
+import img2 from '../assets/redtank5.jpg';
+import img3 from '../assets/Image3.jpg';
+import img4 from '../assets/gallery/purpletank.jpg';
+import img5 from '../assets/gallery/whitetank.jpg';
+import img6 from '../assets/gallery/redtank4.jpg';
 
 const slides = [
-  {
-    tag: 'NEW COLLECTION',
-    title: 'THE ASHIRI TANK',
-    subtitle: '20% OFF',
-    desc: 'Crafted from ultra-soft, heavy-weight organic rib-knit cotton.',
-    image: ribbedTank,
-    bg: '#dbeafe', // Soft light blue-grey banner backdrop
-    color: '#0f172a',
-    link: '#collection',
-    buttonText: 'SHOP UNISEX'
-  },
-  {
-    tag: 'ARTISANAL LUXURY',
-    title: 'THE ADIRE SILK CAMI',
-    subtitle: 'YORUBA INDIGO',
-    desc: 'Yoruba artisan hand-dyed mulberry silk camisole.',
-    image: silkTank,
-    bg: '#e0e7ff', // Soft indigo background
-    color: '#1e1b4b',
-    link: '#collection',
-    buttonText: 'SHOP WOMEN'
-  },
-  {
-    tag: 'EXCLUSIVE CROCHET',
-    title: 'HERITAGE KNIT VEST',
-    subtitle: 'HAND-CRAFTED',
-    desc: 'Meticulously hand-knitted crochet vest inspired by history.',
-    image: knitTank,
-    bg: '#ffedd5', // Soft warm terracotta/orange-white
-    color: '#431407',
-    link: '#collection',
-    buttonText: 'SHOP CROCHET'
-  },
-  {
-    tag: 'SUMMER SOPHISTICATION',
-    title: 'SAFARI LINEN TANK',
-    subtitle: 'BELGIAN LINEN',
-    desc: 'Belgian linen tank offering exceptional breathability.',
-    image: linenTank,
-    bg: '#f5f5f4', // Soft warm stone background
-    color: '#1c1917',
-    link: '#collection',
-    buttonText: 'SHOP LINEN'
-  }
+  { image: img1, position: 'center' },
+  { image: img2, position: 'center' },
+  { image: img3, position: 'center' },
+  { image: img4, position: 'center' },
+  { image: img5, position: 'center' },
+  { image: img6, position: 'center' },
 ];
 
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const autoplayTimer = useRef(null);
+
+  const goToSlide = (idx) => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrentSlide(idx);
+    setTimeout(() => setIsTransitioning(false), 900);
+  };
 
   const startAutoplay = () => {
     stopAutoplay();
     autoplayTimer.current = setInterval(() => {
+      goToSlide((prev) => (typeof prev === 'function' ? prev : (prev + 1) % slides.length));
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000);
+    }, 5500);
   };
 
   const stopAutoplay = () => {
-    if (autoplayTimer.current) {
-      clearInterval(autoplayTimer.current);
-    }
+    if (autoplayTimer.current) clearInterval(autoplayTimer.current);
   };
 
   useEffect(() => {
-    if (!isPaused) {
-      startAutoplay();
-    } else {
-      stopAutoplay();
-    }
+    if (!isPaused) startAutoplay();
+    else stopAutoplay();
     return () => stopAutoplay();
   }, [isPaused, currentSlide]);
 
   const handleNext = (e) => {
     e.stopPropagation();
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
+    const next = (currentSlide + 1) % slides.length;
+    goToSlide(next);
   };
 
   const handlePrev = (e) => {
     e.stopPropagation();
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-  };
-
-  const selectSlide = (index) => {
-    setCurrentSlide(index);
+    const prev = (currentSlide - 1 + slides.length) % slides.length;
+    goToSlide(prev);
   };
 
   return (
-    <section 
-      style={{ padding: '24px 0 12px 0', background: 'var(--bg-main)' }}
+    <section
+      className="hero-fullscreen"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      <div className="container">
-        
-        {/* Banner Layout Wrapper */}
-        <div style={{
-          position: 'relative',
-          width: '100%',
-          minHeight: '340px',
-          height: '400px',
-          borderRadius: 'var(--radius-md)',
-          overflow: 'hidden',
-          boxShadow: 'var(--shadow-subtle)',
-        }} className="hero-slider-container">
-
-          {/* Slides Container */}
-          {slides.map((slide, idx) => {
-            const isActive = idx === currentSlide;
-            return (
-              <div
-                key={idx}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: '100%',
-                  background: slide.bg,
-                  display: 'grid',
-                  gridTemplateColumns: '1.2fr 1fr',
-                  alignItems: 'center',
-                  padding: '30px 60px',
-                  opacity: isActive ? 1 : 0,
-                  visibility: isActive ? 'visible' : 'hidden',
-                  transition: 'opacity 0.8s ease-in-out, visibility 0.8s ease-in-out',
-                  zIndex: isActive ? 1 : 0,
-                  boxSizing: 'border-box'
-                }}
-                className={`hero-slide-pane ${isActive ? 'active' : ''}`}
-              >
-                {/* Left Text Column */}
-                <div style={{
-                  zIndex: 2,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  height: '100%',
-                  transform: isActive ? 'translateY(0)' : 'translateY(20px)',
-                  opacity: isActive ? 1 : 0,
-                  transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, opacity 0.6s ease 0.2s'
-                }}>
-                  <span style={{
-                    fontSize: '0.8rem',
-                    fontWeight: 700,
-                    letterSpacing: '0.15em',
-                    textTransform: 'uppercase',
-                    color: slide.color,
-                    marginBottom: '8px'
-                  }}>
-                    {slide.tag}
-                  </span>
-                  
-                  <h1 style={{
-                    fontSize: 'clamp(1.8rem, 4vw, 2.8rem)',
-                    fontWeight: 800,
-                    lineHeight: 1.1,
-                    color: slide.color,
-                    marginBottom: '8px',
-                    letterSpacing: '-0.04em'
-                  }}>
-                    {slide.title}
-                  </h1>
-
-                  <h2 style={{
-                    fontSize: '1.25rem',
-                    fontWeight: 600,
-                    color: slide.color,
-                    opacity: 0.8,
-                    marginBottom: '12px'
-                  }}>
-                    {slide.subtitle}
-                  </h2>
-
-                  <p style={{
-                    fontSize: '0.9rem',
-                    color: slide.color,
-                    opacity: 0.7,
-                    marginBottom: '20px',
-                    maxWidth: '380px',
-                    lineHeight: '1.4'
-                  }}>
-                    {slide.desc}
-                  </p>
-                  
-                  <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-                    <a 
-                      href={slide.link} 
-                      className="btn-solid-dark" 
-                      style={{
-                        background: '#000000',
-                        color: '#ffffff',
-                        padding: '12px 28px',
-                        fontSize: '0.75rem',
-                        fontWeight: 600,
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.1em',
-                        borderRadius: 'var(--radius-pill)',
-                        transition: 'var(--transition-fast)'
-                      }}
-                    >
-                      {slide.buttonText}
-                    </a>
-
-                    <a 
-                      href="#gallery" 
-                      className="hero-gallery-link"
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        fontSize: '0.75rem',
-                        fontWeight: 600,
-                        color: '#000000',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.1em',
-                        borderBottom: '1.5px solid #000000',
-                        paddingBottom: '2px',
-                        transition: 'var(--transition-fast)',
-                      }}
-                    >
-                      <Image size={14} /> Lookbook Gallery
-                    </a>
-                  </div>
-                </div>
-
-                {/* Right Image Column */}
-                <div style={{
-                  position: 'relative',
-                  width: '100%',
-                  height: '100%',
-                  display: 'flex',
-                  alignItems: 'flex-end',
-                  justifyContent: 'flex-end',
-                  pointerEvents: 'none'
-                }} className="hero-image-wrap">
-                  <img 
-                    src={slide.image} 
-                    alt={slide.title} 
-                    style={{
-                      width: 'auto',
-                      height: '95%',
-                      maxHeight: '380px',
-                      objectFit: 'contain',
-                      transform: isActive ? 'scale(1.05) translateY(0)' : 'scale(0.95) translateY(20px)',
-                      opacity: isActive ? 1 : 0,
-                      transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, opacity 0.8s ease 0.1s',
-                      transformOrigin: 'bottom right'
-                    }}
-                  />
-                </div>
-              </div>
-            );
-          })}
-
-          {/* Navigation Arrows */}
-          <button
-            onClick={handlePrev}
-            aria-label="Previous Slide"
-            style={{
-              position: 'absolute',
-              left: '20px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              zIndex: 10,
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              background: 'rgba(255, 255, 255, 0.7)',
-              color: '#000000',
-              backdropFilter: 'blur(4px)',
-              border: '1px solid rgba(255,255,255,0.3)',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.2s ease',
-            }}
-            className="hero-arrow-btn"
+      {/* Slides */}
+      {slides.map((slide, idx) => {
+        const isActive = idx === currentSlide;
+        return (
+          <div
+            key={idx}
+            className={`hero-slide ${isActive ? 'hero-slide--active' : ''}`}
+            aria-hidden={!isActive}
           >
-            <ChevronLeft size={20} />
-          </button>
-          
-          <button
-            onClick={handleNext}
-            aria-label="Next Slide"
-            style={{
-              position: 'absolute',
-              right: '20px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              zIndex: 10,
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              background: 'rgba(255, 255, 255, 0.7)',
-              color: '#000000',
-              backdropFilter: 'blur(4px)',
-              border: '1px solid rgba(255,255,255,0.3)',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.2s ease',
-            }}
-            className="hero-arrow-btn"
-          >
-            <ChevronRight size={20} />
-          </button>
+            {/* Full-bleed background image */}
+            <div
+              className="hero-slide__bg"
+              style={{
+                backgroundImage: `url(${slide.image})`,
+                backgroundPosition: slide.position === 'top' ? 'center 15%' : 'center center',
+              }}
+            />
 
-          {/* Slide dots and indicator */}
-          <div style={{
-            position: 'absolute',
-            bottom: '20px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            zIndex: 10,
-            display: 'flex',
-            gap: '8px',
-            alignItems: 'center'
-          }}>
-            {slides.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => selectSlide(idx)}
-                aria-label={`Go to slide ${idx + 1}`}
-                style={{
-                  width: idx === currentSlide ? '24px' : '8px',
-                  height: '8px',
-                  borderRadius: 'var(--radius-pill)',
-                  background: idx === currentSlide ? '#000000' : 'rgba(0,0,0,0.2)',
-                  transition: 'all 0.3s ease',
-                }}
-              />
-            ))}
+            {/* Dark gradient overlay */}
+            <div className="hero-slide__overlay" />
+
+            {/* Centred Ashiri wordmark — bottom-left */}
+            <div className={`hero-wordmark ${isActive ? 'hero-wordmark--visible' : ''}`}>
+              <span className="hero-wordmark__text">Ashiri</span>
+            </div>
           </div>
+        );
+      })}
 
-        </div>
+      {/* Navigation Arrows */}
+      <button
+        onClick={handlePrev}
+        aria-label="Previous Slide"
+        className="hero-arrow hero-arrow--left"
+      >
+        <ChevronLeft size={22} />
+      </button>
+      <button
+        onClick={handleNext}
+        aria-label="Next Slide"
+        className="hero-arrow hero-arrow--right"
+      >
+        <ChevronRight size={22} />
+      </button>
 
+      {/* Slide counter + dots */}
+      <div className="hero-dots">
+        {slides.map((_, idx) => (
+          <button
+            key={idx}
+            onClick={() => goToSlide(idx)}
+            aria-label={`Go to slide ${idx + 1}`}
+            className={`hero-dot ${idx === currentSlide ? 'hero-dot--active' : ''}`}
+          />
+        ))}
       </div>
 
-      {/* Hero styles and queries */}
-      <style dangerouslySetInnerHTML={{__html: `
-        @media (max-width: 1024px) {
-          .hero-slide-pane {
-            padding: 30px 40px !important;
-          }
-          .hero-image-wrap img {
-            max-height: 300px !important;
-          }
-        }
-        @media (max-width: 768px) {
-          .hero-slider-container {
-            height: auto !important;
-            min-height: 500px !important;
-          }
-          .hero-slide-pane {
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: center !important;
-            align-items: flex-start !important;
-            padding: 30px 24px 40px 24px !important;
-          }
-          .hero-slide-pane > div:first-child {
-            height: auto !important;
-            margin-bottom: 24px !important;
-          }
-          .hero-image-wrap {
-            position: relative !important;
-            width: 100% !important;
-            height: 200px !important;
-            display: flex !important;
-            justify-content: center !important;
-            align-items: flex-end !important;
-            right: auto !important;
-            bottom: auto !important;
-          }
-          .hero-image-wrap img {
-            height: 100% !important;
-            width: auto !important;
-            max-height: 200px !important;
-            transform: scale(1) !important;
-            transform-origin: bottom center !important;
-          }
-          .hero-arrow-btn {
-            width: 32px !important;
-            height: 32px !important;
-          }
-        }
-        
-        .hero-arrow-btn:hover {
-          background: #ffffff !important;
-          color: #000000 !important;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
-          transform: translateY(-50%) scale(1.05) !important;
-        }
+      {/* Slide counter label */}
+      <div className="hero-counter">
+        <span className="hero-counter__current">
+          {String(currentSlide + 1).padStart(2, '0')}
+        </span>
+        <span className="hero-counter__sep" />
+        <span className="hero-counter__total">
+          {String(slides.length).padStart(2, '0')}
+        </span>
+      </div>
 
-        .btn-solid-dark:hover {
-          background: #1f2937 !important;
-          transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
+      {/* CSS */}
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          .hero-fullscreen {
+            position: relative;
+            width: 100%;
+            height: calc(100vh - 80px);
+            min-height: 500px;
+            overflow: hidden;
+            background: #0a0a0a;
+          }
 
-        .hero-gallery-link:hover {
-          color: #374151 !important;
-          border-color: #374151 !important;
-          transform: translateX(2px);
-        }
-      `}} />
+          /* ---- Slide base ---- */
+          .hero-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.9s ease-in-out, visibility 0.9s ease-in-out;
+            z-index: 0;
+          }
+          .hero-slide--active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 1;
+          }
+
+          /* ---- Background image ---- */
+          .hero-slide__bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-repeat: no-repeat;
+            transform: scale(1.05);
+            transition: transform 7s ease-out;
+          }
+          .hero-slide--active .hero-slide__bg {
+            transform: scale(1);
+          }
+
+          /* ---- Gradient overlay — strong bottom dark for legibility ---- */
+          .hero-slide__overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+              to top,
+              rgba(0, 0, 0, 0.88) 0%,
+              rgba(0, 0, 0, 0.55) 30%,
+              rgba(0, 0, 0, 0.18) 60%,
+              rgba(0, 0, 0, 0.06) 100%
+            );
+          }
+
+          /* ---- Text content (legacy, unused) ---- */
+          .hero-slide__content {
+            position: absolute;
+            bottom: 90px;
+            left: 60px;
+            right: 60px;
+            z-index: 2;
+            color: #ffffff;
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.7s ease 0.3s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s;
+          }
+
+          /* ---- Ashiri wordmark — bottom-left ---- */
+          .hero-wordmark {
+            position: absolute;
+            bottom: 64px;
+            left: 52px;
+            z-index: 2;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease 0.3s, transform 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s;
+            pointer-events: none;
+          }
+          .hero-wordmark--visible {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          .hero-wordmark__text {
+            font-size: clamp(3rem, 7vw, 7rem);
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            color: rgba(255, 255, 255, 0.96);
+            text-shadow: 0 2px 24px rgba(0,0,0,0.55);
+            line-height: 1;
+            font-family: var(--font-body);
+            user-select: none;
+          }
+
+          /* ---- Navigation arrows ---- */
+          .hero-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.25);
+            color: #ffffff;
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+          }
+          .hero-arrow--left { left: 24px; }
+          .hero-arrow--right { right: 24px; }
+          .hero-arrow:hover {
+            background: rgba(255,255,255,0.28);
+            transform: translateY(-50%) scale(1.08);
+          }
+
+          /* ---- Dots ---- */
+          .hero-dots {
+            position: absolute;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+          }
+          .hero-dot {
+            height: 3px;
+            border-radius: 2px;
+            background: rgba(255,255,255,0.35);
+            transition: all 0.3s ease;
+            width: 20px;
+          }
+          .hero-dot--active {
+            background: #ffffff;
+            width: 44px;
+          }
+
+          /* ---- Counter ---- */
+          .hero-counter {
+            position: absolute;
+            bottom: 28px;
+            right: 60px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: rgba(255,255,255,0.6);
+          }
+          .hero-counter__current {
+            color: #ffffff;
+            font-size: 0.85rem;
+          }
+          .hero-counter__sep {
+            display: inline-block;
+            width: 20px;
+            height: 1px;
+            background: rgba(255,255,255,0.4);
+          }
+
+          /* ---- Responsive ---- */
+          @media (max-width: 768px) {
+            .hero-fullscreen {
+              height: 85vh;
+              min-height: 480px;
+            }
+            .hero-wordmark {
+              bottom: 52px;
+              left: 24px;
+            }
+            .hero-wordmark__text {
+              font-size: clamp(2.8rem, 13vw, 5rem);
+            }
+            .hero-dots { left: 50%; transform: translateX(-50%); }
+            .hero-counter { right: 24px; }
+            .hero-arrow--left { left: 12px; }
+            .hero-arrow--right { right: 12px; }
+            .hero-arrow { width: 38px; height: 38px; }
+          }
+        `
+      }} />
     </section>
   );
 };

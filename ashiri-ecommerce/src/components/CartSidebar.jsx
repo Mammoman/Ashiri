@@ -36,7 +36,7 @@ const CartSidebar = ({
   const [customerName, setCustomerName] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('paystack'); // 'paystack' or 'pod'
+  const [paymentMethod] = useState('paystack'); // Only Paystack supported
   const [isMockPaystackOpen, setIsMockPaystackOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -139,48 +139,6 @@ const CartSidebar = ({
           alert('Could not initialize payment. Please try again.');
           setIsSubmitting(false);
         }
-      }
-    } else {
-      // Pay on Delivery (POD)
-      try {
-        const response = await fetch('/api/send-order', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            cartItems,
-            customerEmail,
-            customerName,
-            customerAddress,
-            subtotal: calculateSubtotal(),
-            paymentMethod: 'Pay on Delivery',
-            paymentReference: 'N/A'
-          })
-        });
-
-        const result = await response.json();
-        
-        if (result.success) {
-          if (result.warning) {
-            alert(`Order placed successfully!\n\nNote: ${result.warning}`);
-          } else {
-            alert('Order placed successfully! Order confirmation has been sent to your email.');
-          }
-          onClearCart();
-          setIsCheckoutOpen(false);
-          setCustomerName('');
-          setCustomerEmail('');
-          setCustomerAddress('');
-          onClose();
-        } else {
-          alert(`Checkout Failed: ${result.message || 'Please try again.'}`);
-        }
-      } catch (error) {
-        console.error('Checkout submit error:', error);
-        alert('Could not submit order. Please check your internet connection and try again.');
-      } finally {
-        setIsSubmitting(false);
       }
     }
   };
@@ -779,7 +737,7 @@ const CartSidebar = ({
                 />
               </div>
 
-              {/* Payment Method Selector */}
+              {/* Payment Method — Paystack only */}
               <div>
                 <label style={{
                   fontSize: '0.75rem',
@@ -792,72 +750,35 @@ const CartSidebar = ({
                 }}>
                   Payment Method
                 </label>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {/* Option 1: Paystack */}
-                  <label 
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      padding: '12px',
-                      borderRadius: 'var(--radius-sm)',
-                      border: '1px solid',
-                      borderColor: paymentMethod === 'paystack' ? 'var(--text-dark)' : 'var(--color-border)',
-                      background: paymentMethod === 'paystack' ? '#fbfbfb' : '#ffffff',
-                      cursor: 'pointer',
-                      transition: 'var(--transition-fast)'
-                    }}
-                  >
-                    <input 
-                      type="radio" 
-                      name="paymentMethod" 
-                      value="paystack"
-                      checked={paymentMethod === 'paystack'}
-                      onChange={() => setPaymentMethod('paystack')}
-                      style={{ accentColor: 'var(--text-dark)' }}
-                    />
-                    <div>
-                      <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-dark)', display: 'block' }}>
-                        Pay Online (Cards, Bank Transfer)
-                      </span>
-                      <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-                        Securely processed via Paystack
-                      </span>
-                    </div>
-                  </label>
-
-                  {/* Option 2: POD */}
-                  <label 
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      padding: '12px',
-                      borderRadius: 'var(--radius-sm)',
-                      border: '1px solid',
-                      borderColor: paymentMethod === 'pod' ? 'var(--text-dark)' : 'var(--color-border)',
-                      background: paymentMethod === 'pod' ? '#fbfbfb' : '#ffffff',
-                      cursor: 'pointer',
-                      transition: 'var(--transition-fast)'
-                    }}
-                  >
-                    <input 
-                      type="radio" 
-                      name="paymentMethod" 
-                      value="pod"
-                      checked={paymentMethod === 'pod'}
-                      onChange={() => setPaymentMethod('pod')}
-                      style={{ accentColor: 'var(--text-dark)' }}
-                    />
-                    <div>
-                      <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-dark)', display: 'block' }}>
-                        Pay on Delivery
-                      </span>
-                      <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-                        Pay via Transfer or Cash when delivered
-                      </span>
-                    </div>
-                  </label>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '14px 16px',
+                  borderRadius: 'var(--radius-sm)',
+                  border: '1px solid var(--text-dark)',
+                  background: '#fbfbfb',
+                }}>
+                  <div style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '8px',
+                    background: '#09a5db',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}>
+                    <span style={{ fontSize: '0.6rem', fontWeight: 900, color: '#fff', letterSpacing: '-0.03em' }}>PAY</span>
+                  </div>
+                  <div>
+                    <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-dark)', display: 'block' }}>
+                      Pay Online (Cards, Bank Transfer)
+                    </span>
+                    <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+                      Securely processed via Paystack
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -910,9 +831,7 @@ const CartSidebar = ({
                     <Loader2 size={16} className="spin" style={{ animation: 'spin 1s linear infinite' }} /> Processing Order...
                   </>
                 ) : (
-                  paymentMethod === 'paystack'
-                    ? `Pay & Place Order (₦${calculateSubtotal().toLocaleString()})`
-                    : `Place Order (₦${calculateSubtotal().toLocaleString()})`
+                  `Pay & Place Order (₦${calculateSubtotal().toLocaleString()})`
                 )}
               </button>
             </div>
