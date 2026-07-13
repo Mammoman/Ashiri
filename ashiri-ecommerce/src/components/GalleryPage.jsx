@@ -17,7 +17,7 @@ import redtank4Gallery from '../assets/gallery/redtank4.jpg';
 import whitetankGallery from '../assets/gallery/whitetank.jpg';
 import whitetank2Gallery from '../assets/gallery/whitetank2.jpg';
 import alltankGallery from '../assets/gallery/alltank.jpg';
-import redAndPurpleTank from '../assets/gallery/red&purpleTank.jpg';
+import redAndPurpleTank from '../assets/gallery/red&purpletank.jpg';
 import alltankGallery3 from '../assets/gallery/alltank3.jpg';
 import greytank2 from '../assets/gallery/greytank2.jpg';
 
