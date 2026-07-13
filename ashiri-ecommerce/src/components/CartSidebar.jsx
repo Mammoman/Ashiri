@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { X, Plus, Minus, Trash2, ArrowRight, ArrowLeft, Loader2, Heart, ShoppingBag, Gift } from 'lucide-react';
+import emailjs from '@emailjs/browser';
+
+// EmailJS credentials from .env.local — swap for real values from your EmailJS dashboard
+const EMAILJS_SERVICE_ID  = import.meta.env.VITE_EMAILJS_SERVICE_ID  || 'service_xxxxxxx';
+const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_xxxxxxx';
+const EMAILJS_PUBLIC_KEY  = import.meta.env.VITE_EMAILJS_PUBLIC_KEY  || 'xxxxxxxxxxxxxxxx';
 
 // Dynamic loader helper for Paystack script
 const loadPaystackScript = () => {
@@ -51,44 +57,70 @@ const CartSidebar = ({
   };
 
   const handlePaymentSuccess = async (reference) => {
-    try {
-      const serverResponse = await fetch('/api/send-order', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          cartItems,
-          customerEmail,
-          customerName,
-          customerAddress,
-          subtotal: calculateSubtotal(),
-          paymentMethod: 'Paystack',
-          paymentReference: reference
-        })
-      });
 
-      const result = await serverResponse.json();
-      if (result.success) {
-        if (result.warning) {
-          alert(`Payment successful and order placed!\n\nNote: ${result.warning}`);
-        } else {
-          alert('Payment successful and order placed! A receipt has been sent to your email.');
-        }
-        onClearCart();
-        setIsCheckoutOpen(false);
-        setCustomerName('');
-        setCustomerEmail('');
-        setCustomerAddress('');
-        onClose();
-      } else {
-        alert(`Order registration failed: ${result.message || 'Please contact support with reference ' + reference}`);
+    const hasGiftItems = cartItems.some((item) => item.isGift);
+
+    // Template variables — matched to your EmailJS template variable names
+    // {{email}} → To Email field, {{order_id}} → Subject, {{#orders}} → item loop
+    const templateParams = {
+      // Core fields matching your existing template
+      email:    customerEmail,             // → "To Email" field uses {{email}}
+      order_id: reference,                 // → Subject uses Order # {{order_id}}
+      orders:   cartItems.map((item) => ({ // → {{#orders}} loop
+        name:  item.isGift
+          ? `${item.name} (Size: ${item.selectedSize}) 🎁${item.giftMessage ? ` — "${item.giftMessage}"` : ' Gift Packaged'}`
+          : `${item.name} (Size: ${item.selectedSize})`,
+        price: (item.price * item.quantity).toLocaleString(), // template adds ₦ prefix: ₦{{price}}
+        units: item.quantity,
+      })),
+
+      // Cost summary — populates Shipping / Taxes / Order Total rows in your template
+      cost: {
+        shipping: 'FREE',
+        tax:      'N/A',
+        total:    calculateSubtotal().toLocaleString(), // template adds ₦ prefix: ₦{{cost.total}}
+      },
+
+      // Extra fields used in the body text you added
+      customer_name:    customerName,
+      delivery_address: customerAddress,
+      order_total:      `₦${calculateSubtotal().toLocaleString()}`,
+      gift_note:        hasGiftItems ? '🎁 One or more items in this order include gift packaging.' : '',
+    };
+
+    let emailSent = false;
+
+    try {
+      // Send the confirmation email directly from the browser via EmailJS
+      const emailRes = await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        templateParams,
+        EMAILJS_PUBLIC_KEY
+      );
+      if (emailRes.status === 200) {
+        emailSent = true;
+        console.log('EmailJS order confirmation sent successfully:', emailRes.text);
       }
-    } catch (error) {
-      console.error('Order verification error:', error);
-      alert(`Payment was successful, but we failed to register the order. Please contact support with reference: ${reference}`);
-    } finally {
-      setIsSubmitting(false);
+    } catch (emailErr) {
+      console.error('EmailJS failed to send order confirmation:', emailErr);
+      // Non-blocking — the order is still processed even if the email fails
+    }
+
+    // Clear cart and close panel regardless of email outcome
+    onClearCart();
+    setIsCheckoutOpen(false);
+    setCustomerName('');
+    setCustomerEmail('');
+    setCustomerAddress('');
+    setIsSubmitting(false);
+    onClose();
+
+    // Friendly success message
+    if (emailSent) {
+      alert(`🎉 Payment successful! Your order has been placed.\n\nA confirmation has been sent to ${customerEmail}.`);
+    } else {
+      alert(`✅ Payment successful! Your order is confirmed (Ref: ${reference}).\n\nNote: We couldn't send your email receipt right now — please screenshot this for your records.`);
     }
   };
 
