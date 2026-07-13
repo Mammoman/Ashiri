@@ -17,12 +17,12 @@ const loadPaystackScript = () => {
   });
 };
 
-const CartSidebar = ({ 
-  isOpen, 
-  onClose, 
-  cartItems, 
-  onUpdateQuantity, 
-  onRemoveItem, 
+const CartSidebar = ({
+  isOpen,
+  onClose,
+  cartItems,
+  onUpdateQuantity,
+  onRemoveItem,
   onClearCart,
   onAddToCart,
   defaultTab = 'cart',
@@ -98,16 +98,16 @@ const CartSidebar = ({
       alert('Please fill out all delivery information fields.');
       return;
     }
-    
+
     setIsSubmitting(true);
 
     if (paymentMethod === 'paystack') {
       const publicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || 'pk_test_dcae78550183b19409b85c13e4bcfc424a1e9411';
       // Detect if we are in Sandbox / Demo mode with a placeholder or invalid key
-      const isPlaceholderKey = !import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || 
-                               publicKey.startsWith('pk_test_dcae78550183b19409b85c13e4bcfc424a1e9411') || 
-                               publicKey === 'pk_test_placeholder';
-      
+      const isPlaceholderKey = !import.meta.env.VITE_PAYSTACK_PUBLIC_KEY ||
+        publicKey.startsWith('pk_test_dcae78550183b19409b85c13e4bcfc424a1e9411') ||
+        publicKey === 'pk_test_placeholder';
+
       if (isPlaceholderKey) {
         setIsMockPaystackOpen(true);
       } else {
@@ -126,10 +126,10 @@ const CartSidebar = ({
             amount: calculateSubtotal() * 100, // Paystack expects amount in kobo
             currency: 'NGN',
             ref: paymentRef,
-            callback: function(response) {
+            callback: function (response) {
               handlePaymentSuccess(response.reference || paymentRef);
             },
-            onClose: function() {
+            onClose: function () {
               setIsSubmitting(false);
             }
           });
@@ -144,7 +144,7 @@ const CartSidebar = ({
   };
 
   return (
-    <div 
+    <div
       style={{
         position: 'fixed',
         top: 0,
@@ -160,7 +160,7 @@ const CartSidebar = ({
       onClick={onClose}
     >
       {/* Sidebar Panel */}
-      <div 
+      <div
         className="glass-panel"
         style={{
           position: 'absolute',
@@ -181,7 +181,7 @@ const CartSidebar = ({
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        
+
         {/* VIEW 1: SHOPPING BAG ITEMS LIST */}
         {!isCheckoutOpen ? (
           <>
@@ -197,10 +197,10 @@ const CartSidebar = ({
                 fontWeight: 700,
                 color: 'var(--text-dark)'
               }}>
-                Atelier Client Panel
+                Client Panel
               </span>
-              <button 
-                onClick={onClose} 
+              <button
+                onClick={onClose}
                 aria-label="Close panel"
                 style={{
                   color: 'var(--text-dark)',
@@ -303,13 +303,13 @@ const CartSidebar = ({
                       className="filter-btn active"
                       style={{ padding: '8px 18px', fontSize: '0.75rem' }}
                     >
-                      Browse Atelier Collection
+                      Browse  Collection
                     </button>
                   </div>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     {wishlistItems.map((item) => (
-                      <div 
+                      <div
                         key={item.id}
                         style={{
                           display: 'flex',
@@ -326,9 +326,9 @@ const CartSidebar = ({
                           background: '#f3f4f6',
                           borderRadius: 'var(--radius-sm)'
                         }}>
-                          <img 
-                            src={item.image} 
-                            alt={item.name} 
+                          <img
+                            src={item.image}
+                            alt={item.name}
                             style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '4px' }}
                           />
                         </div>
@@ -363,7 +363,7 @@ const CartSidebar = ({
                             marginTop: '6px'
                           }}>
                             {/* Move to bag button */}
-                            <button 
+                            <button
                               type="button"
                               onClick={() => {
                                 onAddToCart(item);
@@ -387,7 +387,7 @@ const CartSidebar = ({
                             </button>
 
                             {/* Remove from wishlist */}
-                            <button 
+                            <button
                               type="button"
                               onClick={() => onToggleFavorite(item.id)}
                               style={{
@@ -439,7 +439,7 @@ const CartSidebar = ({
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                       {cartItems.map((item, idx) => (
-                        <div 
+                        <div
                           key={`${item.id}-${item.selectedSize}-${item.selectedColor}-${idx}`}
                           style={{
                             display: 'flex',
@@ -456,9 +456,9 @@ const CartSidebar = ({
                             background: '#f3f4f6',
                             borderRadius: 'var(--radius-sm)'
                           }}>
-                            <img 
-                              src={item.image} 
-                              alt={item.name} 
+                            <img
+                              src={item.image}
+                              alt={item.name}
                               style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '4px' }}
                             />
                           </div>
@@ -500,7 +500,7 @@ const CartSidebar = ({
                                 borderRadius: 'var(--radius-pill)',
                                 background: '#f9fafb'
                               }}>
-                                <button 
+                                <button
                                   type="button"
                                   onClick={() => onUpdateQuantity(item, item.quantity - 1)}
                                   style={{ padding: '4px 8px', color: 'var(--text-muted)' }}
@@ -511,7 +511,7 @@ const CartSidebar = ({
                                 <span style={{ padding: '0 4px', fontSize: '0.75rem', fontWeight: 600 }}>
                                   {item.quantity}
                                 </span>
-                                <button 
+                                <button
                                   type="button"
                                   onClick={() => onUpdateQuantity(item, item.quantity + 1)}
                                   style={{ padding: '4px 8px', color: 'var(--text-muted)' }}
@@ -522,7 +522,7 @@ const CartSidebar = ({
                               </div>
 
                               {/* Remove */}
-                              <button 
+                              <button
                                 type="button"
                                 onClick={() => onRemoveItem(item)}
                                 style={{
@@ -621,7 +621,7 @@ const CartSidebar = ({
               alignItems: 'center',
               gap: '12px'
             }}>
-              <button 
+              <button
                 type="button"
                 onClick={() => setIsCheckoutOpen(false)}
                 style={{
@@ -668,8 +668,8 @@ const CartSidebar = ({
                 }}>
                   Full Name
                 </label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   placeholder="E.g. Kehinde Etti"
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
@@ -691,8 +691,8 @@ const CartSidebar = ({
                 }}>
                   Email Address
                 </label>
-                <input 
-                  type="email" 
+                <input
+                  type="email"
                   placeholder="name@domain.com"
                   value={customerEmail}
                   onChange={(e) => setCustomerEmail(e.target.value)}
@@ -717,15 +717,15 @@ const CartSidebar = ({
                 }}>
                   Delivery Address
                 </label>
-                <textarea 
+                <textarea
                   placeholder="Street, City, State, Country"
                   value={customerAddress}
                   onChange={(e) => setCustomerAddress(e.target.value)}
                   required
                   rows="3"
                   className="input-premium"
-                  style={{ 
-                    width: '100%', 
+                  style={{
+                    width: '100%',
                     borderRadius: 'var(--radius-sm)',
                     resize: 'none',
                     fontFamily: 'var(--font-body)',
@@ -840,7 +840,8 @@ const CartSidebar = ({
 
       </div>
 
-      <style dangerouslySetInnerHTML={{__html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         .cart-close-btn:hover {
           background: #e5e7eb !important;
           transform: translateX(2px);
@@ -895,7 +896,7 @@ const CartSidebar = ({
               position: 'relative',
               textAlign: 'center'
             }}>
-              <button 
+              <button
                 onClick={() => {
                   setIsMockPaystackOpen(false);
                   setIsSubmitting(false);
@@ -916,7 +917,7 @@ const CartSidebar = ({
                 ✕
               </button>
               <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', opacity: 0.9, marginBottom: '4px' }}>
-                Ashiri Atelier Payment Gateway
+                Ashiri  Payment Gateway
               </div>
               <div style={{ fontSize: '1.4rem', fontWeight: 700 }}>
                 ₦{calculateSubtotal().toLocaleString()}
@@ -938,7 +939,7 @@ const CartSidebar = ({
                 marginBottom: '16px',
                 lineHeight: 1.4
               }}>
-                <strong>PAYSTACK DEMO MODE</strong><br/>
+                <strong>PAYSTACK DEMO MODE</strong><br />
                 Since no custom Paystack Public Key is configured, you are running in sandbox demo mode. Click the button below to simulate a successful card transaction.
               </div>
 
@@ -948,10 +949,10 @@ const CartSidebar = ({
                   <label style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', display: 'block', marginBottom: '4px', fontWeight: 600 }}>
                     Card Number
                   </label>
-                  <input 
-                    type="text" 
-                    value="4081 0000 0000 0000" 
-                    disabled 
+                  <input
+                    type="text"
+                    value="4081 0000 0000 0000"
+                    disabled
                     style={{
                       width: '100%',
                       padding: '10px',
@@ -968,10 +969,10 @@ const CartSidebar = ({
                     <label style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', display: 'block', marginBottom: '4px', fontWeight: 600 }}>
                       Expiry
                     </label>
-                    <input 
-                      type="text" 
-                      value="12/29" 
-                      disabled 
+                    <input
+                      type="text"
+                      value="12/29"
+                      disabled
                       style={{
                         width: '100%',
                         padding: '10px',
@@ -987,10 +988,10 @@ const CartSidebar = ({
                     <label style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', display: 'block', marginBottom: '4px', fontWeight: 600 }}>
                       CVV
                     </label>
-                    <input 
-                      type="text" 
-                      value="123" 
-                      disabled 
+                    <input
+                      type="text"
+                      value="123"
+                      disabled
                       style={{
                         width: '100%',
                         padding: '10px',
@@ -1028,7 +1029,7 @@ const CartSidebar = ({
                 Simulate Payment of ₦{calculateSubtotal().toLocaleString()}
               </button>
             </div>
-            
+
             {/* Footer */}
             <div style={{
               background: '#f9fafb',

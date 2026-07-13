@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Star, ShoppingBag, Check, Heart, HelpCircle, Gift } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Check, Heart, HelpCircle, Gift } from 'lucide-react';
 
 const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleFavorite }) => {
   const [selectedSize, setSelectedSize] = useState(product?.sizes ? product.sizes[0] : 'S');
@@ -227,7 +227,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
                   color: 'var(--text-dark)',
                   textTransform: 'uppercase'
                 }}>
-                  ASHIRI ATELIER
+                  ASHIRI
                 </span>
               </div>
               <span style={{
@@ -253,26 +253,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
             </h2>
 
             {/* Ratings Stars Row */}
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              marginBottom: '20px'
-            }} className="modal-rating-row">
-              <div style={{ display: 'flex', color: '#fbbf24' }}>
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    size={13}
-                    fill={i < Math.floor(product.rating) ? "currentColor" : "none"}
-                    stroke="currentColor"
-                  />
-                ))}
-              </div>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 500 }}>
-                {product.rating} ({product.reviews} reviews)
-              </span>
-            </div>
+
 
             {/* Large Bold Price */}
             <div style={{

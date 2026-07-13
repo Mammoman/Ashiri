@@ -4,7 +4,7 @@
     "createdAt": "2026-06-26T00:32:16.334Z",
     "customerName": "Test Tester",
     "customerEmail": "test-tester@example.com",
-    "customerAddress": "Atelier 1, Lagos, Nigeria",
+    "customerAddress": " 1, Lagos, Nigeria",
     "subtotal": 45000,
     "paymentMethod": "Pay on Delivery",
     "paymentReference": "N/A",

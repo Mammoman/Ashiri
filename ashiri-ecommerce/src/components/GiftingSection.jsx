@@ -68,7 +68,7 @@ const GiftingSection = () => {
             lineHeight: 1.6,
           }}>
             Whether you're celebrating a birthday, anniversary, or just want to show someone you care —
-            Ashiri Atelier makes gifting effortless and unforgettable.
+            Ashiri  makes gifting effortless and unforgettable.
           </p>
         </div>
 
@@ -219,7 +219,7 @@ const GiftingSection = () => {
               maxWidth: '440px',
               lineHeight: 1.5,
             }}>
-              Need a bespoke gift package? Our atelier team can craft a personalised gift experience
+              Need a bespoke gift package? Our  team can craft a personalised gift experience
               — just reach out and we'll handle the rest.
             </p>
           </div>
@@ -246,7 +246,7 @@ const GiftingSection = () => {
             }}
             className="gifting-contact-btn"
           >
-            <Heart size={14} /> Contact Atelier
+            <Heart size={14} /> Contact
           </a>
         </div>
       </div>

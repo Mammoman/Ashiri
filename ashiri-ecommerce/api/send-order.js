@@ -108,9 +108,9 @@ export default async function handler(req, res) {
     let emailErrorMsg = null;
 
     try {
-      const fromEmail = process.env.RESEND_FROM_EMAIL || 'Ashiri Atelier <onboarding@resend.dev>';
+      const fromEmail = process.env.RESEND_FROM_EMAIL || 'Ashiri  <onboarding@resend.dev>';
       const merchantEmail = process.env.MERCHANT_EMAIL || 'taiwoetti5@gmail.com';
-      
+
       let recipient = customerEmail;
       let emailSubject = `Your Ashiri Order Confirmation - ₦${subtotal.toLocaleString()}`;
       let bccList = undefined;
@@ -138,7 +138,7 @@ export default async function handler(req, res) {
 
             <div style="padding: 24px 0;">
               <p style="font-size: 0.95rem; margin-bottom: 8px;">Hello <strong>${customerName}</strong>,</p>
-              <p style="font-size: 0.95rem; color: #4b5563; margin-top: 0;">Thank you for shopping at Ashiri. Your order has been registered and is currently being processed at our atelier.</p>
+              <p style="font-size: 0.95rem; color: #4b5563; margin-top: 0;">Thank you for shopping at Ashiri. Your order has been registered and is currently being processed at our .</p>
             </div>
 
             <div style="background: #f9fafb; padding: 16px; border-radius: 8px; margin-bottom: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
@@ -232,11 +232,11 @@ export default async function handler(req, res) {
       }
     }
 
-    return res.status(200).json({ 
-      success: true, 
-      emailSent, 
-      id: emailId, 
-      warning: emailErrorMsg ? `Order registered, email not sent: ${emailErrorMsg}` : null 
+    return res.status(200).json({
+      success: true,
+      emailSent,
+      id: emailId,
+      warning: emailErrorMsg ? `Order registered, email not sent: ${emailErrorMsg}` : null
     });
   } catch (error) {
     console.error('Serverless order mail error:', error);

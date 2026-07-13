@@ -19,7 +19,7 @@ import whitetank2Gallery from '../assets/gallery/whitetank2.jpg';
 
 const galleryItems = [
   { image: Image1, type: 'large', title: 'The Ashiri Silhouette', category: 'Editorial' },
-  { image: Image3, type: 'wide', title: 'Lagos Atelier', category: 'Behind The Scenes' },
+  { image: Image3, type: 'wide', title: 'Lagos ', category: 'Behind The Scenes' },
   { image: purpletank2Gallery, type: 'tall', title: 'Heritage Knit Detail', category: 'Textures' },
   { image: purpletank, type: 'normal', title: 'Purple Rib Knit', category: 'Lookbook' },
   { image: greytank, type: 'tall', title: 'Minimalist Drape', category: 'Lookbook' },
@@ -62,10 +62,10 @@ const GalleryPage = ({ onBackToShop }) => {
   return (
     <div style={{ padding: '40px 0 80px 0', background: 'var(--bg-main)', minHeight: 'calc(100vh - 70px)' }}>
       <div className="container">
-        
+
         {/* Header Block */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '48px' }}>
-          <button 
+          <button
             onClick={onBackToShop}
             style={{
               display: 'inline-flex',
@@ -82,7 +82,7 @@ const GalleryPage = ({ onBackToShop }) => {
           >
             <ArrowLeft size={14} /> Back to Shop
           </button>
-          
+
           <span style={{
             fontSize: '0.75rem',
             fontWeight: 700,
@@ -94,7 +94,7 @@ const GalleryPage = ({ onBackToShop }) => {
           }}>
             ASIRI VISUAL ARCHIVE
           </span>
-          
+
           <h1 style={{
             fontSize: 'clamp(2rem, 4vw, 3rem)',
             fontWeight: 800,
@@ -105,7 +105,7 @@ const GalleryPage = ({ onBackToShop }) => {
           }}>
             Lookbook Gallery
           </h1>
-          
+
           <p style={{
             fontSize: '0.95rem',
             color: 'var(--text-muted)',
@@ -122,14 +122,14 @@ const GalleryPage = ({ onBackToShop }) => {
         {/* Masonry Grid */}
         <div className="masonry-grid">
           {filteredItems.map((item, idx) => (
-            <div 
+            <div
               key={idx}
               className={`masonry-item ${item.type}`}
               onClick={() => setLightboxIndex(idx)}
             >
-              <img 
-                src={item.image} 
-                alt={item.title} 
+              <img
+                src={item.image}
+                alt={item.title}
                 className="masonry-img"
               />
               <div className="masonry-overlay">
@@ -147,7 +147,7 @@ const GalleryPage = ({ onBackToShop }) => {
 
       {/* Lightbox Modal */}
       {lightboxIndex !== null && filteredItems[lightboxIndex] && (
-        <div 
+        <div
           onClick={() => setLightboxIndex(null)}
           style={{
             position: 'fixed',
@@ -166,8 +166,9 @@ const GalleryPage = ({ onBackToShop }) => {
           }}
         >
           {/* Close Button */}
-          <button 
+          <button
             onClick={() => setLightboxIndex(null)}
+            className="lightbox-close"
             style={{
               position: 'absolute',
               top: '24px',
@@ -189,8 +190,9 @@ const GalleryPage = ({ onBackToShop }) => {
           </button>
 
           {/* Navigation Controls */}
-          <button 
+          <button
             onClick={(e) => { e.stopPropagation(); handlePrev(); }}
+            className="lightbox-arrow lightbox-prev"
             style={{
               position: 'absolute',
               left: '24px',
@@ -210,8 +212,9 @@ const GalleryPage = ({ onBackToShop }) => {
             <ChevronLeft size={24} />
           </button>
 
-          <button 
+          <button
             onClick={(e) => { e.stopPropagation(); handleNext(); }}
+            className="lightbox-arrow lightbox-next"
             style={{
               position: 'absolute',
               right: '24px',
@@ -232,7 +235,7 @@ const GalleryPage = ({ onBackToShop }) => {
           </button>
 
           {/* Lightbox Content Wrap */}
-          <div 
+          <div
             onClick={(e) => e.stopPropagation()}
             style={{
               display: 'flex',
@@ -244,9 +247,9 @@ const GalleryPage = ({ onBackToShop }) => {
               position: 'relative'
             }}
           >
-            <img 
-              src={filteredItems[lightboxIndex].image} 
-              alt={filteredItems[lightboxIndex].title} 
+            <img
+              src={filteredItems[lightboxIndex].image}
+              alt={filteredItems[lightboxIndex].title}
               style={{
                 maxWidth: '100%',
                 maxHeight: '70vh',
@@ -256,7 +259,7 @@ const GalleryPage = ({ onBackToShop }) => {
                 marginBottom: '20px'
               }}
             />
-            
+
             <div style={{ textAlign: 'center', maxWidth: '600px' }}>
               <span style={{
                 fontSize: '0.7rem',
@@ -294,8 +297,8 @@ const GalleryPage = ({ onBackToShop }) => {
           .masonry-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            grid-auto-rows: 240px;
-            gap: 20px;
+            grid-auto-rows: min(240px, 22vw);
+            gap: clamp(8px, 1.8vw, 20px);
           }
 
           .masonry-item {
@@ -338,7 +341,7 @@ const GalleryPage = ({ onBackToShop }) => {
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            padding: 24px;
+            padding: clamp(8px, 2vw, 24px);
             color: #ffffff;
             opacity: 0;
             transition: opacity 0.4s ease;
@@ -349,7 +352,7 @@ const GalleryPage = ({ onBackToShop }) => {
           }
 
           .masonry-category {
-            font-size: 0.65rem;
+            font-size: clamp(0.55rem, 1vw, 0.65rem);
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.15em;
@@ -358,8 +361,8 @@ const GalleryPage = ({ onBackToShop }) => {
           }
 
           .masonry-title {
-            font-size: 1.1rem;
-            fontWeight: 700;
+            font-size: clamp(0.7rem, 1.5vw, 1.1rem);
+            font-weight: 700;
             color: #ffffff;
             letter-spacing: -0.02em;
             margin: 0;
@@ -367,10 +370,10 @@ const GalleryPage = ({ onBackToShop }) => {
 
           .masonry-zoom {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 36px;
-            height: 36px;
+            top: clamp(8px, 2vw, 20px);
+            right: clamp(8px, 2vw, 20px);
+            width: clamp(20px, 3.5vw, 36px);
+            height: clamp(20px, 3.5vw, 36px);
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(4px);
@@ -380,37 +383,38 @@ const GalleryPage = ({ onBackToShop }) => {
             transition: all 0.25s ease;
           }
 
+          .masonry-zoom svg {
+            width: clamp(10px, 1.8vw, 16px) !important;
+            height: clamp(10px, 1.8vw, 16px) !important;
+          }
+
           .masonry-item:hover .masonry-zoom {
             background: rgba(255, 255, 255, 0.3);
           }
 
-          @media (max-width: 1024px) {
-            .masonry-grid {
-              grid-template-columns: repeat(2, 1fr) !important;
-              grid-auto-rows: 200px !important;
-              gap: 16px !important;
+          /* Keep 4-column masonry layout on mobile, touch, and desktop */
+          @media (max-width: 768px) {
+            .masonry-overlay {
+              opacity: 1 !important;
             }
-            .masonry-item.large {
-              grid-column: span 2 !important;
-              grid-row: span 2 !important;
+            .masonry-zoom {
+              display: none !important;
             }
-            .masonry-item.wide {
-              grid-column: span 2 !important;
+            .lightbox-arrow {
+              width: 40px !important;
+              height: 40px !important;
             }
-            .masonry-item.tall {
-              grid-row: span 2 !important;
+            .lightbox-prev {
+              left: 12px !important;
             }
-          }
-
-          @media (max-width: 640px) {
-            .masonry-grid {
-              grid-template-columns: 1fr !important;
-              grid-auto-rows: 220px !important;
-              gap: 12px !important;
+            .lightbox-next {
+              right: 12px !important;
             }
-            .masonry-item.wide, .masonry-item.large, .masonry-item.tall {
-              grid-column: span 1 !important;
-              grid-row: span 1 !important;
+            .lightbox-close {
+              top: 16px !important;
+              right: 16px !important;
+              width: 36px !important;
+              height: 36px !important;
             }
           }
         `
