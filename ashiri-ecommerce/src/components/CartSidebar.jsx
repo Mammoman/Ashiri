@@ -66,13 +66,26 @@ const CartSidebar = ({
       // Core fields matching your existing template
       email:    customerEmail,             // → "To Email" field uses {{email}}
       order_id: reference,                 // → Subject uses Order # {{order_id}}
-      orders:   cartItems.map((item) => ({ // → {{#orders}} loop
-        name:  item.isGift
-          ? `${item.name} (Size: ${item.selectedSize}) 🎁${item.giftMessage ? ` — "${item.giftMessage}"` : ' Gift Packaged'}`
-          : `${item.name} (Size: ${item.selectedSize})`,
-        price: (item.price * item.quantity).toLocaleString(), // template adds ₦ prefix: ₦{{price}}
-        units: item.quantity,
-      })),
+      orders:   cartItems.map((item) => {
+        // Resolve absolute image URL so email clients can read it
+        let absoluteImgUrl = item.image || '';
+        if (absoluteImgUrl && !absoluteImgUrl.startsWith('http')) {
+          const origin = window.location.origin.includes('localhost')
+            ? 'https://ashiri-ecommerce.vercel.app'
+            : window.location.origin;
+          const cleanPath = absoluteImgUrl.startsWith('/') ? absoluteImgUrl : `/${absoluteImgUrl}`;
+          absoluteImgUrl = `${origin}${cleanPath}`;
+        }
+
+        return {
+          name:  item.isGift
+            ? `${item.name} (Size: ${item.selectedSize}) 🎁${item.giftMessage ? ` — "${item.giftMessage}"` : ' Gift Packaged'}`
+            : `${item.name} (Size: ${item.selectedSize})`,
+          price: (item.price * item.quantity).toLocaleString(), // template adds ₦ prefix: ₦{{price}}
+          units: item.quantity,
+          image_url: absoluteImgUrl, // Passed to template as {{image_url}}
+        };
+      }),
 
       // Cost summary — populates Shipping / Taxes / Order Total rows in your template
       cost: {
