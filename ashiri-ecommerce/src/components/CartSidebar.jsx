@@ -41,6 +41,7 @@ const CartSidebar = ({
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [customerName, setCustomerName] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
+  const [customerPhone, setCustomerPhone] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
   const [paymentMethod] = useState('paystack'); // Only Paystack supported
   const [isMockPaystackOpen, setIsMockPaystackOpen] = useState(false);
@@ -89,13 +90,14 @@ const CartSidebar = ({
 
       // Cost summary — populates Shipping / Taxes / Order Total rows in your template
       cost: {
-        shipping: 'FREE',
+        shipping: 'Varies with location',
         tax:      'N/A',
         total:    calculateSubtotal().toLocaleString(), // template adds ₦ prefix: ₦{{cost.total}}
       },
 
       // Extra fields used in the body text you added
       customer_name:    customerName,
+      customer_phone:   customerPhone,
       delivery_address: customerAddress,
       order_total:      `₦${calculateSubtotal().toLocaleString()}`,
       gift_note:        hasGiftItems ? '🎁 One or more items in this order include gift packaging.' : '',
@@ -125,6 +127,7 @@ const CartSidebar = ({
     setIsCheckoutOpen(false);
     setCustomerName('');
     setCustomerEmail('');
+    setCustomerPhone('');
     setCustomerAddress('');
     setIsSubmitting(false);
     onClose();
@@ -139,7 +142,7 @@ const CartSidebar = ({
 
   const handleCheckoutSubmit = async (e) => {
     e.preventDefault();
-    if (!customerEmail || !customerName || !customerAddress) {
+    if (!customerEmail || !customerName || !customerAddress || !customerPhone) {
       alert('Please fill out all delivery information fields.');
       return;
     }
@@ -652,8 +655,8 @@ const CartSidebar = ({
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
                         <span style={{ color: 'var(--text-muted)' }}>Shipping</span>
-                        <span style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 600 }}>
-                          COMPLIMENTARY
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+                          VARIES WITH LOCATION
                         </span>
                       </div>
                       <div style={{ width: '100%', height: '1px', background: 'var(--color-border)' }} />
@@ -787,6 +790,32 @@ const CartSidebar = ({
                 </span>
               </div>
 
+              {/* Phone Number */}
+              <div>
+                <label style={{
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  color: 'var(--text-muted)',
+                  display: 'block',
+                  marginBottom: '6px',
+                  textTransform: 'uppercase'
+                }}>
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  placeholder="E.g. +234 801 234 5678"
+                  value={customerPhone}
+                  onChange={(e) => setCustomerPhone(e.target.value)}
+                  required
+                  className="input-premium"
+                  style={{ width: '100%', borderRadius: 'var(--radius-sm)' }}
+                />
+                <span style={{ fontSize: '0.7rem', color: '#6b7280', marginTop: '4px', display: 'block', fontStyle: 'italic', lineHeight: '1.3' }}>
+                  A call and mail will be made to confirm your delivery fee to process your order.
+                </span>
+              </div>
+ 
               {/* Address */}
               <div>
                 <label style={{
@@ -817,6 +846,9 @@ const CartSidebar = ({
                     outline: 'none'
                   }}
                 />
+                <span style={{ fontSize: '0.72rem', color: 'var(--color-sale)', fontWeight: 600, marginTop: '5px', display: 'block' }}>
+                  * Please Specify if it is an Interstate Delivery
+                </span>
               </div>
 
               {/* Payment Method — Paystack only */}

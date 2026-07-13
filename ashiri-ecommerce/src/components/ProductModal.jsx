@@ -535,7 +535,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
               gap: '6px',
               justifyContent: 'center'
             }} className="modal-delivery-text">
-              Free delivery on orders over ₦50,000
+              Delivery fee varies with location
             </p>
           </div>
 
