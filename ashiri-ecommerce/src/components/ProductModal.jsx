@@ -15,9 +15,13 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
     onAddToCart({
       ...product,
       selectedSize,
-      selectedColor: 'Standard' // No color selection, default to Standard
+      selectedColor: 'Standard', // No color selection, default to Standard
+      isGift,
+      giftMessage: isGift ? giftMessage : ''
     });
     setIsAdded(true);
+    setIsGift(false);
+    setGiftMessage('');
     setTimeout(() => {
       setIsAdded(false);
     }, 1500);

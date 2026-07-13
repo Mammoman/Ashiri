@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
-import { ShoppingBag, Search, Menu, X, ArrowLeft, Heart } from 'lucide-react';
+import React from 'react';
+import { ShoppingBag, Heart } from 'lucide-react';
 
-const Navbar = ({ cartCount, onCartClick, wishlistCount, onWishlistClick, searchQuery, onSearchChange, currentPage, onPageChange }) => {
-  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
-
+const Navbar = ({ cartCount, onCartClick, wishlistCount, onWishlistClick, currentPage, onPageChange }) => {
   return (
     <nav className="glass-navbar" style={{
       position: 'fixed',
@@ -68,63 +66,13 @@ const Navbar = ({ cartCount, onCartClick, wishlistCount, onWishlistClick, search
               }}
               className="nav-link"
             >
-              Lookbook
+              Gallery
             </a>
           </div>
         </div>
 
-        {/* Center: Desktop Search Input (Pill style matching search input in mockup) */}
-        {!isMobileSearchOpen && (
-          <div className="desktop-only" style={{
-            position: 'relative',
-            width: '320px'
-          }}>
-            <input
-              type="text"
-              placeholder="Search Our Shop..."
-              value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="input-premium"
-              style={{
-                width: '100%',
-                paddingLeft: '44px',
-                paddingRight: '16px',
-                fontSize: '0.85rem',
-                height: '42px',
-                borderRadius: 'var(--radius-pill)',
-                background: '#f3f4f6'
-              }}
-            />
-            <Search size={16} style={{
-              position: 'absolute',
-              left: '18px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              color: 'var(--text-muted)',
-              pointerEvents: 'none'
-            }} />
-          </div>
-        )}
-
         {/* Right Side Actions */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          {/* Mobile Search Trigger */}
-          <button
-            onClick={() => setIsMobileSearchOpen(true)}
-            className="mobile-only"
-            aria-label="Open search"
-            style={{
-              display: 'none',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '40px',
-              height: '40px',
-              color: 'var(--text-dark)'
-            }}
-          >
-            <Search size={22} />
-          </button>
-
           {/* Wishlist Icon Button */}
           <button
             onClick={onWishlistClick}
@@ -201,71 +149,8 @@ const Navbar = ({ cartCount, onCartClick, wishlistCount, onWishlistClick, search
         </div>
       </div>
 
-      {/* Mobile Search Overlay Panel */}
-      {isMobileSearchOpen && (
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '70px',
-          background: '#ffffff',
-          display: 'flex',
-          alignItems: 'center',
-          padding: '0 16px',
-          gap: '12px',
-          animation: 'fadeIn 0.15s ease-out',
-          zIndex: 1001
-        }}>
-          <button
-            onClick={() => {
-              setIsMobileSearchOpen(false);
-              onSearchChange('');
-            }}
-            aria-label="Back"
-            style={{ color: 'var(--text-dark)', padding: '4px' }}
-          >
-            <ArrowLeft size={22} />
-          </button>
-
-          <div style={{ position: 'relative', flexGrow: 1 }}>
-            <input
-              type="text"
-              placeholder="Search Our Shop..."
-              value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="input-premium"
-              autoFocus
-              style={{
-                width: '100%',
-                paddingLeft: '40px',
-                height: '40px',
-                borderRadius: 'var(--radius-pill)',
-                background: '#f3f4f6'
-              }}
-            />
-            <Search size={16} style={{
-              position: 'absolute',
-              left: '16px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              color: 'var(--text-muted)'
-            }} />
-          </div>
-        </div>
-      )}
-
-      {/* Media Query Overrides */}
       <style dangerouslySetInnerHTML={{
         __html: `
-        @media (max-width: 768px) {
-          .desktop-only {
-            display: none !important;
-          }
-          .mobile-only {
-            display: flex !important;
-          }
-        }
         .cart-toggle-btn:hover, .wishlist-toggle-btn:hover {
           background: #e5e7eb !important;
           transform: scale(1.05);

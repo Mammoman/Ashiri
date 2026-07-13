@@ -51,7 +51,7 @@ const Footer = ({ onPageChange }) => {
 
           {/* Brand Column */}
           <div>
-            <h3 
+            <h3
               onClick={(e) => handleLinkClick(e, 'collection')}
               style={{
                 fontSize: '1.25rem',
@@ -70,7 +70,7 @@ const Footer = ({ onPageChange }) => {
               marginBottom: '20px',
               maxWidth: '300px'
             }}>
-              Ashiri celebrating historical West African artisanal patterns blended with sophisticated modern luxury tank tops. Designed in London, handcrafted in Lagos.
+              Ashiri is just about sharing beautiful designs with the world.
             </p>
             {/* Socials */}
             <div style={{ display: 'flex', gap: '12px' }}>

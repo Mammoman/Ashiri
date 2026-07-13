@@ -16,21 +16,33 @@ import redtank3Gallery from '../assets/gallery/redtank3.jpg';
 import redtank4Gallery from '../assets/gallery/redtank4.jpg';
 import whitetankGallery from '../assets/gallery/whitetank.jpg';
 import whitetank2Gallery from '../assets/gallery/whitetank2.jpg';
+import alltankGallery from '../assets/gallery/alltank.jpg';
+import redAndPurpleTank from '../assets/gallery/red&purpleTank.jpg';
+import alltankGallery3 from '../assets/gallery/alltank3.jpg';
+import greytank2 from '../assets/gallery/greytank2.jpg';
+
 
 const galleryItems = [
-  { image: Image1, type: 'large', title: 'The Ashiri Silhouette', category: 'Editorial' },
-  { image: Image3, type: 'wide', title: 'Lagos ', category: 'Behind The Scenes' },
-  { image: purpletank2Gallery, type: 'tall', title: 'Heritage Knit Detail', category: 'Textures' },
-  { image: purpletank, type: 'normal', title: 'Purple Rib Knit', category: 'Lookbook' },
-  { image: greytank, type: 'tall', title: 'Minimalist Drape', category: 'Lookbook' },
-  { image: redtank3Gallery, type: 'normal', title: 'Botanical Dye Tone', category: 'Colorway' },
-  { image: redtank4Gallery, type: 'large', title: 'Adire Indigo Cami', category: 'Craftsmanship' },
-  { image: whitetankGallery, type: 'normal', title: 'Belgian Linen', category: 'Fabrication' },
-  { image: whitetank3, type: 'wide', title: 'Organic Cotton Tank', category: 'Essentials' },
-  { image: redtank5, type: 'normal', title: 'Clay Terracotta', category: 'Lookbook' },
-  { image: whitetank2Gallery, type: 'tall', title: 'Artisanal Modernism', category: 'Editorial' },
-  { image: greytankGallery, type: 'normal', title: 'Grey Rib Cami', category: 'Essentials' },
-  { image: purpletankGallery, type: 'normal', title: 'Sunset Silhouette', category: 'Lookbook' }
+  {
+    image: Image1,
+  },
+  {
+    image: Image3,
+  },
+  {
+    image: alltankGallery, position: 'bottom'
+  },
+  { image: purpletank },
+  { image: greytank },
+  { image: redtank3Gallery },
+  { image: redAndPurpleTank },
+  { image: whitetankGallery },
+  { image: whitetank3, },
+  { image: redtank5, },
+  { image: whitetank2Gallery, },
+  { image: greytank2, },
+  { image: alltankGallery3, },
+
 ];
 
 const GalleryPage = ({ onBackToShop }) => {
@@ -103,7 +115,7 @@ const GalleryPage = ({ onBackToShop }) => {
             marginBottom: '14px',
             lineHeight: 1.1
           }}>
-            Lookbook Gallery
+            Gallery
           </h1>
 
           <p style={{

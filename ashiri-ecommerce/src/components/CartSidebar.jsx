@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Plus, Minus, Trash2, ArrowRight, ArrowLeft, Loader2, Heart, ShoppingBag } from 'lucide-react';
+import { X, Plus, Minus, Trash2, ArrowRight, ArrowLeft, Loader2, Heart, ShoppingBag, Gift } from 'lucide-react';
 
 // Dynamic loader helper for Paystack script
 const loadPaystackScript = () => {
@@ -483,6 +483,43 @@ const CartSidebar = ({
                               <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                                 Size: {item.selectedSize} | Tone: {item.selectedColor}
                               </span>
+                              {item.isGift && (
+                                <div style={{ 
+                                  display: 'flex', 
+                                  flexDirection: 'column',
+                                  gap: '4px',
+                                  marginTop: '6px',
+                                  padding: '6px 10px',
+                                  background: '#f5f3ff', 
+                                  borderRadius: '6px',
+                                  border: '1px solid #ddd6fe',
+                                  maxWidth: '100%',
+                                  textAlign: 'left'
+                                }}>
+                                  <span style={{ 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    gap: '4px', 
+                                    fontSize: '0.65rem', 
+                                    fontWeight: 700, 
+                                    color: '#7c3aed' 
+                                  }}>
+                                    <Gift size={10} /> GIFT PACKAGING
+                                  </span>
+                                  {item.giftMessage && (
+                                    <p style={{ 
+                                      fontSize: '0.7rem', 
+                                      color: '#5b21b6', 
+                                      fontStyle: 'italic',
+                                      margin: 0,
+                                      wordBreak: 'break-word',
+                                      lineHeight: 1.3
+                                    }}>
+                                      "{item.giftMessage}"
+                                    </p>
+                                  )}
+                                </div>
+                              )}
                             </div>
 
                             {/* Actions */}

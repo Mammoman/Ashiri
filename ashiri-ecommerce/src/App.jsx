@@ -17,7 +17,6 @@ function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [sidebarTab, setSidebarTab] = useState('cart'); // 'cart' or 'wishlist'
   const [favorites, setFavorites] = useState({});
-  const [searchQuery, setSearchQuery] = useState('');
 
   const handleToggleFavorite = (productId) => {
     setFavorites((prev) => ({
@@ -34,14 +33,18 @@ function App() {
     // If we receive options from the modal, use them, otherwise default to first available or N/A
     const chosenSize = product.selectedSize || (product.sizes ? product.sizes[0] : 'S');
     const chosenColor = product.selectedColor || (product.colors ? product.colors[0] : 'Ochre');
+    const isGiftItem = !!product.isGift;
+    const giftMessageText = product.giftMessage || '';
 
     setCart((prevCart) => {
-      // Find if item already exists in cart with EXACT same size and color
+      // Find if item already exists in cart with EXACT same size, color, and gift packaging options
       const existingItemIndex = prevCart.findIndex(
         (item) =>
           item.id === product.id &&
           item.selectedSize === chosenSize &&
-          item.selectedColor === chosenColor
+          item.selectedColor === chosenColor &&
+          !!item.isGift === isGiftItem &&
+          (item.giftMessage || '') === giftMessageText
       );
 
       if (existingItemIndex > -1) {
@@ -55,6 +58,8 @@ function App() {
             ...product,
             selectedSize: chosenSize,
             selectedColor: chosenColor,
+            isGift: isGiftItem,
+            giftMessage: giftMessageText,
             quantity: 1,
           },
         ];
@@ -112,8 +117,6 @@ function App() {
         onCartClick={() => { setSidebarTab('cart'); setIsCartOpen(true); }}
         wishlistCount={wishlistCount}
         onWishlistClick={() => { setSidebarTab('wishlist'); setIsCartOpen(true); }}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
         currentPage={currentPage}
         onPageChange={handlePageChange}
       />
@@ -129,7 +132,6 @@ function App() {
             <ProductGrid
               onProductSelect={setSelectedProduct}
               onAddToCart={handleAddToCart}
-              searchQuery={searchQuery}
               favorites={favorites}
               onToggleFavorite={handleToggleFavorite}
             />

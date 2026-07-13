@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
 import greytank from '../assets/gallery/greytank.jpg';
+import greytank4 from '../assets/gallery/greytank4.jpg';
 import purpletank from '../assets/gallery/purpletank2.jpg';
 import redtank from '../assets/gallery/redtank3.jpg';
 import whitetank from '../assets/gallery/whitetank2.jpg';
@@ -8,20 +9,18 @@ import whitetank from '../assets/gallery/whitetank2.jpg';
 
 const galleryItems = [
   {
-    image: greytank,
-   },
+    image: greytank4,
+  },
   {
     image: purpletank,
-    },
+  },
   {
     image: redtank,
-   },
+  },
   {
     image: whitetank,
-   },
-   {
-    image: greytank,
-   }
+  },
+
 ];
 
 const Gallery = ({ onViewGallery }) => {
@@ -54,17 +53,7 @@ const Gallery = ({ onViewGallery }) => {
 
         {/* Header Block */}
         <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-          <span style={{
-            fontSize: '0.75rem',
-            fontWeight: 700,
-            letterSpacing: '0.15em',
-            textTransform: 'uppercase',
-            color: 'var(--text-muted)',
-            display: 'block',
-            marginBottom: '8px'
-          }}>
-            THE ARTISANAL JOURNEY
-          </span>
+
           <h2 style={{
             fontSize: '2rem',
             fontWeight: 800,
@@ -72,7 +61,7 @@ const Gallery = ({ onViewGallery }) => {
             letterSpacing: '-0.03em',
             marginBottom: '12px'
           }}>
-            Craftsmanship Lookbook
+            Gallery
           </h2>
           <p style={{
             fontSize: '0.9rem',
@@ -81,7 +70,7 @@ const Gallery = ({ onViewGallery }) => {
             margin: '0 auto',
             lineHeight: '1.6'
           }}>
-            Explore the slow fashion processes, traditional Yoruba dye vats, and sun-drenched studios behind our luxury essentials.
+            Explore Our Beautiful Collection
           </p>
         </div>
 

@@ -59,12 +59,12 @@ const ProductCardSkeleton = () => (
   </div>
 );
 
-const ProductGrid = ({ onProductSelect, onAddToCart, searchQuery, favorites = {}, onToggleFavorite }) => {
+const ProductGrid = ({ onProductSelect, onAddToCart, favorites = {}, onToggleFavorite }) => {
   const [activeCategory, setActiveCategory] = useState('All');
   const [sortBy, setSortBy] = useState('featured');
   const [isLoading, setIsLoading] = useState(true);
 
-  // Simulated Loading state on mount, category shift, sorting, or search query changes
+  // Simulated Loading state on mount, category shift, sorting
   useEffect(() => {
     setIsLoading(true);
     const delay = activeCategory === 'All' ? 800 : 500;
@@ -72,7 +72,7 @@ const ProductGrid = ({ onProductSelect, onAddToCart, searchQuery, favorites = {}
       setIsLoading(false);
     }, delay);
     return () => clearTimeout(timer);
-  }, [activeCategory, sortBy, searchQuery]);
+  }, [activeCategory, sortBy]);
 
   // Toggle favorite state
   const toggleFavorite = (id, e) => {
@@ -80,12 +80,9 @@ const ProductGrid = ({ onProductSelect, onAddToCart, searchQuery, favorites = {}
     onToggleFavorite(id);
   };
 
-  // Filter products by category & search query
+  // Filter products by category
   const filteredProducts = products.filter(product => {
-    const matchesCategory = activeCategory === 'All' || product.category === activeCategory;
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
+    return activeCategory === 'All' || product.category === activeCategory;
   });
 
   // Sort products
@@ -262,7 +259,7 @@ const ProductGrid = ({ onProductSelect, onAddToCart, searchQuery, favorites = {}
             textAlign: 'center',
             gap: '12px'
           }}>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>No products found matching your search.</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>No products found.</p>
             <button
               onClick={() => { setActiveCategory('All'); }}
               className="filter-btn active"
