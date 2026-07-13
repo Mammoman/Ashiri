@@ -53,7 +53,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
         style={{
           width: '100%',
           maxWidth: '960px', // Wider desktop container matching split layout
-          maxHeight: '90vh',
+          maxHeight: '120vh',
           borderRadius: 'var(--radius-md)',
           overflowY: 'auto',
           position: 'relative',
@@ -106,7 +106,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
           <div style={{
             position: 'relative',
             width: '100%',
-            paddingTop: '90%', // Landscape ratio matching mockup
+            paddingTop: '105%', // Taller portrait ratio to fit apparel
             background: '#f4f3f0', // Warm cream background
             borderRadius: 'var(--radius-md)',
             overflow: 'hidden',
@@ -122,7 +122,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
                 width: '100%',
                 height: '100%',
                 objectFit: 'contain',
-                padding: '24px',
+                padding: '8px', // Reduced padding to make product image larger
                 transition: 'transform 0.4s ease',
                 // Flip image to mock back view as requested
                 transform: activeView === 'back' ? 'scaleX(-1)' : 'scaleX(1)'
@@ -131,62 +131,8 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
             />
           </div>
 
-          {/* Thumbnails Row: Front & Back Only */}
-          <div style={{
-            display: 'flex',
-            gap: '12px',
-            width: '100%',
-            justifyContent: 'flex-start'
-          }} className="thumbnails-row">
-            {/* Front View Thumbnail */}
-            <button
-              onClick={() => setActiveView('front')}
-              style={{
-                width: '76px',
-                height: '84px',
-                background: '#f4f3f0',
-                borderRadius: 'var(--radius-sm)',
-                border: '2px solid',
-                borderColor: activeView === 'front' ? 'var(--text-dark)' : 'transparent',
-                overflow: 'hidden',
-                padding: '6px'
-              }}
-              className="thumbnail-btn"
-            >
-              <img
-                src={product.image}
-                alt="Front view thumbnail"
-                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-              />
-            </button>
 
-            {/* Back View Thumbnail (Flipped) */}
-            <button
-              onClick={() => setActiveView('back')}
-              style={{
-                width: '76px',
-                height: '84px',
-                background: '#f4f3f0',
-                borderRadius: 'var(--radius-sm)',
-                border: '2px solid',
-                borderColor: activeView === 'back' ? 'var(--text-dark)' : 'transparent',
-                overflow: 'hidden',
-                padding: '6px'
-              }}
-              className="thumbnail-btn"
-            >
-              <img
-                src={product.image}
-                alt="Back view thumbnail"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'contain',
-                  transform: 'scaleX(-1)'
-                }}
-              />
-            </button>
-          </div>
+
 
         </div>
 
@@ -580,22 +526,40 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
           .modal-left-panel {
             border-right: none !important;
             border-bottom: 1px solid var(--color-border);
-            padding: 40px 12px 10px 12px !important;
+            padding: 40px 12px 12px 12px !important;
             gap: 12px !important;
+            position: relative !important;
           }
           .main-image-wrap {
-            padding-top: 65% !important;
+            padding-top: 115% !important; /* Taller portrait ratio to maximize size */
+            position: relative !important;
           }
           .main-image {
-            padding: 12px !important;
-          }
-          .thumbnail-btn {
-            width: 52px !important;
-            height: 58px !important;
-            padding: 4px !important;
+            padding: 0px !important; /* Zero padding to make the product image fill the card */
           }
           .thumbnails-row {
+            position: absolute !important;
+            bottom: 24px !important;
+            left: 24px !important;
+            z-index: 10 !important;
+            background: rgba(255, 255, 255, 0.75) !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+            padding: 6px !important;
+            border-radius: 10px !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
+            border: 1px solid rgba(255, 255, 255, 0.4) !important;
             gap: 8px !important;
+            width: auto !important;
+            display: flex !important;
+          }
+          .thumbnail-btn {
+            width: 44px !important;
+            height: 48px !important;
+            padding: 3px !important;
+            background: #f4f3f0 !important;
+            border-radius: 6px !important;
+            border-width: 2px !important;
           }
           .modal-right-panel {
             padding: 12px 16px 16px 16px !important;
@@ -651,7 +615,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
           }
         }
       `}} />
-    </div>
+    </div >
   );
 };
 

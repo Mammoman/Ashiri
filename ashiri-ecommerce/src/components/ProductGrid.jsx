@@ -343,14 +343,16 @@ const ProductGrid = ({ onProductSelect, onAddToCart, favorites = {}, onToggleFav
                     }}>
                       ASHIRI
                     </span>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
-                      <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-dark)' }}>
-                        {product.rating}
-                      </span>
-                      <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-                        ({product.reviews})
-                      </span>
-                    </div>
+                    {product.rating !== undefined && product.reviews !== undefined && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
+                        <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-dark)' }}>
+                          {product.rating}
+                        </span>
+                        <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+                          ({product.reviews})
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Product Title */}
@@ -378,9 +380,9 @@ const ProductGrid = ({ onProductSelect, onAddToCart, favorites = {}, onToggleFav
                     <span style={{
                       fontSize: '0.95rem',
                       fontWeight: 700,
-                      color: 'var(--color-sale)'
+                      color: 'var(--text-dark)'
                     }}>
-                      ₦{product.price}
+                      ₦{product.price.toLocaleString()}
                     </span>
                     {product.originalPrice && (
                       <span style={{
@@ -388,7 +390,7 @@ const ProductGrid = ({ onProductSelect, onAddToCart, favorites = {}, onToggleFav
                         color: 'var(--text-muted)',
                         textDecoration: 'line-through'
                       }}>
-                        ₦{product.originalPrice}
+                        ₦{product.originalPrice.toLocaleString()}
                       </span>
                     )}
                   </div>
