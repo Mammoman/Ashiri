@@ -1,14 +1,47 @@
 import React, { useState } from 'react';
 import { useAdmin } from '../../context/AdminContext';
 import { Image, Trash2, Plus, X } from 'lucide-react';
+import {
+  DndContext,
+  closestCenter,
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  horizontalListSortingStrategy,
+  arrayMove,
+} from '@dnd-kit/sortable';
+import { SortableGalleryItem } from '../../components/SortableGalleryItem';
 
 const GalleryAdmin = () => {
-  const { galleryImages, addGalleryImage, addGalleryImages, deleteGalleryImage } = useAdmin();
+  const { galleryImages, addGalleryImage, addGalleryImages, deleteGalleryImage, updateGalleryOrder } = useAdmin();
   const [isAdding, setIsAdding] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [imageFiles, setImageFiles] = useState([]);
   const [folder, setFolder] = useState('campaign');
   const [error, setError] = useState('');
+
+  const sensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } })
+  );
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    if (active.id !== over.id) {
+      const oldIndex = galleryImages.findIndex((img) => img.id === active.id);
+      const newIndex = galleryImages.findIndex((img) => img.id === over.id);
+      
+      const newArray = arrayMove(galleryImages, oldIndex, newIndex);
+      // Re-assign position based on index in the new array
+      const updatedArray = newArray.map((img, index) => ({ ...img, position: index }));
+      
+      updateGalleryOrder(updatedArray);
+    }
+  };
 
   const handleUpload = async (e) => {
     e.preventDefault();
@@ -137,83 +170,35 @@ const GalleryAdmin = () => {
                       {folderName} <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 500, textTransform: 'none' }}>({folderImages.length})</span>
                     </h3>
                     
-                    <div style={{
-                      display: 'flex',
-                      gap: '14px',
-                      overflowX: 'auto',
-                      paddingBottom: '16px',
-                      WebkitOverflowScrolling: 'touch',
-                      scrollbarWidth: 'none',
-                    }}>
-                      {folderImages.map((img) => (
-                        <div
-                          key={img.id}
-                          style={{
-                            flex: '0 0 160px',
-                            position: 'relative',
-                            borderRadius: '12px',
-                            overflow: 'hidden',
-                            aspectRatio: '3/4',
-                            background: '#f1f5f9',
-                            border: '1px solid #e2e8f0',
-                            transition: 'all 0.2s ease',
-                          }}
-                          className="gallery-admin-item"
+                    <DndContext
+                      sensors={sensors}
+                      collisionDetection={closestCenter}
+                      onDragEnd={handleDragEnd}
+                    >
+                      <div style={{
+                        display: 'flex',
+                        gap: '14px',
+                        overflowX: 'auto',
+                        paddingBottom: '16px',
+                        WebkitOverflowScrolling: 'touch',
+                        scrollbarWidth: 'none',
+                      }}>
+                        <SortableContext
+                          items={folderImages.map(img => img.id)}
+                          strategy={horizontalListSortingStrategy}
                         >
-                          <img
-                            src={img.url}
-                            alt="Gallery Upload"
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                          />
-                          
-                          {/* Overlay with info and delete */}
-                          <div style={{
-                            position: 'absolute',
-                            inset: 0,
-                            background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%)',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'space-between',
-                            padding: '12px',
-                          }}>
-                            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                              <button
-                                onClick={() => deleteGalleryImage(img.id, img.path)}
-                                style={{
-                                  background: '#ef4444',
-                                  color: 'white',
-                                  border: 'none',
-                                  width: '32px',
-                                  height: '32px',
-                                  borderRadius: '50%',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  cursor: 'pointer',
-                                  boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
-                                }}
-                                title="Delete Image"
-                              >
-                                <Trash2 size={16} />
-                              </button>
-                            </div>
-                            <div>
-                              <span style={{ 
-                                background: 'rgba(255,255,255,0.2)', 
-                                backdropFilter: 'blur(4px)',
-                                color: 'white', 
-                                fontSize: '0.65rem',
-                                padding: '4px 8px',
-                                borderRadius: '4px',
-                                fontWeight: 500,
-                              }}>
-                                {img.folder}/
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                          {folderImages.map((img) => (
+                            <SortableGalleryItem
+                              key={img.id}
+                              id={img.id}
+                              url={img.url}
+                              folder={img.folder}
+                              onDelete={deleteGalleryImage}
+                            />
+                          ))}
+                        </SortableContext>
+                      </div>
+                    </DndContext>
                   </div>
                 );
               })}

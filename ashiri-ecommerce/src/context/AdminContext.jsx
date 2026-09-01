@@ -83,9 +83,13 @@ export function AdminProvider({ children }) {
         }
 
         // Fetch Gallery
-        const { data: galleryData } = await supabase.from('gallery').select('*').order('created_at', { ascending: false });
+        const { data: galleryData } = await supabase
+          .from('gallery')
+          .select('*')
+          .order('position', { ascending: true })
+          .order('created_at', { ascending: false });
         if (galleryData) {
-          setGalleryImages(galleryData.map(g => ({ id: g.id, url: g.url, folder: g.folder })));
+          setGalleryImages(galleryData.map(g => ({ id: g.id, url: g.url, folder: g.folder, position: g.position || 0 })));
         }
 
         // Fetch Orders (Initial load limited for dashboard)
@@ -280,10 +284,32 @@ export function AdminProvider({ children }) {
     if (dbError) return { success: false, error: dbError.message };
     
     if (dbData && dbData.length > 0) {
-      setGalleryImages(prev => [...dbData, ...prev]);
+      const formatted = dbData.map(g => ({ id: g.id, url: g.url, folder: g.folder, position: g.position || 0 }));
+      setGalleryImages(prev => [...formatted, ...prev]);
     }
     
     return { success: true, count: uploadedImages.length };
+  };
+
+  const updateGalleryOrder = async (orderedImages) => {
+    // Optimistically update local state
+    setGalleryImages(orderedImages);
+    
+    if (!supabase) return;
+    
+    // In Supabase, batch updates using upsert based on primary key (id)
+    // We map only the fields needed to avoid writing over other things accidentally
+    const updates = orderedImages.map(img => ({
+      id: img.id,
+      position: img.position,
+      url: img.url,
+      folder: img.folder
+    }));
+    
+    const { error } = await supabase.from('gallery').upsert(updates, { onConflict: 'id' });
+    if (error) {
+      console.error('Error updating gallery order in DB:', error);
+    }
   };
 
   const deleteGalleryImage = async (imageId) => {
@@ -430,7 +456,7 @@ export function AdminProvider({ children }) {
   const value = {
     isAuthenticated, login, logout,
     products, addProduct, deleteProduct,
-    galleryImages, addGalleryImage, addGalleryImages, deleteGalleryImage,
+    galleryImages, addGalleryImage, addGalleryImages, deleteGalleryImage, updateGalleryOrder,
     storeSettings, updateSettings,
     orders, addOrder, updateOrderStatus, deleteOrder,
     fetchProductsPage, fetchOrdersPage,
