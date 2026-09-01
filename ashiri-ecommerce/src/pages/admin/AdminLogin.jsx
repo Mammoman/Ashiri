@@ -1,20 +1,27 @@
 import React, { useState } from 'react';
 import { useAdmin } from '../../context/AdminContext';
-import { Lock, Eye, EyeOff } from 'lucide-react';
+import { Lock, Eye, EyeOff, User } from 'lucide-react';
 
 const AdminLogin = () => {
   const { login } = useAdmin();
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const success = login(password);
+    setIsLoading(true);
+    setError('');
+
+    const { success, error: loginError } = await login(email, password);
+    
     if (!success) {
-      setError('Invalid password. Please try again.');
-      setPassword('');
+      setError(loginError || 'Invalid credentials. Please try again.');
     }
+    
+    setIsLoading(false);
   };
 
   return (
@@ -24,6 +31,24 @@ const AdminLogin = () => {
         <p className="admin-login-subtitle">Admin Dashboard Access</p>
 
         <form onSubmit={handleSubmit} style={{ textAlign: 'left' }}>
+          
+          <div className="admin-form-group">
+            <label className="admin-form-label">Email</label>
+            <div style={{ position: 'relative' }}>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); setError(''); }}
+                placeholder="admin@ashiri.com"
+                className="admin-form-input"
+                style={{ paddingLeft: '40px' }}
+                autoFocus
+                required
+              />
+              <User size={16} color="#94a3b8" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
+            </div>
+          </div>
+
           <div className="admin-form-group">
             <label className="admin-form-label">Password</label>
             <div style={{ position: 'relative' }}>
@@ -31,11 +56,12 @@ const AdminLogin = () => {
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => { setPassword(e.target.value); setError(''); }}
-                placeholder="Enter admin password"
+                placeholder="Enter your password"
                 className="admin-form-input"
-                style={{ paddingRight: '40px' }}
-                autoFocus
+                style={{ paddingLeft: '40px', paddingRight: '40px' }}
+                required
               />
+              <Lock size={16} color="#94a3b8" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
@@ -62,14 +88,18 @@ const AdminLogin = () => {
             </p>
           )}
 
-          <button type="submit" className="admin-btn admin-btn-primary" style={{ width: '100%', padding: '12px', justifyContent: 'center', borderRadius: '10px', fontSize: '0.85rem' }}>
-            <Lock size={15} />
-            Sign In
+          <button 
+            type="submit" 
+            className="admin-btn admin-btn-primary" 
+            style={{ width: '100%', padding: '12px', justifyContent: 'center', borderRadius: '10px', fontSize: '0.85rem' }}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Signing In...' : 'Sign In'}
           </button>
         </form>
 
-        <p style={{ fontSize: '0.72rem', color: '#94a3b8', marginTop: '24px' }}>
-          Default password: <code style={{ background: '#f1f5f9', padding: '2px 6px', borderRadius: '4px', fontSize: '0.7rem' }}>ashiri2026</code>
+        <p style={{ fontSize: '0.72rem', color: '#94a3b8', marginTop: '24px', lineHeight: 1.5 }}>
+          If connected to Supabase, use your Supabase Auth credentials.
         </p>
       </div>
     </div>

@@ -8,10 +8,11 @@ import Gallery from '../components/Gallery';
 import GalleryPage from '../components/GalleryPage';
 import Reviews from '../components/Reviews';
 import Footer from '../components/Footer';
-import { products } from '../data/mockData';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useAdmin } from '../context/AdminContext';
 
 function StorefrontPage() {
+  const { products, isLoadingSupabase } = useAdmin();
   const [currentPage, setCurrentPage] = React.useState('shop');
   const [cart, setCart] = useLocalStorage('ashiri_cart', []);
   const [selectedProduct, setSelectedProduct] = React.useState(null);
@@ -123,6 +124,7 @@ function StorefrontPage() {
           <>
             <Hero />
             <ProductGrid
+              products={products}
               onProductSelect={setSelectedProduct}
               onAddToCart={handleAddToCart}
               favorites={favorites}

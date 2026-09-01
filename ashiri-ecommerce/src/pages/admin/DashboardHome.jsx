@@ -1,11 +1,10 @@
 import React from 'react';
 import { useAdmin } from '../../context/AdminContext';
-import { products } from '../../data/mockData';
 import { DollarSign, ShoppingBag, TrendingUp, Package, Clock } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const DashboardHome = () => {
-  const { orders, getStats } = useAdmin();
+  const { orders, getStats, products } = useAdmin();
   const stats = getStats();
 
   // Generate chart data from orders (last 7 days)

@@ -1,19 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAdmin } from '../../context/AdminContext';
 import { Save, Check } from 'lucide-react';
 
 const SettingsPage = () => {
-  const { storeSettings, setStoreSettings } = useAdmin();
+  const { storeSettings, updateSettings } = useAdmin();
   const [form, setForm] = useState({ ...storeSettings });
   const [saved, setSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    setForm({ ...storeSettings });
+  }, [storeSettings]);
 
   const handleChange = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    setStoreSettings(form);
+    setIsSaving(true);
+    await updateSettings(form);
+    setIsSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   };
@@ -118,16 +125,18 @@ const SettingsPage = () => {
                 }}>
                   <div>
                     <div style={{ fontWeight: 600, fontSize: '0.85rem', color: '#0f172a' }}>Data Storage</div>
-                    <div style={{ fontSize: '0.72rem', color: '#64748b' }}>Orders, reviews, and settings persistence</div>
+                    <div style={{ fontSize: '0.72rem', color: '#64748b' }}>Orders, products, reviews, and settings</div>
                   </div>
-                  <span className="admin-badge processing">localStorage</span>
+                  <span className={`admin-badge ${import.meta.env.VITE_SUPABASE_URL ? 'delivered' : 'pending'}`}>
+                    {import.meta.env.VITE_SUPABASE_URL ? 'Supabase Connected' : 'localStorage Fallback'}
+                  </span>
                 </div>
               </div>
             </div>
 
             <div style={{ display: 'flex', gap: '10px' }}>
-              <button type="submit" className="admin-btn admin-btn-primary" style={{ padding: '10px 24px' }}>
-                {saved ? <><Check size={15} /> Saved!</> : <><Save size={15} /> Save Settings</>}
+              <button type="submit" className="admin-btn admin-btn-primary" style={{ padding: '10px 24px' }} disabled={isSaving}>
+                {saved ? <><Check size={15} /> Saved!</> : isSaving ? 'Saving...' : <><Save size={15} /> Save Settings</>}
               </button>
             </div>
           </form>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Star, Heart, SlidersHorizontal, ChevronDown, Check } from 'lucide-react';
-import { products, circularCategories } from '../data/mockData';
 
 // Premium Shimmering Skeleton Loader for Product Cards
 const ProductCardSkeleton = () => (
@@ -59,7 +58,14 @@ const ProductCardSkeleton = () => (
   </div>
 );
 
-const ProductGrid = ({ onProductSelect, onAddToCart, favorites = {}, onToggleFavorite }) => {
+const ProductGrid = ({ products = [], onProductSelect, onAddToCart, favorites = {}, onToggleFavorite }) => {
+  // Dynamically compute circular categories based on unique categories in products
+  const circularCategories = Array.from(new Set(products.map(p => p.category)))
+    .filter(Boolean)
+    .map(category => {
+      const firstProduct = products.find(p => p.category === category);
+      return { name: category, image: firstProduct?.image || '' };
+    });
   const [activeCategory, setActiveCategory] = useState('All');
   const [sortBy, setSortBy] = useState('featured');
   const [isLoading, setIsLoading] = useState(true);

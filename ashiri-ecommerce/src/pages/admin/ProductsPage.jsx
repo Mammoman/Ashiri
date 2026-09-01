@@ -1,18 +1,126 @@
 import React, { useState } from 'react';
-import { products as catalogProducts } from '../../data/mockData';
-import { Package, Edit, Eye, EyeOff } from 'lucide-react';
+import { useAdmin } from '../../context/AdminContext';
+import { Package, Plus, Trash2, X } from 'lucide-react';
 
 const ProductsPage = () => {
+  const { products, addProduct, deleteProduct } = useAdmin();
   const [selectedProduct, setSelectedProduct] = useState(null);
+  
+  // Add product form state
+  const [isAdding, setIsAdding] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '', category: 'Female', price: '', originalPrice: '',
+    description: '', details: '', sizes: '', colors: ''
+  });
+  const [imageFile, setImageFile] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Parse arrays
+    const parsedData = {
+      ...formData,
+      price: parseFloat(formData.price),
+      originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : null,
+      details: formData.details.split(',').map(s => s.trim()).filter(Boolean),
+      sizes: formData.sizes.split(',').map(s => s.trim()).filter(Boolean),
+      colors: formData.colors.split(',').map(s => s.trim()).filter(Boolean),
+    };
+
+    await addProduct(parsedData, imageFile);
+    
+    setIsSubmitting(false);
+    setIsAdding(false);
+    setFormData({ name: '', category: 'Female', price: '', originalPrice: '', description: '', details: '', sizes: '', colors: '' });
+    setImageFile(null);
+  };
 
   return (
     <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <h2 style={{ margin: 0, fontSize: '1.2rem', color: '#0f172a' }}>Product Catalog</h2>
+        <button 
+          onClick={() => setIsAdding(!isAdding)}
+          className="admin-btn admin-btn-primary"
+          style={{ padding: '8px 16px', borderRadius: '8px' }}
+        >
+          {isAdding ? <X size={16} /> : <Plus size={16} />}
+          {isAdding ? 'Cancel' : 'Add Product'}
+        </button>
+      </div>
+
+      {isAdding && (
+        <div className="admin-card" style={{ marginBottom: '24px' }}>
+          <div className="admin-card-header">
+            <span className="admin-card-title">Add New Product</span>
+          </div>
+          <div className="admin-card-body">
+            <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <div className="admin-form-group">
+                <label className="admin-form-label">Product Name</label>
+                <input required className="admin-form-input" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
+              </div>
+              
+              <div className="admin-form-group">
+                <label className="admin-form-label">Category</label>
+                <select className="admin-form-input" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})}>
+                  <option>Female</option>
+                  <option>Male</option>
+                  <option>Unisex</option>
+                </select>
+              </div>
+
+              <div className="admin-form-group">
+                <label className="admin-form-label">Price (₦)</label>
+                <input required type="number" className="admin-form-input" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} />
+              </div>
+
+              <div className="admin-form-group">
+                <label className="admin-form-label">Original Price (optional)</label>
+                <input type="number" className="admin-form-input" value={formData.originalPrice} onChange={e => setFormData({...formData, originalPrice: e.target.value})} />
+              </div>
+
+              <div className="admin-form-group" style={{ gridColumn: '1 / -1' }}>
+                <label className="admin-form-label">Product Image</label>
+                <input required type="file" accept="image/*" className="admin-form-input" onChange={e => setImageFile(e.target.files[0])} />
+                <span style={{ fontSize: '0.7rem', color: '#64748b' }}>Image will be uploaded to Supabase Storage automatically.</span>
+              </div>
+
+              <div className="admin-form-group" style={{ gridColumn: '1 / -1' }}>
+                <label className="admin-form-label">Description</label>
+                <textarea className="admin-form-input" rows="3" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} />
+              </div>
+
+              <div className="admin-form-group">
+                <label className="admin-form-label">Bullet Details (comma separated)</label>
+                <input className="admin-form-input" placeholder="100% Cotton, Hand wash only..." value={formData.details} onChange={e => setFormData({...formData, details: e.target.value})} />
+              </div>
+
+              <div className="admin-form-group">
+                <label className="admin-form-label">Sizes (comma separated)</label>
+                <input className="admin-form-input" placeholder="S, M, L, XL" value={formData.sizes} onChange={e => setFormData({...formData, sizes: e.target.value})} />
+              </div>
+
+              <div className="admin-form-group">
+                <label className="admin-form-label">Colors (comma separated)</label>
+                <input className="admin-form-input" placeholder="Red, Blue, Charcoal" value={formData.colors} onChange={e => setFormData({...formData, colors: e.target.value})} />
+              </div>
+
+              <div style={{ gridColumn: '1 / -1', marginTop: '10px' }}>
+                <button type="submit" className="admin-btn admin-btn-primary" disabled={isSubmitting}>
+                  {isSubmitting ? 'Uploading & Saving...' : 'Save Product'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <div className="admin-card">
         <div className="admin-card-header">
-          <span className="admin-card-title">Product Catalog ({catalogProducts.length} items)</span>
-          <span style={{ fontSize: '0.72rem', color: '#64748b', fontStyle: 'italic' }}>
-            Products are managed in mockData.js
-          </span>
+          <span className="admin-card-title">Live Products ({products.length} items)</span>
         </div>
         <div className="admin-card-body">
           <table className="admin-table">
@@ -22,13 +130,12 @@ const ProductsPage = () => {
                 <th>Product Name</th>
                 <th>Category</th>
                 <th>Price</th>
-                <th>Original Price</th>
                 <th>Sizes</th>
-                <th>Colors</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {catalogProducts.map((product) => (
+              {products.map((product) => (
                 <React.Fragment key={product.id}>
                   <tr
                     style={{ cursor: 'pointer' }}
@@ -36,74 +143,40 @@ const ProductsPage = () => {
                   >
                     <td>
                       <div style={{
-                        width: '48px',
-                        height: '48px',
-                        borderRadius: '10px',
-                        overflow: 'hidden',
-                        background: '#f1f5f9',
+                        width: '48px', height: '48px', borderRadius: '10px',
+                        overflow: 'hidden', background: '#f1f5f9',
                       }}>
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        />
+                        <img src={product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       </div>
                     </td>
                     <td>
-                      <div style={{ fontWeight: 700, fontSize: '0.85rem', color: '#0f172a' }}>
-                        {product.name}
-                      </div>
-                      <div style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '2px' }}>
-                        ID: {product.id}
-                      </div>
+                      <div style={{ fontWeight: 700, fontSize: '0.85rem', color: '#0f172a' }}>{product.name}</div>
+                      <div style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '2px' }}>ID: {product.id}</div>
                     </td>
-                    <td>
-                      <span className="admin-badge processing">{product.category}</span>
-                    </td>
-                    <td style={{ fontWeight: 700, color: '#0f172a' }}>
-                      ₦{product.price.toLocaleString()}
-                    </td>
-                    <td style={{ color: '#64748b', textDecoration: 'line-through' }}>
-                      {product.originalPrice ? `₦${product.originalPrice.toLocaleString()}` : '—'}
-                    </td>
+                    <td><span className="admin-badge processing">{product.category}</span></td>
+                    <td style={{ fontWeight: 700, color: '#0f172a' }}>₦{product.price.toLocaleString()}</td>
                     <td>
                       <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
                         {product.sizes ? product.sizes.map((s) => (
-                          <span key={s} style={{
-                            fontSize: '0.65rem',
-                            fontWeight: 700,
-                            padding: '2px 8px',
-                            borderRadius: '4px',
-                            background: '#f1f5f9',
-                            color: '#334155',
-                          }}>
+                          <span key={s} style={{ fontSize: '0.65rem', fontWeight: 700, padding: '2px 8px', borderRadius: '4px', background: '#f1f5f9', color: '#334155' }}>
                             {s}
                           </span>
                         )) : '—'}
                       </div>
                     </td>
                     <td>
-                      <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-                        {product.colors ? product.colors.map((c) => (
-                          <span key={c} style={{
-                            fontSize: '0.65rem',
-                            fontWeight: 600,
-                            padding: '2px 8px',
-                            borderRadius: '4px',
-                            background: '#f1f5f9',
-                            color: '#334155',
-                          }}>
-                            {c}
-                          </span>
-                        )) : '—'}
-                      </div>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); deleteProduct(product.id); }}
+                        style={{ color: '#dc2626', background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}
+                      >
+                        <Trash2 size={16} />
+                      </button>
                     </td>
                   </tr>
 
-                  {/* Expanded Product Detail */}
                   {selectedProduct === product.id && (
                     <tr>
-                      <td colSpan={7} style={{ padding: 0, background: '#fafbfc' }}>
+                      <td colSpan={6} style={{ padding: 0, background: '#fafbfc' }}>
                         <div className="admin-drawer">
                           <div className="admin-drawer-title">Description</div>
                           <p style={{ fontSize: '0.82rem', color: '#334155', lineHeight: 1.6, marginBottom: '16px' }}>
