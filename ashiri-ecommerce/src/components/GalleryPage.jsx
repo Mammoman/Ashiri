@@ -1,52 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { X, ChevronLeft, ChevronRight, Maximize2, ArrowLeft } from 'lucide-react';
-
-// Import all unique images present in the codebase
-import Image1 from '../assets/Image1.jpg';
-import Image3 from '../assets/Image3.jpg';
-import greytank from '../assets/greytank.jpg';
-import purpletank from '../assets/purpletank.jpg';
-import redtank5 from '../assets/redtank5.jpg';
-import whitetank3 from '../assets/whitetank3.jpg';
-
-import greytankGallery from '../assets/gallery/greytank.jpg';
-import purpletankGallery from '../assets/gallery/purpletank.jpg';
-import purpletank2Gallery from '../assets/gallery/purpletank2.jpg';
-import redtank3Gallery from '../assets/gallery/redtank3.jpg';
-import redtank4Gallery from '../assets/gallery/redtank4.jpg';
-import whitetankGallery from '../assets/gallery/whitetank.jpg';
-import whitetank2Gallery from '../assets/gallery/whitetank2.jpg';
-import alltankGallery from '../assets/gallery/alltank.jpg';
-import redAndPurpleTank from '../assets/gallery/red&purpletank.jpg';
-import alltankGallery3 from '../assets/gallery/alltank3.jpg';
-import greytank2 from '../assets/gallery/greytank2.jpg';
-
-
-const galleryItems = [
-  {
-    image: Image1,
-  },
-  {
-    image: Image3,
-  },
-  {
-    image: alltankGallery, position: 'bottom'
-  },
-  { image: purpletank },
-  { image: greytank },
-  { image: redtank3Gallery },
-  { image: redAndPurpleTank },
-  { image: whitetankGallery },
-  { image: whitetank3, },
-  { image: redtank5, },
-  { image: whitetank2Gallery, },
-  { image: greytank2, },
-  { image: alltankGallery3, },
-
-];
+import { useAdmin } from '../context/AdminContext';
 
 const GalleryPage = ({ onBackToShop }) => {
+  const { galleryImages } = useAdmin();
   const [lightboxIndex, setLightboxIndex] = useState(null);
+
+  // Filter for 'gallery' folder, fallback to any images if none exist
+  const mainGalleryImages = galleryImages.filter(img => img.folder === 'gallery');
+  const activeImages = mainGalleryImages.length > 0 ? mainGalleryImages : galleryImages;
+  
+  const galleryItems = activeImages.map(img => ({
+    image: img.url,
+    title: img.folder || 'Gallery',
+    desc: 'Ashiri Archive'
+  }));
 
   const filteredItems = galleryItems;
 

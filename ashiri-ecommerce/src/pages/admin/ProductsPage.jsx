@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAdmin } from '../../context/AdminContext';
-import { Package, Plus, Trash2, X } from 'lucide-react';
+import { Package, Plus, Trash2, X, Image } from 'lucide-react';
 
 const ProductsPage = () => {
   const { addProduct, deleteProduct, fetchProductsPage } = useAdmin();
@@ -83,7 +83,7 @@ const ProductsPage = () => {
           <div className="admin-card-header">
             <span className="admin-card-title">Add New Product</span>
           </div>
-          <div className="admin-card-body">
+          <div className="admin-card-body" style={{ padding: '24px' }}>
             {error && (
               <div style={{ padding: '12px', background: '#fee2e2', color: '#dc2626', borderRadius: '8px', marginBottom: '16px', fontSize: '0.85rem' }}>
                 <strong>Error: </strong>{error}
@@ -106,9 +106,37 @@ const ProductsPage = () => {
               </div>
 
               <div className="admin-form-group" style={{ gridColumn: '1 / -1' }}>
-                <label className="admin-form-label">Product Image</label>
-                <input required type="file" accept="image/*" className="admin-form-input" onChange={e => setImageFile(e.target.files[0])} />
-                <span style={{ fontSize: '0.7rem', color: '#64748b' }}>Image will be uploaded to Supabase Storage automatically.</span>
+                <label className="admin-form-label" style={{ marginBottom: '8px' }}>Product Image</label>
+                <label 
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: '2px dashed #cbd5e1',
+                    borderRadius: '12px',
+                    padding: '32px 16px',
+                    cursor: 'pointer',
+                    background: '#f8fafc',
+                    transition: 'all 0.2s',
+                    color: '#64748b'
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#0f172a'; e.currentTarget.style.background = '#f1f5f9'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#cbd5e1'; e.currentTarget.style.background = '#f8fafc'; }}
+                >
+                  <Image size={32} style={{ marginBottom: '12px', color: '#94a3b8' }} />
+                  <span style={{ fontWeight: 600, color: '#334155' }}>
+                    {imageFile ? imageFile.name : 'Click to select an image'}
+                  </span>
+                  {!imageFile && <span style={{ fontSize: '0.75rem', marginTop: '4px' }}>PNG, JPG up to 5MB. Will be uploaded to Supabase.</span>}
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={e => setImageFile(e.target.files[0])} 
+                    required
+                    style={{ display: 'none' }}
+                  />
+                </label>
               </div>
 
               <div style={{ gridColumn: '1 / -1', marginTop: '10px' }}>

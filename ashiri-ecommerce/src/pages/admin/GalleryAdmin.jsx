@@ -7,7 +7,7 @@ const GalleryAdmin = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [imageFile, setImageFile] = useState(null);
-  const [folder, setFolder] = useState('assets');
+  const [folder, setFolder] = useState('campaign');
   const [error, setError] = useState('');
 
   const handleUpload = async (e) => {
@@ -24,7 +24,7 @@ const GalleryAdmin = () => {
     if (success) {
       setIsAdding(false);
       setImageFile(null);
-      setFolder('assets');
+      setFolder('campaign');
     } else {
       setError(uploadError || 'Upload failed');
     }
@@ -51,17 +51,40 @@ const GalleryAdmin = () => {
           <div className="admin-card-header">
             <span className="admin-card-title">Upload Gallery Image</span>
           </div>
-          <div className="admin-card-body">
-            <form onSubmit={handleUpload} style={{ display: 'flex', flexDirection: 'column', gap: '16px', maxWidth: '400px' }}>
+          <div className="admin-card-body" style={{ padding: '24px' }}>
+            <form onSubmit={handleUpload} style={{ display: 'flex', flexDirection: 'column', gap: '24px', maxWidth: '400px' }}>
               <div className="admin-form-group">
-                <label className="admin-form-label">Image File</label>
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  className="admin-form-input" 
-                  onChange={(e) => setImageFile(e.target.files[0])} 
-                  required
-                />
+                <label className="admin-form-label" style={{ marginBottom: '8px' }}>Image File</label>
+                <label 
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: '2px dashed #cbd5e1',
+                    borderRadius: '12px',
+                    padding: '32px 16px',
+                    cursor: 'pointer',
+                    background: '#f8fafc',
+                    transition: 'all 0.2s',
+                    color: '#64748b'
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#0f172a'; e.currentTarget.style.background = '#f1f5f9'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#cbd5e1'; e.currentTarget.style.background = '#f8fafc'; }}
+                >
+                  <Image size={32} style={{ marginBottom: '12px', color: '#94a3b8' }} />
+                  <span style={{ fontWeight: 600, color: '#334155' }}>
+                    {imageFile ? imageFile.name : 'Click to select an image'}
+                  </span>
+                  {!imageFile && <span style={{ fontSize: '0.75rem', marginTop: '4px' }}>PNG, JPG up to 5MB</span>}
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={(e) => setImageFile(e.target.files[0])} 
+                    required
+                    style={{ display: 'none' }}
+                  />
+                </label>
               </div>
 
               <div className="admin-form-group">
@@ -71,10 +94,9 @@ const GalleryAdmin = () => {
                   value={folder}
                   onChange={(e) => setFolder(e.target.value)}
                 >
-                  <option value="assets">assets</option>
-                  <option value="gallery">gallery</option>
-                  <option value="lookbook">lookbook</option>
                   <option value="campaign">campaign</option>
+                  <option value="lookbook">lookbook</option>
+                  <option value="gallery">gallery</option>
                 </select>
               </div>
 

@@ -1,30 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { X, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
-import greytank from '../assets/gallery/greytank.jpg';
-import greytank4 from '../assets/gallery/greytank4.jpg';
-import purpletank from '../assets/gallery/purpletank2.jpg';
-import redtank from '../assets/gallery/redtank3.jpg';
-import whitetank from '../assets/gallery/whitetank2.jpg';
-
-
-const galleryItems = [
-  {
-    image: greytank4,
-  },
-  {
-    image: purpletank,
-  },
-  {
-    image: redtank,
-  },
-  {
-    image: whitetank,
-  },
-
-];
+import { useAdmin } from '../context/AdminContext';
 
 const Gallery = ({ onViewGallery }) => {
+  const { galleryImages } = useAdmin();
   const [lightboxIndex, setLightboxIndex] = useState(null);
+
+  // Filter for 'lookbook' folder, fallback to any images if none exist
+  const lookbookImages = galleryImages.filter(img => img.folder === 'lookbook');
+  const fallbackImages = galleryImages.length > 0 ? galleryImages.slice(0, 4) : [];
+  const activeImages = lookbookImages.length > 0 ? lookbookImages : fallbackImages;
+  
+  const galleryItems = activeImages.map(img => ({
+    image: img.url,
+    title: img.folder || 'Gallery',
+    desc: 'Ashiri Collection'
+  }));
 
   // Keyboard navigation for Lightbox
   useEffect(() => {

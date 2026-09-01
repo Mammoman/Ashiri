@@ -1,22 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import img1 from '../assets/Image1.jpg';
-import img2 from '../assets/redtank5.jpg';
-import img3 from '../assets/Image3.jpg';
-import img4 from '../assets/gallery/purpletank.jpg';
-import img5 from '../assets/gallery/whitetank.jpg';
-import img6 from '../assets/gallery/redtank4.jpg';
-
-const slides = [
-  { image: img1, position: 'center' },
-  { image: img2, position: 'center' },
-  { image: img3, position: 'center' },
-  { image: img4, position: 'center' },
-  { image: img5, position: 'center' },
-  { image: img6, position: 'center' },
-];
+import { useAdmin } from '../context/AdminContext';
 
 const Hero = () => {
+  const { galleryImages } = useAdmin();
+  
+  // Filter for 'campaign' folder, fallback to any images if none exist
+  const campaignImages = galleryImages.filter(img => img.folder === 'campaign');
+  const fallbackImages = galleryImages.length > 0 ? galleryImages : [];
+  const activeImages = campaignImages.length > 0 ? campaignImages : fallbackImages;
+  
+  const slides = activeImages.map(img => ({ image: img.url, position: 'center' }));
+
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -31,6 +26,7 @@ const Hero = () => {
 
   const startAutoplay = () => {
     stopAutoplay();
+    if (slides.length <= 1) return; // Don't autoplay if 0 or 1 slide
     autoplayTimer.current = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 5500);
@@ -41,10 +37,10 @@ const Hero = () => {
   };
 
   useEffect(() => {
-    if (!isPaused) startAutoplay();
+    if (!isPaused && slides.length > 1) startAutoplay();
     else stopAutoplay();
     return () => stopAutoplay();
-  }, [isPaused, currentSlide]);
+  }, [isPaused, currentSlide, slides.length]);
 
   const handleNext = (e) => {
     e.stopPropagation();
