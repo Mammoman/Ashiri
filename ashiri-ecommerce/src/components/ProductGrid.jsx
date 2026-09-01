@@ -60,9 +60,10 @@ const ProductCardSkeleton = () => (
 
 const ProductGrid = ({ products = [], onProductSelect, onAddToCart, favorites = {}, onToggleFavorite }) => {
   const [sortBy, setSortBy] = useState('featured');
+  const [activeCategory, setActiveCategory] = useState('All');
   const [isLoading, setIsLoading] = useState(true);
 
-  // Simulated Loading state on mount, sorting
+  // Simulated Loading state on mount, sorting, category change
   useEffect(() => {
     setIsLoading(true);
     const delay = 800;
@@ -70,7 +71,7 @@ const ProductGrid = ({ products = [], onProductSelect, onAddToCart, favorites = 
       setIsLoading(false);
     }, delay);
     return () => clearTimeout(timer);
-  }, [sortBy]);
+  }, [sortBy, activeCategory]);
 
   // Toggle favorite state
   const toggleFavorite = (id, e) => {
@@ -78,8 +79,26 @@ const ProductGrid = ({ products = [], onProductSelect, onAddToCart, favorites = 
     onToggleFavorite(id);
   };
 
-  // Sort products (all products, no category filter)
-  const sortedProducts = [...products].sort((a, b) => {
+  // Extract unique categories and grab the first image for each
+  const categoryMap = {};
+  products.forEach(p => {
+    if (p.category && p.category.trim() !== '' && !categoryMap[p.category]) {
+      categoryMap[p.category] = p.image;
+    }
+  });
+  
+  const circularCategories = Object.keys(categoryMap).map(catName => ({
+    name: catName,
+    image: categoryMap[catName]
+  }));
+
+  // Filter products by category
+  const filteredProducts = products.filter(product => {
+    return activeCategory === 'All' || product.category === activeCategory;
+  });
+
+  // Sort products
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
     if (sortBy === 'price-asc') return a.price - b.price;
     if (sortBy === 'price-desc') return b.price - a.price;
     return 0; // 'featured'
@@ -109,6 +128,76 @@ const ProductGrid = ({ products = [], onProductSelect, onAddToCart, favorites = 
             Showing {sortedProducts.length} items
           </span>
         </div>
+
+        {/* Horizontal Scrolling Circular Avatars */}
+        {circularCategories.length > 0 && (
+          <div style={{
+            display: 'flex',
+            gap: '24px',
+            overflowX: 'auto',
+            paddingBottom: '24px',
+            scrollbarWidth: 'none',
+            WebkitOverflowScrolling: 'touch'
+          }} className="category-scroll">
+            
+            {/* 'All' category circle */}
+            <div 
+              onClick={() => setActiveCategory('All')}
+              className={`circle-category ${activeCategory === 'All' ? 'active' : ''}`}
+              style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
+            >
+              <div 
+                className="flex-center" 
+                style={{
+                  width: '70px',
+                  height: '70px',
+                  borderRadius: '50%',
+                  background: activeCategory === 'All' ? 'var(--text-dark)' : '#ffffff',
+                  color: activeCategory === 'All' ? '#ffffff' : 'var(--text-dark)',
+                  border: `2px solid ${activeCategory === 'All' ? 'var(--text-dark)' : 'var(--color-border)'}`,
+                  transition: 'all 0.2s ease',
+                  boxShadow: activeCategory === 'All' ? '0 4px 12px rgba(0,0,0,0.1)' : 'none'
+                }}
+              >
+                <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>ALL</span>
+              </div>
+              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: activeCategory === 'All' ? 'var(--text-dark)' : 'var(--text-muted)' }}>
+                All Items
+              </span>
+            </div>
+
+            {circularCategories.map(cat => (
+              <div 
+                key={cat.name}
+                onClick={() => setActiveCategory(cat.name)}
+                className={`circle-category ${activeCategory === cat.name ? 'active' : ''}`}
+                style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
+              >
+                <div style={{
+                  width: '70px',
+                  height: '70px',
+                  borderRadius: '50%',
+                  overflow: 'hidden',
+                  border: `2px solid ${activeCategory === cat.name ? 'var(--text-dark)' : 'transparent'}`,
+                  padding: activeCategory === cat.name ? '2px' : '0',
+                  transition: 'all 0.2s ease',
+                  boxShadow: activeCategory === cat.name ? '0 4px 12px rgba(0,0,0,0.1)' : 'none'
+                }}>
+                  <div style={{ width: '100%', height: '100%', borderRadius: '50%', overflow: 'hidden' }}>
+                    <img 
+                      src={cat.image} 
+                      alt={cat.name} 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  </div>
+                </div>
+                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: activeCategory === cat.name ? 'var(--text-dark)' : 'var(--text-muted)' }}>
+                  {cat.name.split(' ')[0]}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Products Grid */}
         {isLoading ? (
