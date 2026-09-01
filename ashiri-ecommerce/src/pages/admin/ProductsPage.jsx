@@ -32,6 +32,7 @@ const ProductsPage = () => {
     name: '', price: '', sizes: ''
   });
   const [imageFile, setImageFile] = useState(null);
+  const [image2File, setImage2File] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,7 +46,7 @@ const ProductsPage = () => {
         sizes: formData.sizes ? formData.sizes.split(',').map(s => s.trim()).filter(Boolean) : [],
       };
 
-      const result = await addProduct(parsedData, imageFile);
+      const result = await addProduct(parsedData, imageFile, image2File);
       
       if (!result.success) {
         setError(result.error || 'Failed to save product');
@@ -57,6 +58,7 @@ const ProductsPage = () => {
       setIsAdding(false);
       setFormData({ name: '', price: '', sizes: '' });
       setImageFile(null);
+      setImage2File(null);
     } catch (err) {
       console.error(err);
       setError(err.message || 'An unexpected error occurred');
@@ -105,45 +107,81 @@ const ProductsPage = () => {
                 <input className="admin-form-input" placeholder="S, M, L, XL" value={formData.sizes} onChange={e => setFormData({...formData, sizes: e.target.value})} />
               </div>
 
-              <div className="admin-form-group" style={{ gridColumn: '1 / -1' }}>
-                <label className="admin-form-label" style={{ marginBottom: '8px' }}>Product Image</label>
-                <label 
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    border: '2px dashed #cbd5e1',
-                    borderRadius: '12px',
-                    padding: '32px 16px',
-                    cursor: 'pointer',
-                    background: '#f8fafc',
-                    transition: 'all 0.2s',
-                    color: '#64748b'
-                  }}
-                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#0f172a'; e.currentTarget.style.background = '#f1f5f9'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#cbd5e1'; e.currentTarget.style.background = '#f8fafc'; }}
-                >
-                  <Image size={32} style={{ marginBottom: '12px', color: '#94a3b8' }} />
-                  <span style={{ fontWeight: 600, color: '#334155' }}>
-                    {imageFile ? imageFile.name : 'Click to select an image'}
-                  </span>
-                  {!imageFile && <span style={{ fontSize: '0.75rem', marginTop: '4px' }}>PNG, JPG up to 5MB. Will be uploaded to Supabase.</span>}
-                  <input 
-                    type="file" 
-                    accept="image/*" 
-                    onChange={e => setImageFile(e.target.files[0])} 
-                    required
-                    style={{ display: 'none' }}
-                  />
-                </label>
+              <div className="admin-form-group" style={{ gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div>
+                  <label className="admin-form-label" style={{ marginBottom: '8px' }}>Primary Image</label>
+                  <label 
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      border: '2px dashed #cbd5e1',
+                      borderRadius: '12px',
+                      padding: '32px 16px',
+                      cursor: 'pointer',
+                      background: '#f8fafc',
+                      transition: 'all 0.2s',
+                      color: '#64748b',
+                      height: '100%',
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#0f172a'; e.currentTarget.style.background = '#f1f5f9'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#cbd5e1'; e.currentTarget.style.background = '#f8fafc'; }}
+                  >
+                    <Image size={32} style={{ marginBottom: '12px', color: '#94a3b8' }} />
+                    <span style={{ fontWeight: 600, color: '#334155', textAlign: 'center' }}>
+                      {imageFile ? imageFile.name : 'Select Primary Image'}
+                    </span>
+                    {!imageFile && <span style={{ fontSize: '0.75rem', marginTop: '4px', textAlign: 'center' }}>PNG, JPG up to 5MB.</span>}
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={e => setImageFile(e.target.files[0])} 
+                      required
+                      style={{ display: 'none' }}
+                    />
+                  </label>
+                </div>
+                <div>
+                  <label className="admin-form-label" style={{ marginBottom: '8px' }}>Secondary Image (Optional)</label>
+                  <label 
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      border: '2px dashed #cbd5e1',
+                      borderRadius: '12px',
+                      padding: '32px 16px',
+                      cursor: 'pointer',
+                      background: '#f8fafc',
+                      transition: 'all 0.2s',
+                      color: '#64748b',
+                      height: '100%',
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#0f172a'; e.currentTarget.style.background = '#f1f5f9'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#cbd5e1'; e.currentTarget.style.background = '#f8fafc'; }}
+                  >
+                    <Image size={32} style={{ marginBottom: '12px', color: '#94a3b8' }} />
+                    <span style={{ fontWeight: 600, color: '#334155', textAlign: 'center' }}>
+                      {image2File ? image2File.name : 'Select Secondary Image'}
+                    </span>
+                    {!image2File && <span style={{ fontSize: '0.75rem', marginTop: '4px', textAlign: 'center' }}>Shown on hover/details.</span>}
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={e => setImage2File(e.target.files[0])}
+                      style={{ display: 'none' }}
+                    />
+                  </label>
+                </div>
               </div>
 
-              <div style={{ gridColumn: '1 / -1', marginTop: '10px' }}>
-                <button type="submit" className="admin-btn admin-btn-primary" disabled={isSubmitting}>
+              {error && <p style={{ color: '#dc2626', fontSize: '0.8rem', margin: 0 }}>{error}</p>}
+
+              <button type="submit" className="admin-btn admin-btn-primary" disabled={isSubmitting} style={{ gridColumn: '1 / -1', marginTop: '10px' }}>
                   {isSubmitting ? 'Uploading & Saving...' : 'Save Product'}
                 </button>
-              </div>
             </form>
           </div>
         </div>

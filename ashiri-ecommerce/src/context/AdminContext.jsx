@@ -77,6 +77,7 @@ export function AdminProvider({ children }) {
             name: p.name,
             price: parseFloat(p.price),
             image: p.image,
+            image2: p.image2,
             sizes: p.sizes || [],
           }));
           setProducts(formattedProducts);
@@ -151,8 +152,9 @@ export function AdminProvider({ children }) {
   };
 
   // Products helpers
-  const addProduct = async (productData, imageFile) => {
+  const addProduct = async (productData, imageFile, image2File) => {
     let imageUrl = '';
+    let image2Url = '';
     
     if (supabase && imageFile) {
       const fileExt = imageFile.name.split('.').pop();
@@ -171,12 +173,27 @@ export function AdminProvider({ children }) {
       imageUrl = productData.image; // fallback to text URL if provided
     }
 
+    if (supabase && image2File) {
+      const fileExt = image2File.name.split('.').pop();
+      const fileName = `${Math.random()}_2.${fileExt}`;
+      const filePath = `products/${fileName}`;
+      
+      const { error: uploadError } = await supabase.storage.from('brand_assets').upload(filePath, image2File);
+      if (uploadError) {
+        console.error('Secondary upload error', uploadError);
+      } else {
+        const { data } = supabase.storage.from('brand_assets').getPublicUrl(filePath);
+        image2Url = data.publicUrl;
+      }
+    }
+
     const newProduct = {
       id: Math.floor(Math.random() * 1000000) + 10000, // DB missing auto-increment, generate random ID
       name: productData.name,
       category: 'Uncategorized', // Hardcoded default because it's required by the DB but removed from UI
       price: productData.price,
       image: imageUrl,
+      image2: image2Url || null,
       sizes: productData.sizes || [],
       details: [],
       colors: [],
@@ -190,7 +207,7 @@ export function AdminProvider({ children }) {
         const p = data[0];
         setProducts(prev => [...prev, {
           id: p.id, name: p.name, price: parseFloat(p.price),
-          image: p.image, sizes: p.sizes || [],
+          image: p.image, image2: p.image2, sizes: p.sizes || [],
         }]);
       }
       return { success: true };

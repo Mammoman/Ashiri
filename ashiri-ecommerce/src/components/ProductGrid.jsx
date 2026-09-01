@@ -238,16 +238,20 @@ const ProductGrid = ({ products = [], onProductSelect, onAddToCart, favorites = 
                 }}
               >
                 {/* Image Container with Heart Favorite floating */}
-                <div style={{
-                  position: 'relative',
-                  width: '100%',
-                  paddingTop: '115%', // Aspect Ratio
-                  overflow: 'hidden',
-                  background: '#f3f4f6'
-                }}>
+                <div 
+                  className={`product-image-container ${product.image2 ? 'has-secondary' : ''}`}
+                  style={{
+                    position: 'relative',
+                    width: '100%',
+                    paddingTop: '115%', // Aspect Ratio
+                    overflow: 'hidden',
+                    background: '#f3f4f6'
+                  }}
+                >
                   <img
                     src={product.image}
                     alt={product.name}
+                    className="primary-img"
                     style={{
                       position: 'absolute',
                       top: 0,
@@ -257,6 +261,13 @@ const ProductGrid = ({ products = [], onProductSelect, onAddToCart, favorites = 
                       objectFit: 'cover'
                     }}
                   />
+                  {product.image2 && (
+                    <img
+                      src={product.image2}
+                      alt={`${product.name} alternate view`}
+                      className="secondary-img"
+                    />
+                  )}
 
                   {/* Floating heart icon */}
                   <button

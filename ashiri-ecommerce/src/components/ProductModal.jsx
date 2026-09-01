@@ -113,7 +113,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
             border: '1px solid rgba(0,0,0,0.02)'
           }} className="main-image-wrap">
             <img
-              src={product.image}
+              src={activeView === 'front' ? product.image : (product.image2 || product.image)}
               alt={`${product.name} ${activeView} view`}
               style={{
                 position: 'absolute',
@@ -122,17 +122,47 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
                 width: '100%',
                 height: '100%',
                 objectFit: 'contain',
-                padding: '8px', // Reduced padding to make product image larger
-                transition: 'transform 0.4s ease',
-                // Flip image to mock back view as requested
-                transform: activeView === 'back' ? 'scaleX(-1)' : 'scaleX(1)'
+                padding: '8px',
+                transition: 'opacity 0.3s ease',
               }}
               className="main-image"
             />
           </div>
 
-
-
+          {product.image2 && (
+            <div style={{ display: 'flex', gap: '12px', marginTop: '16px', width: '100%', justifyContent: 'center' }}>
+              <button 
+                onClick={() => setActiveView('front')}
+                style={{
+                  width: '64px',
+                  height: '64px',
+                  borderRadius: '8px',
+                  border: activeView === 'front' ? '2px solid #0f172a' : '2px solid transparent',
+                  padding: '2px',
+                  cursor: 'pointer',
+                  background: '#f4f3f0',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <img src={product.image} alt="Thumbnail 1" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }} />
+              </button>
+              <button 
+                onClick={() => setActiveView('back')}
+                style={{
+                  width: '64px',
+                  height: '64px',
+                  borderRadius: '8px',
+                  border: activeView === 'back' ? '2px solid #0f172a' : '2px solid transparent',
+                  padding: '2px',
+                  cursor: 'pointer',
+                  background: '#f4f3f0',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <img src={product.image2} alt="Thumbnail 2" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }} />
+              </button>
+            </div>
+          )}
 
         </div>
 
