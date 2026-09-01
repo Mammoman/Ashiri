@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Plus, Minus, Trash2, ArrowRight, ArrowLeft, Loader2, Heart, ShoppingBag, Gift } from 'lucide-react';
+import { X, Plus, Minus, Trash2, ArrowRight, ArrowLeft, Loader2, Heart, ShoppingBag, Gift, MessageCircle } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import { useAdmin } from '../context/AdminContext';
 
@@ -968,6 +968,30 @@ const CartSidebar = ({
                   `Pay & Place Order (₦${calculateSubtotal().toLocaleString()})`
                 )}
               </button>
+            </div>
+            
+            <div style={{ marginTop: '16px', textAlign: 'center', paddingBottom: '16px' }}>
+              <a 
+                href="https://wa.me/2349110289330?text=Hello%2C%20I'm%20%5BInsert%20Name%5D%20here%20about%20the%20delivery%20fee%20for%20my%20order" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px',
+                  fontSize: '0.8rem',
+                  color: '#25D366',
+                  textDecoration: 'none',
+                  fontWeight: 600,
+                  padding: '8px 16px',
+                  borderRadius: '20px',
+                  background: 'rgba(37, 211, 102, 0.1)'
+                }}
+              >
+                <MessageCircle size={16} />
+                Message Us on WhatsApp to confirm delivery
+              </a>
             </div>
           </form>
         )}
