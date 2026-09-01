@@ -6,15 +6,11 @@ const Gallery = ({ onViewGallery }) => {
   const { galleryImages } = useAdmin();
   const [lightboxIndex, setLightboxIndex] = useState(null);
 
-  // Filter for 'lookbook' folder, fallback to any images if none exist
+  // Filter for 'lookbook' folder only, no fallback
   const lookbookImages = galleryImages.filter(img => img.folder === 'lookbook');
-  const fallbackImages = galleryImages.length > 0 ? galleryImages.slice(0, 4) : [];
-  const activeImages = lookbookImages.length > 0 ? lookbookImages : fallbackImages;
   
-  const galleryItems = activeImages.map(img => ({
+  const galleryItems = lookbookImages.map(img => ({
     image: img.url,
-    title: img.folder || 'Gallery',
-    desc: 'Ashiri Collection'
   }));
 
   // Keyboard navigation for Lightbox
@@ -135,23 +131,6 @@ const Gallery = ({ onViewGallery }) => {
                 }} className="zoom-icon">
                   <Maximize2 size={14} />
                 </div>
-
-                <h3 style={{
-                  fontSize: '1rem',
-                  fontWeight: 700,
-                  color: '#ffffff',
-                  marginBottom: '6px'
-                }}>
-                  {item.title}
-                </h3>
-                <p style={{
-                  fontSize: '0.75rem',
-                  color: 'rgba(255, 255, 255, 0.8)',
-                  lineHeight: '1.4',
-                  margin: 0
-                }}>
-                  {item.desc}
-                </p>
               </div>
             </div>
           ))}

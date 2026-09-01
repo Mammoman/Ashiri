@@ -6,14 +6,11 @@ const GalleryPage = ({ onBackToShop }) => {
   const { galleryImages } = useAdmin();
   const [lightboxIndex, setLightboxIndex] = useState(null);
 
-  // Filter for 'gallery' folder, fallback to any images if none exist
+  // Filter for 'gallery' folder only, no fallback
   const mainGalleryImages = galleryImages.filter(img => img.folder === 'gallery');
-  const activeImages = mainGalleryImages.length > 0 ? mainGalleryImages : galleryImages;
   
-  const galleryItems = activeImages.map(img => ({
+  const galleryItems = mainGalleryImages.map(img => ({
     image: img.url,
-    title: img.folder || 'Gallery',
-    desc: 'Ashiri Archive'
   }));
 
   const filteredItems = galleryItems;
@@ -113,8 +110,6 @@ const GalleryPage = ({ onBackToShop }) => {
                 className="masonry-img"
               />
               <div className="masonry-overlay">
-                <span className="masonry-category">{item.category}</span>
-                <h3 className="masonry-title">{item.title}</h3>
                 <div className="masonry-zoom">
                   <Maximize2 size={16} />
                 </div>

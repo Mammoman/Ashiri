@@ -139,15 +139,25 @@ const Reviews = () => {
             <p style={{ fontSize: '0.9rem' }}>No reviews yet. Be the first to share your thoughts!</p>
           </div>
         ) : (
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-            gap: '24px'
+          <div 
+            className="reviews-scroll-container"
+            style={{
+              display: 'flex',
+              overflowX: 'auto',
+              gap: '24px',
+              paddingBottom: '24px',
+              scrollSnapType: 'x mandatory',
+              WebkitOverflowScrolling: 'touch',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none'
           }}>
             {displayReviews.map((review) => (
               <div
                 key={review.id}
                 style={{
+                  flex: '0 0 auto',
+                  width: '340px',
+                  scrollSnapAlign: 'start',
                   background: '#ffffff',
                   border: '1px solid var(--color-border)',
                   borderRadius: '16px',
@@ -436,6 +446,9 @@ const Reviews = () => {
       )}
 
       <style dangerouslySetInnerHTML={{ __html: `
+        .reviews-scroll-container::-webkit-scrollbar {
+          display: none;
+        }
         .editorial-review-card:hover {
           transform: translateY(-3px);
           box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06) !important;
