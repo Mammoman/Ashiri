@@ -145,23 +145,6 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
         }} className="modal-right-panel">
 
           <div>
-            {/* Breadcrumbs Navigation */}
-            <div style={{
-              fontSize: '0.75rem',
-              color: 'var(--text-muted)',
-              marginBottom: '16px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              fontWeight: 500
-            }} className="modal-breadcrumbs">
-              <span>Apparel</span>
-              <span>&gt;</span>
-              <span>Tops</span>
-              <span>&gt;</span>
-              <span style={{ color: 'var(--text-dark)' }}>{product.category}</span>
-            </div>
-
             {/* Brand Logo & Product Code */}
             <div style={{
               display: 'flex',
@@ -215,31 +198,6 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
             }} className="modal-price-tag">
               ₦{product.price.toLocaleString()}
             </div>
-
-            {/* Product Details */}
-            {product.details && product.details.length > 0 && (
-              <ul style={{
-                listStyle: 'none',
-                padding: 0,
-                marginBottom: '20px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '4px'
-              }}>
-                {product.details.map((detail, idx) => (
-                  <li key={idx} style={{
-                    fontSize: '0.72rem',
-                    color: 'var(--text-muted)',
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: '6px'
-                  }}>
-                    <span style={{ color: '#10b981', flexShrink: 0, marginTop: '2px' }}>✓</span>
-                    {detail}
-                  </li>
-                ))}
-              </ul>
-            )}
 
             {/* Square Grid Size Selector */}
             <div style={{ marginBottom: '24px' }} className="modal-size-section">

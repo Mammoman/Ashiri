@@ -86,7 +86,7 @@ const AdminLayout = () => {
           <a
             href="/"
             className="admin-nav-link"
-            style={{ color: 'rgba(255,255,255,0.4)' }}
+            style={{ color: '#64748b' }}
           >
             <ExternalLink size={16} />
             View Storefront

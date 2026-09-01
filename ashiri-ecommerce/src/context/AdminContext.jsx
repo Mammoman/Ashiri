@@ -69,19 +69,14 @@ export function AdminProvider({ children }) {
         }
 
         // Fetch Products
-        const { data: productsData } = await supabase.from('products').select('*').order('created_at', { ascending: true });
+        const { data: productsData } = await supabase.from('products').select('*').order('id', { ascending: true });
         if (productsData) {
           const formattedProducts = productsData.map(p => ({
             id: p.id,
             name: p.name,
-            category: p.category,
             price: parseFloat(p.price),
-            originalPrice: p.original_price ? parseFloat(p.original_price) : null,
-            image: p.image_url,
-            description: p.description,
-            details: p.details || [],
+            image: p.image,
             sizes: p.sizes || [],
-            colors: p.colors || []
           }));
           setProducts(formattedProducts);
         }
@@ -172,15 +167,14 @@ export function AdminProvider({ children }) {
     }
 
     const newProduct = {
+      id: Math.floor(Math.random() * 1000000) + 10000, // DB missing auto-increment, generate random ID
       name: productData.name,
-      category: productData.category,
+      category: 'Uncategorized', // Hardcoded default because it's required by the DB but removed from UI
       price: productData.price,
-      original_price: productData.originalPrice || null,
-      image_url: imageUrl,
-      description: productData.description || '',
-      details: productData.details || [],
+      image: imageUrl,
       sizes: productData.sizes || [],
-      colors: productData.colors || []
+      details: [],
+      colors: [],
     };
 
     if (supabase) {
@@ -190,10 +184,8 @@ export function AdminProvider({ children }) {
       if (data && data.length > 0) {
         const p = data[0];
         setProducts(prev => [...prev, {
-          id: p.id, name: p.name, category: p.category, price: parseFloat(p.price),
-          originalPrice: p.original_price ? parseFloat(p.original_price) : null,
-          image: p.image_url, description: p.description, details: p.details || [],
-          sizes: p.sizes || [], colors: p.colors || []
+          id: p.id, name: p.name, price: parseFloat(p.price),
+          image: p.image, sizes: p.sizes || [],
         }]);
       }
       return { success: true };

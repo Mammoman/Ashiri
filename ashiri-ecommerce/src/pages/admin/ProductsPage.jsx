@@ -9,32 +9,41 @@ const ProductsPage = () => {
   // Add product form state
   const [isAdding, setIsAdding] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
-    name: '', category: 'Female', price: '', originalPrice: '',
-    description: '', details: '', sizes: '', colors: ''
+    name: '', price: '', sizes: ''
   });
   const [imageFile, setImageFile] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError('');
     
-    // Parse arrays
-    const parsedData = {
-      ...formData,
-      price: parseFloat(formData.price),
-      originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : null,
-      details: formData.details.split(',').map(s => s.trim()).filter(Boolean),
-      sizes: formData.sizes.split(',').map(s => s.trim()).filter(Boolean),
-      colors: formData.colors.split(',').map(s => s.trim()).filter(Boolean),
-    };
+    try {
+      const parsedData = {
+        ...formData,
+        price: parseFloat(formData.price),
+        sizes: formData.sizes ? formData.sizes.split(',').map(s => s.trim()).filter(Boolean) : [],
+      };
 
-    await addProduct(parsedData, imageFile);
-    
-    setIsSubmitting(false);
-    setIsAdding(false);
-    setFormData({ name: '', category: 'Female', price: '', originalPrice: '', description: '', details: '', sizes: '', colors: '' });
-    setImageFile(null);
+      const result = await addProduct(parsedData, imageFile);
+      
+      if (!result.success) {
+        setError(result.error || 'Failed to save product');
+        setIsSubmitting(false);
+        return;
+      }
+
+      setIsSubmitting(false);
+      setIsAdding(false);
+      setFormData({ name: '', price: '', sizes: '' });
+      setImageFile(null);
+    } catch (err) {
+      console.error(err);
+      setError(err.message || 'An unexpected error occurred');
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -42,7 +51,7 @@ const ProductsPage = () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <h2 style={{ margin: 0, fontSize: '1.2rem', color: '#0f172a' }}>Product Catalog</h2>
         <button 
-          onClick={() => setIsAdding(!isAdding)}
+          onClick={() => { setIsAdding(!isAdding); setError(''); }}
           className="admin-btn admin-btn-primary"
           style={{ padding: '8px 16px', borderRadius: '8px' }}
         >
@@ -57,19 +66,15 @@ const ProductsPage = () => {
             <span className="admin-card-title">Add New Product</span>
           </div>
           <div className="admin-card-body">
+            {error && (
+              <div style={{ padding: '12px', background: '#fee2e2', color: '#dc2626', borderRadius: '8px', marginBottom: '16px', fontSize: '0.85rem' }}>
+                <strong>Error: </strong>{error}
+              </div>
+            )}
             <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               <div className="admin-form-group">
                 <label className="admin-form-label">Product Name</label>
                 <input required className="admin-form-input" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
-              </div>
-              
-              <div className="admin-form-group">
-                <label className="admin-form-label">Category</label>
-                <select className="admin-form-input" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})}>
-                  <option>Female</option>
-                  <option>Male</option>
-                  <option>Unisex</option>
-                </select>
               </div>
 
               <div className="admin-form-group">
@@ -78,34 +83,14 @@ const ProductsPage = () => {
               </div>
 
               <div className="admin-form-group">
-                <label className="admin-form-label">Original Price (optional)</label>
-                <input type="number" className="admin-form-input" value={formData.originalPrice} onChange={e => setFormData({...formData, originalPrice: e.target.value})} />
+                <label className="admin-form-label">Sizes (comma separated)</label>
+                <input className="admin-form-input" placeholder="S, M, L, XL" value={formData.sizes} onChange={e => setFormData({...formData, sizes: e.target.value})} />
               </div>
 
               <div className="admin-form-group" style={{ gridColumn: '1 / -1' }}>
                 <label className="admin-form-label">Product Image</label>
                 <input required type="file" accept="image/*" className="admin-form-input" onChange={e => setImageFile(e.target.files[0])} />
                 <span style={{ fontSize: '0.7rem', color: '#64748b' }}>Image will be uploaded to Supabase Storage automatically.</span>
-              </div>
-
-              <div className="admin-form-group" style={{ gridColumn: '1 / -1' }}>
-                <label className="admin-form-label">Description</label>
-                <textarea className="admin-form-input" rows="3" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} />
-              </div>
-
-              <div className="admin-form-group">
-                <label className="admin-form-label">Bullet Details (comma separated)</label>
-                <input className="admin-form-input" placeholder="100% Cotton, Hand wash only..." value={formData.details} onChange={e => setFormData({...formData, details: e.target.value})} />
-              </div>
-
-              <div className="admin-form-group">
-                <label className="admin-form-label">Sizes (comma separated)</label>
-                <input className="admin-form-input" placeholder="S, M, L, XL" value={formData.sizes} onChange={e => setFormData({...formData, sizes: e.target.value})} />
-              </div>
-
-              <div className="admin-form-group">
-                <label className="admin-form-label">Colors (comma separated)</label>
-                <input className="admin-form-input" placeholder="Red, Blue, Charcoal" value={formData.colors} onChange={e => setFormData({...formData, colors: e.target.value})} />
               </div>
 
               <div style={{ gridColumn: '1 / -1', marginTop: '10px' }}>
@@ -128,7 +113,6 @@ const ProductsPage = () => {
               <tr>
                 <th>Image</th>
                 <th>Product Name</th>
-                <th>Category</th>
                 <th>Price</th>
                 <th>Sizes</th>
                 <th>Actions</th>
@@ -137,10 +121,7 @@ const ProductsPage = () => {
             <tbody>
               {products.map((product) => (
                 <React.Fragment key={product.id}>
-                  <tr
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => setSelectedProduct(selectedProduct === product.id ? null : product.id)}
-                  >
+                  <tr>
                     <td>
                       <div style={{
                         width: '48px', height: '48px', borderRadius: '10px',
@@ -153,7 +134,6 @@ const ProductsPage = () => {
                       <div style={{ fontWeight: 700, fontSize: '0.85rem', color: '#0f172a' }}>{product.name}</div>
                       <div style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '2px' }}>ID: {product.id}</div>
                     </td>
-                    <td><span className="admin-badge processing">{product.category}</span></td>
                     <td style={{ fontWeight: 700, color: '#0f172a' }}>₦{product.price.toLocaleString()}</td>
                     <td>
                       <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
@@ -173,30 +153,6 @@ const ProductsPage = () => {
                       </button>
                     </td>
                   </tr>
-
-                  {selectedProduct === product.id && (
-                    <tr>
-                      <td colSpan={6} style={{ padding: 0, background: '#fafbfc' }}>
-                        <div className="admin-drawer">
-                          <div className="admin-drawer-title">Description</div>
-                          <p style={{ fontSize: '0.82rem', color: '#334155', lineHeight: 1.6, marginBottom: '16px' }}>
-                            {product.description || 'No description available.'}
-                          </p>
-
-                          {product.details && product.details.length > 0 && (
-                            <>
-                              <div className="admin-drawer-title">Product Details</div>
-                              <ul style={{ padding: '0 0 0 18px', margin: 0, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                {product.details.map((d, i) => (
-                                  <li key={i} style={{ fontSize: '0.8rem', color: '#475569' }}>{d}</li>
-                                ))}
-                              </ul>
-                            </>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  )}
                 </React.Fragment>
               ))}
             </tbody>

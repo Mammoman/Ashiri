@@ -37,28 +37,28 @@ const DashboardHome = () => {
         <div className="admin-kpi-card">
           <div className="admin-kpi-label">Total Revenue</div>
           <div className="admin-kpi-value">₦{stats.totalRevenue.toLocaleString()}</div>
-          <div className="admin-kpi-icon" style={{ background: '#6366f1' }}>
+          <div className="admin-kpi-icon">
             <DollarSign size={24} />
           </div>
         </div>
         <div className="admin-kpi-card">
           <div className="admin-kpi-label">Total Orders</div>
           <div className="admin-kpi-value">{stats.totalOrders}</div>
-          <div className="admin-kpi-icon" style={{ background: '#10b981' }}>
+          <div className="admin-kpi-icon">
             <ShoppingBag size={24} />
           </div>
         </div>
         <div className="admin-kpi-card">
           <div className="admin-kpi-label">Avg. Order Value</div>
           <div className="admin-kpi-value">₦{stats.avgOrderValue.toLocaleString()}</div>
-          <div className="admin-kpi-icon" style={{ background: '#f59e0b' }}>
+          <div className="admin-kpi-icon">
             <TrendingUp size={24} />
           </div>
         </div>
         <div className="admin-kpi-card">
           <div className="admin-kpi-label">Pending Orders</div>
           <div className="admin-kpi-value">{stats.pendingOrders}</div>
-          <div className="admin-kpi-icon" style={{ background: '#ef4444' }}>
+          <div className="admin-kpi-icon">
             <Clock size={24} />
           </div>
         </div>

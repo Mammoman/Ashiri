@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Plus, Minus, Trash2, ArrowRight, ArrowLeft, Loader2, Heart, ShoppingBag, Gift } from 'lucide-react';
 import emailjs from '@emailjs/browser';
+import { useAdmin } from '../context/AdminContext';
 
 // EmailJS credentials from .env.local — swap for real values from your EmailJS dashboard
 const EMAILJS_SERVICE_ID  = import.meta.env.VITE_EMAILJS_SERVICE_ID  || 'service_xxxxxxx';
@@ -36,6 +37,7 @@ const CartSidebar = ({
   onToggleFavorite
 }) => {
   if (!isOpen) return null;
+  const { addOrder } = useAdmin();
 
   const [activeTab, setActiveTab] = useState(defaultTab);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -120,6 +122,23 @@ const CartSidebar = ({
     } catch (emailErr) {
       console.error('EmailJS failed to send order confirmation:', emailErr);
       // Non-blocking — the order is still processed even if the email fails
+    }
+
+    // Save order to database
+    try {
+      await addOrder({
+        customerName,
+        customerEmail,
+        customerPhone,
+        customerAddress,
+        subtotal: calculateSubtotal(),
+        paymentMethod: 'paystack',
+        paymentReference: reference,
+        status: 'pending',
+        cartItems: cartItems
+      });
+    } catch (dbErr) {
+      console.error('Failed to save order to database:', dbErr);
     }
 
     // Clear cart and close panel regardless of email outcome

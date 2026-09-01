@@ -59,26 +59,18 @@ const ProductCardSkeleton = () => (
 );
 
 const ProductGrid = ({ products = [], onProductSelect, onAddToCart, favorites = {}, onToggleFavorite }) => {
-  // Dynamically compute circular categories based on unique categories in products
-  const circularCategories = Array.from(new Set(products.map(p => p.category)))
-    .filter(Boolean)
-    .map(category => {
-      const firstProduct = products.find(p => p.category === category);
-      return { name: category, image: firstProduct?.image || '' };
-    });
-  const [activeCategory, setActiveCategory] = useState('All');
   const [sortBy, setSortBy] = useState('featured');
   const [isLoading, setIsLoading] = useState(true);
 
-  // Simulated Loading state on mount, category shift, sorting
+  // Simulated Loading state on mount, sorting
   useEffect(() => {
     setIsLoading(true);
-    const delay = activeCategory === 'All' ? 800 : 500;
+    const delay = 800;
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, delay);
     return () => clearTimeout(timer);
-  }, [activeCategory, sortBy]);
+  }, [sortBy]);
 
   // Toggle favorite state
   const toggleFavorite = (id, e) => {
@@ -86,13 +78,8 @@ const ProductGrid = ({ products = [], onProductSelect, onAddToCart, favorites = 
     onToggleFavorite(id);
   };
 
-  // Filter products by category
-  const filteredProducts = products.filter(product => {
-    return activeCategory === 'All' || product.category === activeCategory;
-  });
-
-  // Sort products
-  const sortedProducts = [...filteredProducts].sort((a, b) => {
+  // Sort products (all products, no category filter)
+  const sortedProducts = [...products].sort((a, b) => {
     if (sortBy === 'price-asc') return a.price - b.price;
     if (sortBy === 'price-desc') return b.price - a.price;
     return 0; // 'featured'
@@ -101,82 +88,6 @@ const ProductGrid = ({ products = [], onProductSelect, onAddToCart, favorites = 
   return (
     <section id="collection" style={{ padding: '30px 0 60px 0', background: 'var(--bg-main)' }}>
       <div className="container">
-
-        {/* Shop By Category (Mockup Circular Category Row) */}
-        <div style={{ marginBottom: '32px' }}>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '16px'
-          }}>
-            <h2 style={{
-              fontSize: '1rem',
-              fontWeight: 700,
-              textTransform: 'capitalize',
-              letterSpacing: '-0.02em',
-              color: 'var(--text-dark)'
-            }}>
-              Shop By Category
-            </h2>
-            <button
-              onClick={() => setActiveCategory('All')}
-              style={{
-                fontSize: '0.8rem',
-                fontWeight: 600,
-                color: 'var(--text-muted)'
-              }}
-            >
-              See All
-            </button>
-          </div>
-
-          {/* Horizontal Scrolling Circular Avatars */}
-          <div style={{
-            display: 'flex',
-            gap: '24px',
-            overflowX: 'auto',
-            paddingTop: '5px',
-            paddingLeft: '5px',
-            paddingBottom: '8px',
-            scrollbarWidth: 'none'
-          }} className="category-scroll">
-
-            {/* 'All' category circle */}
-            <div
-              onClick={() => setActiveCategory('All')}
-              className={`circle-category ${activeCategory === 'All' ? 'active' : ''}`}
-            >
-              <div
-                className="circle-img-wrap flex-center"
-                style={{
-                  background: activeCategory === 'All' ? 'var(--color-accent)' : '#ffffff',
-                  color: activeCategory === 'All' ? '#ffffff' : 'var(--text-dark)'
-                }}
-              >
-                <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>ALL</span>
-              </div>
-              <span className="circle-category-label">All Items</span>
-            </div>
-
-            {circularCategories.map(cat => (
-              <div
-                key={cat.name}
-                onClick={() => setActiveCategory(cat.name)}
-                className={`circle-category ${activeCategory === cat.name ? 'active' : ''}`}
-              >
-                <div className="circle-img-wrap">
-                  <img
-                    src={cat.image}
-                    alt={cat.name}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
-                </div>
-                <span className="circle-category-label">{cat.name.split(' ')[0]}</span>
-              </div>
-            ))}
-          </div>
-        </div>
 
         {/* Section Header: Curated For You */}
         <div style={{
