@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { supabase } from '../lib/supabaseClient';
+import emailjs from '@emailjs/browser';
 
 const AdminContext = createContext(null);
 
@@ -68,8 +69,8 @@ export function AdminProvider({ children }) {
           }));
         }
 
-        // Fetch Products
-        const { data: productsData } = await supabase.from('products').select('*').order('id', { ascending: true });
+        // Fetch Products (Initial load limited for dashboard)
+        const { data: productsData } = await supabase.from('products').select('*').order('id', { ascending: true }).limit(50);
         if (productsData) {
           const formattedProducts = productsData.map(p => ({
             id: p.id,
@@ -87,8 +88,8 @@ export function AdminProvider({ children }) {
           setGalleryImages(galleryData.map(g => ({ id: g.id, url: g.url, folder: g.folder })));
         }
 
-        // Fetch Orders
-        const { data: ordersData } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
+        // Fetch Orders (Initial load limited for dashboard)
+        const { data: ordersData } = await supabase.from('orders').select('*').order('created_at', { ascending: false }).limit(50);
         if (ordersData) {
           const formattedOrders = ordersData.map(o => ({
             id: o.id,
@@ -252,6 +253,48 @@ export function AdminProvider({ children }) {
     setGalleryImages(prev => prev.filter(img => img.id !== imageId));
   };
 
+  // Pagination helpers
+  const fetchProductsPage = async (page = 1, limit = 20) => {
+    if (!supabase) return { data: [], total: 0 };
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
+    const { data, count } = await supabase
+      .from('products')
+      .select('*', { count: 'exact' })
+      .order('id', { ascending: true })
+      .range(from, to);
+    
+    return {
+      data: data ? data.map(p => ({
+        id: p.id, name: p.name, price: parseFloat(p.price),
+        image: p.image, sizes: p.sizes || []
+      })) : [],
+      total: count || 0
+    };
+  };
+
+  const fetchOrdersPage = async (page = 1, limit = 20) => {
+    if (!supabase) return { data: [], total: 0 };
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
+    const { data, count } = await supabase
+      .from('orders')
+      .select('*', { count: 'exact' })
+      .order('created_at', { ascending: false })
+      .range(from, to);
+
+    return {
+      data: data ? data.map(o => ({
+        id: o.id, createdAt: o.created_at, customerName: o.customer_name,
+        customerEmail: o.customer_email, customerPhone: o.customer_phone,
+        customerAddress: o.customer_address, subtotal: o.subtotal,
+        paymentMethod: o.payment_method, paymentReference: o.payment_reference,
+        status: o.status, cartItems: o.cart_items
+      })) : [],
+      total: count || 0
+    };
+  };
+
   // Order helpers
   const addOrder = async (order) => {
     const newOrder = {
@@ -278,6 +321,29 @@ export function AdminProvider({ children }) {
   const updateOrderStatus = async (orderId, newStatus) => {
     setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o)));
     if (supabase) await supabase.from('orders').update({ status: newStatus }).eq('id', orderId);
+
+    // Send fulfillment email if shipped or delivered
+    if (newStatus === 'shipped' || newStatus === 'delivered') {
+      const order = orders.find(o => o.id === orderId);
+      if (order && import.meta.env.VITE_EMAILJS_FULFILLMENT_TEMPLATE_ID) {
+        try {
+          await emailjs.send(
+            import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_xxxxxxx',
+            import.meta.env.VITE_EMAILJS_FULFILLMENT_TEMPLATE_ID,
+            {
+              customer_name: order.customerName,
+              email: order.customerEmail,
+              order_id: orderId,
+              status: newStatus,
+            },
+            import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'xxxxxxxxxxxxxxxx'
+          );
+          console.log(`Fulfillment email sent for order ${orderId}`);
+        } catch (err) {
+          console.error('Failed to send fulfillment email:', err);
+        }
+      }
+    }
   };
 
   const deleteOrder = async (orderId) => {
@@ -327,6 +393,7 @@ export function AdminProvider({ children }) {
     galleryImages, addGalleryImage, deleteGalleryImage,
     storeSettings, updateSettings,
     orders, addOrder, updateOrderStatus, deleteOrder,
+    fetchProductsPage, fetchOrdersPage,
     adminReviews, addReview, updateReviewStatus, deleteReview,
     getStats, isLoadingSupabase
   };

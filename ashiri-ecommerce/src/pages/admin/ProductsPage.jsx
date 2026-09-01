@@ -1,10 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAdmin } from '../../context/AdminContext';
 import { Package, Plus, Trash2, X } from 'lucide-react';
 
 const ProductsPage = () => {
-  const { products, addProduct, deleteProduct } = useAdmin();
+  const { addProduct, deleteProduct, fetchProductsPage } = useAdmin();
+  const [localProducts, setLocalProducts] = useState([]);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [page, setPage] = useState(1);
+  const limit = 20;
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState(null);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      setIsLoading(true);
+      const { data, total } = await fetchProductsPage(page, limit);
+      setLocalProducts(data);
+      setTotalProducts(total);
+      setIsLoading(false);
+    };
+    loadProducts();
+  }, [page, fetchProductsPage]);
+
+  const totalPages = Math.ceil(totalProducts / limit);
   
   // Add product form state
   const [isAdding, setIsAdding] = useState(false);
@@ -105,32 +123,38 @@ const ProductsPage = () => {
 
       <div className="admin-card">
         <div className="admin-card-header">
-          <span className="admin-card-title">Live Products ({products.length} items)</span>
+          <span className="admin-card-title">Live Products ({localProducts.length} items)</span>
         </div>
         <div className="admin-card-body">
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Image</th>
-                <th>Product Name</th>
-                <th>Price</th>
-                <th>Sizes</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((product) => (
-                <React.Fragment key={product.id}>
-                  <tr>
-                    <td>
-                      <div style={{
-                        width: '48px', height: '48px', borderRadius: '10px',
-                        overflow: 'hidden', background: '#f1f5f9',
-                      }}>
-                        <img src={product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      </div>
-                    </td>
-                    <td>
+          {localProducts.length === 0 ? (
+            <div className="admin-empty">
+              <Package size={36} />
+              <p>No products yet. Add your first product to get started.</p>
+            </div>
+          ) : (
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Product Name</th>
+                  <th>Price</th>
+                  <th>Sizes</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {localProducts.map((product) => (
+                  <React.Fragment key={product.id}>
+                    <tr>
+                      <td>
+                        <div style={{
+                          width: '48px', height: '48px', borderRadius: '10px',
+                          overflow: 'hidden', background: '#f1f5f9',
+                        }}>
+                          <img src={product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        </div>
+                      </td>
+                      <td>
                       <div style={{ fontWeight: 700, fontSize: '0.85rem', color: '#0f172a' }}>{product.name}</div>
                       <div style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '2px' }}>ID: {product.id}</div>
                     </td>
@@ -157,8 +181,33 @@ const ProductsPage = () => {
               ))}
             </tbody>
           </table>
+          )}
         </div>
       </div>
+
+      {totalPages > 1 && (
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px' }}>
+          <span style={{ fontSize: '0.8rem', color: '#64748b' }}>
+            Showing page {page} of {totalPages}
+          </span>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button 
+              className="admin-btn admin-btn-secondary admin-btn-sm" 
+              onClick={() => setPage(p => Math.max(1, p - 1))}
+              disabled={page === 1}
+            >
+              Previous
+            </button>
+            <button 
+              className="admin-btn admin-btn-secondary admin-btn-sm" 
+              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

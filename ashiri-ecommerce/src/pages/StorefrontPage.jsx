@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import ProductGrid from '../components/ProductGrid';
@@ -110,6 +111,10 @@ function StorefrontPage() {
 
   return (
     <div className="app-wrapper">
+      <Helmet>
+        <title>{selectedProduct ? `${selectedProduct.name} — ASHIRI` : 'ASHIRI — Premium Artisanal Tank Tops'}</title>
+      </Helmet>
+
       <Navbar
         cartCount={cartCount}
         onCartClick={() => { setSidebarTab('cart'); setIsCartOpen(true); }}

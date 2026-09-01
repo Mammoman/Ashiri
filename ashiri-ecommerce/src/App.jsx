@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import StorefrontPage from './pages/StorefrontPage';
 import { AdminProvider, useAdmin } from './context/AdminContext';
 import AdminLogin from './pages/admin/AdminLogin';
@@ -50,11 +51,13 @@ function AppRoutes() {
 
 function App() {
   return (
-    <BrowserRouter>
-      <AdminProvider>
-        <AppRoutes />
-      </AdminProvider>
-    </BrowserRouter>
+    <HelmetProvider>
+      <BrowserRouter>
+        <AdminProvider>
+          <AppRoutes />
+        </AdminProvider>
+      </BrowserRouter>
+    </HelmetProvider>
   );
 }
 

@@ -1,16 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAdmin } from '../../context/AdminContext';
 import { Search, ChevronDown, ChevronUp, Package, Truck, CheckCircle, XCircle, Clock } from 'lucide-react';
 
 const statusOptions = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
 
 const OrdersPage = () => {
-  const { orders, updateOrderStatus, deleteOrder } = useAdmin();
+  const { updateOrderStatus, deleteOrder, fetchOrdersPage } = useAdmin();
+  const [localOrders, setLocalOrders] = useState([]);
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [page, setPage] = useState(1);
+  const limit = 20;
+  const [isLoading, setIsLoading] = useState(true);
+
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [expandedOrder, setExpandedOrder] = useState(null);
 
-  const filteredOrders = orders.filter((order) => {
+  useEffect(() => {
+    const loadOrders = async () => {
+      setIsLoading(true);
+      const { data, total } = await fetchOrdersPage(page, limit);
+      setLocalOrders(data);
+      setTotalOrders(total);
+      setIsLoading(false);
+    };
+    loadOrders();
+  }, [page, fetchOrdersPage]);
+
+  const filteredOrders = localOrders.filter((order) => {
     const matchesSearch =
       !searchTerm ||
       (order.id || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -23,6 +40,8 @@ const OrdersPage = () => {
   const toggleExpand = (orderId) => {
     setExpandedOrder(expandedOrder === orderId ? null : orderId);
   };
+
+  const totalPages = Math.ceil(totalOrders / limit);
 
   return (
     <div>
@@ -201,6 +220,30 @@ const OrdersPage = () => {
           )}
         </div>
       </div>
+
+      {totalPages > 1 && (
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px' }}>
+          <span style={{ fontSize: '0.8rem', color: '#64748b' }}>
+            Showing page {page} of {totalPages}
+          </span>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button 
+              className="admin-btn admin-btn-secondary admin-btn-sm" 
+              onClick={() => setPage(p => Math.max(1, p - 1))}
+              disabled={page === 1}
+            >
+              Previous
+            </button>
+            <button 
+              className="admin-btn admin-btn-secondary admin-btn-sm" 
+              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
