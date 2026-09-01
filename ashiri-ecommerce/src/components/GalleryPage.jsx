@@ -6,11 +6,12 @@ const GalleryPage = ({ onBackToShop }) => {
   const { galleryImages } = useAdmin();
   const [lightboxIndex, setLightboxIndex] = useState(null);
 
-  // Filter for 'gallery' folder only, no fallback
-  const mainGalleryImages = galleryImages.filter(img => img.folder === 'gallery');
+  // Group all images and sort by folder so categories chunk together
+  const sortedImages = [...galleryImages].sort((a, b) => (a.folder || '').localeCompare(b.folder || ''));
   
-  const galleryItems = mainGalleryImages.map(img => ({
+  const galleryItems = sortedImages.map(img => ({
     image: img.url,
+    category: img.folder || 'Other',
   }));
 
   const filteredItems = galleryItems;
@@ -98,24 +99,36 @@ const GalleryPage = ({ onBackToShop }) => {
 
         {/* Masonry Grid */}
         <div className="masonry-grid">
-          {filteredItems.map((item, idx) => (
-            <div
-              key={idx}
-              className={`masonry-item ${item.type}`}
-              onClick={() => setLightboxIndex(idx)}
-            >
-              <img
-                src={item.image}
-                alt={item.title}
-                className="masonry-img"
-              />
-              <div className="masonry-overlay">
-                <div className="masonry-zoom">
-                  <Maximize2 size={16} />
+          {filteredItems.map((item, idx) => {
+            const isFirstOfCategory = idx === 0 || filteredItems[idx - 1].category !== item.category;
+
+            return (
+              <React.Fragment key={idx}>
+                {isFirstOfCategory && (
+                  <div style={{ gridColumn: '1 / -1', marginTop: idx === 0 ? '0' : '40px', marginBottom: '16px', borderBottom: '1px solid var(--color-border)', paddingBottom: '8px' }}>
+                    <h3 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-dark)' }}>
+                      {item.category}
+                    </h3>
+                  </div>
+                )}
+                <div
+                  className={`masonry-item ${item.type || ''}`}
+                  onClick={() => setLightboxIndex(idx)}
+                >
+                  <img
+                    src={item.image}
+                    alt={item.category}
+                    className="masonry-img"
+                  />
+                  <div className="masonry-overlay">
+                    <div className="masonry-zoom">
+                      <Maximize2 size={16} />
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
+              </React.Fragment>
+            );
+          })}
         </div>
 
       </div>
