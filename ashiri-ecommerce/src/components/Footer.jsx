@@ -74,7 +74,7 @@ const Footer = ({ onPageChange }) => {
             </p>
             {/* Socials */}
             <div style={{ display: 'flex', gap: '12px' }}>
-              <a href="#" aria-label="Instagram" className="social-icon-link">
+              <a href="https://www.instagram.com/ashiri.ng?igsi=MWNoODlieGozMnI0Mw%3D%3D" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="social-icon-link">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -91,43 +91,18 @@ const Footer = ({ onPageChange }) => {
                   <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
                 </svg>
               </a>
-              <a href="#" aria-label="Whatsapp" className="social-icon-link">
+              <a href="https://www.tiktok.com/@weloveashiri?_r=1&_t=ZS-99NAsIuX2M1" target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="social-icon-link">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
                   height="16"
-                  viewBox="0 0 16 16"
+                  viewBox="0 0 448 512"
                   fill="currentColor"
                 >
-                  <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.618-4.934c-.198-.1-1.17-.578-1.353-.646-.182-.068-.315-.1-.447.1-.132.2-.512.647-.628.78-.114.132-.23.149-.427.05a5.4 5.4 0 0 1-1.583-1.007 5.7 5.7 0 0 1-1.096-1.365c-.114-.197-.012-.305.087-.404.089-.09.197-.23.297-.346a1.2 1.2 0 0 0 .198-.33c.066-.134.034-.251-.017-.35-.052-.1-.447-1.077-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232" />
+                  <path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.17h0A122.18,122.18,0,0,0,381,102.39a121.43,121.43,0,0,0,67,20.14Z" />
                 </svg>
               </a>
             </div>
-          </div>
-
-          {/* Links Column 1: Shop */}
-          <div>
-            <h4 style={{
-              fontSize: '0.8rem',
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              color: 'var(--text-dark)',
-              marginBottom: '16px'
-            }}>
-              Collections
-            </h4>
-            <ul style={{
-              listStyle: 'none',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '10px',
-              fontSize: '0.85rem'
-            }} className="footer-list">
-              <li><a href="#collection" onClick={(e) => handleLinkClick(e, 'collection')}>All Items</a></li>
-              <li><a href="#collection" onClick={(e) => handleLinkClick(e, 'collection')}>Male Collection</a></li>
-              <li><a href="#collection" onClick={(e) => handleLinkClick(e, 'collection')}>Female Collection</a></li>
-              <li><a href="#collection" onClick={(e) => handleLinkClick(e, 'collection')}>Unisex Collection</a></li>
-            </ul>
           </div>
 
           {/* Links Column 2: Service */}

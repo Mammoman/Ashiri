@@ -246,6 +246,46 @@ export function AdminProvider({ children }) {
     return { success: true };
   };
 
+  const addGalleryImages = async (imageFiles, folder = 'Uncategorized') => {
+    if (!supabase || !imageFiles || imageFiles.length === 0) return { success: false, error: 'No images or Supabase connection' };
+    
+    const uploadedImages = [];
+    
+    for (const file of imageFiles) {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `gallery/${fileName}`;
+      
+      const { error: uploadError } = await supabase.storage.from('brand_assets').upload(filePath, file);
+      if (uploadError) {
+        console.error('Upload error for file:', file.name, uploadError);
+        continue; // skip this file and continue with others
+      }
+      
+      const { data } = supabase.storage.from('brand_assets').getPublicUrl(filePath);
+      
+      uploadedImages.push({
+        url: data.publicUrl,
+        folder: folder
+      });
+    }
+    
+    if (uploadedImages.length === 0) {
+      return { success: false, error: 'All uploads failed' };
+    }
+    
+    // Batch insert to DB
+    const { data: dbData, error: dbError } = await supabase.from('gallery').insert(uploadedImages).select();
+    
+    if (dbError) return { success: false, error: dbError.message };
+    
+    if (dbData && dbData.length > 0) {
+      setGalleryImages(prev => [...dbData, ...prev]);
+    }
+    
+    return { success: true, count: uploadedImages.length };
+  };
+
   const deleteGalleryImage = async (imageId) => {
     if (supabase) {
       await supabase.from('gallery').delete().eq('id', imageId);
@@ -390,7 +430,7 @@ export function AdminProvider({ children }) {
   const value = {
     isAuthenticated, login, logout,
     products, addProduct, deleteProduct,
-    galleryImages, addGalleryImage, deleteGalleryImage,
+    galleryImages, addGalleryImage, addGalleryImages, deleteGalleryImage,
     storeSettings, updateSettings,
     orders, addOrder, updateOrderStatus, deleteOrder,
     fetchProductsPage, fetchOrdersPage,

@@ -9,6 +9,7 @@ import Gallery from '../components/Gallery';
 import GalleryPage from '../components/GalleryPage';
 import Reviews from '../components/Reviews';
 import Footer from '../components/Footer';
+import WhatsAppWidget from '../components/WhatsAppWidget';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useAdmin } from '../context/AdminContext';
 
@@ -167,6 +168,8 @@ function StorefrontPage() {
         wishlistItems={wishlistItems}
         onToggleFavorite={handleToggleFavorite}
       />
+
+      <WhatsAppWidget />
     </div>
   );
 }
