@@ -157,7 +157,7 @@ const GalleryAdmin = () => {
                 const folderImages = galleryImages.filter(img => (img.folder || 'uncategorized') === folderName);
                 
                 return (
-                  <div key={folderName}>
+                  <div key={folderName} style={{ minWidth: 0, width: '100%' }}>
                     <h3 style={{ 
                       fontSize: '1rem', 
                       fontWeight: 700, 
