@@ -207,14 +207,39 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
 
             {/* Large Bold Price */}
             <div style={{
-              fontSize: '2rem',
+              fontSize: '1.8rem',
               fontWeight: 700,
               color: 'var(--text-dark)',
-              marginBottom: '24px',
+              marginBottom: '20px',
               letterSpacing: '-0.03em'
             }} className="modal-price-tag">
-              ₦ {product.price}
+              ₦{product.price.toLocaleString()}
             </div>
+
+            {/* Product Details */}
+            {product.details && product.details.length > 0 && (
+              <ul style={{
+                listStyle: 'none',
+                padding: 0,
+                marginBottom: '20px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '4px'
+              }}>
+                {product.details.map((detail, idx) => (
+                  <li key={idx} style={{
+                    fontSize: '0.72rem',
+                    color: 'var(--text-muted)',
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '6px'
+                  }}>
+                    <span style={{ color: '#10b981', flexShrink: 0, marginTop: '2px' }}>✓</span>
+                    {detail}
+                  </li>
+                ))}
+              </ul>
+            )}
 
             {/* Square Grid Size Selector */}
             <div style={{ marginBottom: '24px' }} className="modal-size-section">

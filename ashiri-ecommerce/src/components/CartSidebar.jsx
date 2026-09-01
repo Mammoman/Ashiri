@@ -150,11 +150,12 @@ const CartSidebar = ({
     setIsSubmitting(true);
 
     if (paymentMethod === 'paystack') {
-      const publicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || 'pk_test_dcae78550183b19409b85c13e4bcfc424a1e9411';
-      // Detect if we are in Sandbox / Demo mode with a placeholder or invalid key
-      const isPlaceholderKey = !import.meta.env.VITE_PAYSTACK_PUBLIC_KEY ||
-        publicKey.startsWith('pk_test_dcae78550183b19409b85c13e4bcfc424a1e9411') ||
-        publicKey === 'pk_test_placeholder';
+      const publicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || '';
+      // Detect if we are in Sandbox / Demo mode with a placeholder or missing key
+      const isPlaceholderKey = !publicKey ||
+        publicKey === 'pk_test_your_key_here' ||
+        publicKey === 'pk_test_placeholder' ||
+        publicKey.length < 20;
 
       if (isPlaceholderKey) {
         setIsMockPaystackOpen(true);

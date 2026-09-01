@@ -301,23 +301,14 @@ const Gallery = ({ onViewGallery }) => {
             />
 
             <div style={{ textAlign: 'center', maxWidth: '500px' }}>
-              <h3 style={{
-                fontSize: '1.25rem',
-                fontWeight: 700,
-                color: '#ffffff',
-                marginBottom: '8px',
-                letterSpacing: '-0.02em'
+              <span style={{
+                fontSize: '0.75rem',
+                color: 'rgba(255,255,255,0.5)',
+                fontWeight: 600,
+                letterSpacing: '0.1em'
               }}>
-                {galleryItems[lightboxIndex].title}
-              </h3>
-              <p style={{
-                fontSize: '0.85rem',
-                color: '#cccccc',
-                lineHeight: '1.5',
-                margin: 0
-              }}>
-                {galleryItems[lightboxIndex].desc}
-              </p>
+                {lightboxIndex + 1} / {galleryItems.length}
+              </span>
             </div>
           </div>
         </div>

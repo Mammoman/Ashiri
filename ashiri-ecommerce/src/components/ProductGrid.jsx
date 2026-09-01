@@ -172,67 +172,15 @@ const ProductGrid = ({ onProductSelect, onAddToCart, favorites = {}, onToggleFav
           </div>
         </div>
 
-        {/* Filters Toolbar - Mockup pill tags */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '12px',
-          marginBottom: '24px',
-          paddingBottom: '16px',
-          borderBottom: '1px solid var(--color-border)'
-        }}>
-          {/* Mockup filter pills row */}
-          <div style={{
-            display: 'flex',
-            gap: '8px',
-            overflowX: 'auto',
-            scrollbarWidth: 'none',
-            maxWidth: '100%'
-          }} className="category-scroll">
-            <button className="filter-btn">
-              Size <ChevronDown size={13} />
-            </button>
-            <button className="filter-btn">
-              Color <ChevronDown size={13} />
-            </button>
-          </div>
-
-          {/* Sorter */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 500 }}>Sort:</span>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              style={{
-                fontSize: '0.8rem',
-                fontWeight: 500,
-                padding: '6px 12px',
-                border: '1px solid var(--color-border)',
-                background: 'var(--bg-card)',
-                color: 'var(--text-dark)',
-                borderRadius: 'var(--radius-pill)',
-                outline: 'none',
-                cursor: 'pointer'
-              }}
-            >
-              <option value="featured">Featured</option>
-              <option value="price-asc">Price: Low to High</option>
-              <option value="price-desc">Price: High to Low</option>
-            </select>
-          </div>
-        </div>
-
         {/* Section Header: Curated For You */}
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: '16px'
+          marginBottom: '20px'
         }}>
           <h2 style={{
-            fontSize: '1rem',
+            fontSize: '1.1rem',
             fontWeight: 700,
             textTransform: 'capitalize',
             letterSpacing: '-0.02em',
@@ -287,9 +235,9 @@ const ProductGrid = ({ onProductSelect, onAddToCart, favorites = {}, onToggleFav
                 <div style={{
                   position: 'relative',
                   width: '100%',
-                  paddingTop: '115%', // Mockup Aspect Ratio
+                  paddingTop: '115%', // Aspect Ratio
                   overflow: 'hidden',
-                  background: '#f3f4f6' // Match image background color
+                  background: '#f3f4f6'
                 }}>
                   <img
                     src={product.image}
@@ -304,7 +252,7 @@ const ProductGrid = ({ onProductSelect, onAddToCart, favorites = {}, onToggleFav
                     }}
                   />
 
-                  {/* Floating heart icon matching mockup */}
+                  {/* Floating heart icon */}
                   <button
                     onClick={(e) => toggleFavorite(product.id, e)}
                     aria-label={favorites[product.id] ? "Remove from favorites" : "Add to favorites"}
@@ -371,12 +319,8 @@ const ProductGrid = ({ onProductSelect, onAddToCart, favorites = {}, onToggleFav
                     {product.name}
                   </h3>
 
-                  {/* Price Layout: Current Red Sale Price & Original Price Crossed Out */}
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'baseline',
-                    gap: '8px'
-                  }}>
+                  {/* Price Layout: Clean single price */}
+                  <div>
                     <span style={{
                       fontSize: '0.95rem',
                       fontWeight: 700,
@@ -384,15 +328,6 @@ const ProductGrid = ({ onProductSelect, onAddToCart, favorites = {}, onToggleFav
                     }}>
                       ₦{product.price.toLocaleString()}
                     </span>
-                    {product.originalPrice && (
-                      <span style={{
-                        fontSize: '0.8rem',
-                        color: 'var(--text-muted)',
-                        textDecoration: 'line-through'
-                      }}>
-                        ₦{product.originalPrice.toLocaleString()}
-                      </span>
-                    )}
                   </div>
                 </div>
               </div>

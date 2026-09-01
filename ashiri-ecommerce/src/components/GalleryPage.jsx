@@ -274,25 +274,13 @@ const GalleryPage = ({ onBackToShop }) => {
 
             <div style={{ textAlign: 'center', maxWidth: '600px' }}>
               <span style={{
-                fontSize: '0.7rem',
-                fontWeight: 700,
-                color: '#a78bfa',
-                textTransform: 'uppercase',
-                letterSpacing: '0.15em',
-                display: 'block',
-                marginBottom: '6px'
+                fontSize: '0.75rem',
+                color: 'rgba(255,255,255,0.5)',
+                fontWeight: 600,
+                letterSpacing: '0.1em'
               }}>
-                {filteredItems[lightboxIndex].category}
+                {lightboxIndex + 1} / {filteredItems.length}
               </span>
-              <h3 style={{
-                fontSize: '1.4rem',
-                fontWeight: 700,
-                color: '#ffffff',
-                marginBottom: '4px',
-                letterSpacing: '-0.02em'
-              }}>
-                {filteredItems[lightboxIndex].title}
-              </h3>
             </div>
           </div>
         </div>

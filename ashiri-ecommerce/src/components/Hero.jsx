@@ -32,7 +32,6 @@ const Hero = () => {
   const startAutoplay = () => {
     stopAutoplay();
     autoplayTimer.current = setInterval(() => {
-      goToSlide((prev) => (typeof prev === 'function' ? prev : (prev + 1) % slides.length));
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 5500);
   };
