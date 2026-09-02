@@ -3,7 +3,7 @@ import { X, ChevronLeft, ChevronRight, Maximize2, ArrowLeft } from 'lucide-react
 import { useAdmin } from '../context/AdminContext';
 
 const GalleryPage = ({ onBackToShop }) => {
-  const { galleryImages } = useAdmin();
+  const { galleryImages, isLoadingSupabase } = useAdmin();
   const [lightboxIndex, setLightboxIndex] = useState(null);
 
   // Show all images as a flat gallery
@@ -96,24 +96,48 @@ const GalleryPage = ({ onBackToShop }) => {
 
         {/* Masonry Grid */}
         <div className="masonry-grid">
-          {filteredItems.map((item, idx) => (
-            <div
-              key={idx}
-              className={`masonry-item ${item.type || ''}`}
-              onClick={() => setLightboxIndex(idx)}
-            >
-              <img
-                src={item.image}
-                alt={`Gallery ${idx}`}
-                className="masonry-img"
-              />
-              <div className="masonry-overlay">
-                <div className="masonry-zoom">
-                  <Maximize2 size={16} />
+          {isLoadingSupabase ? (
+            // Render 8 skeleton items to fill out the grid nicely
+            [...Array(8)].map((_, idx) => (
+              <div
+                key={`skeleton-${idx}`}
+                className="masonry-item"
+                style={{ pointerEvents: 'none' }}
+              >
+                <div 
+                  className="shimmer-bg" 
+                  style={{
+                    width: '100%', 
+                    height: idx % 3 === 0 ? '450px' : (idx % 2 === 0 ? '300px' : '380px'), // varying heights for masonry look
+                    borderRadius: '8px'
+                  }}
+                />
+              </div>
+            ))
+          ) : filteredItems.length === 0 ? (
+             <div style={{ width: '100%', textAlign: 'center', padding: '60px 0', color: 'var(--text-muted)' }}>
+               <p>No gallery images found.</p>
+             </div>
+          ) : (
+            filteredItems.map((item, idx) => (
+              <div
+                key={idx}
+                className={`masonry-item ${item.type || ''}`}
+                onClick={() => setLightboxIndex(idx)}
+              >
+                <img
+                  src={item.image}
+                  alt={`Gallery ${idx}`}
+                  className="masonry-img"
+                />
+                <div className="masonry-overlay">
+                  <div className="masonry-zoom">
+                    <Maximize2 size={16} />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
 
       </div>

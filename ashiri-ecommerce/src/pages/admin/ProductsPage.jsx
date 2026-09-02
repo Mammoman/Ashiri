@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAdmin } from '../../context/AdminContext';
-import { Package, Plus, Trash2, X, Image } from 'lucide-react';
+import { Package, Plus, Trash2, X, Image, Edit2 } from 'lucide-react';
 
 const ProductsPage = () => {
-  const { addProduct, deleteProduct, fetchProductsPage } = useAdmin();
+  const { addProduct, updateProduct, deleteProduct, fetchProductsPage } = useAdmin();
   const [localProducts, setLocalProducts] = useState([]);
   const [totalProducts, setTotalProducts] = useState(0);
   const [page, setPage] = useState(1);
@@ -28,6 +28,7 @@ const ProductsPage = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [editingProductId, setEditingProductId] = useState(null);
   const [formData, setFormData] = useState({
     name: '', price: '', sizes: ''
   });
@@ -46,7 +47,12 @@ const ProductsPage = () => {
         sizes: formData.sizes ? formData.sizes.split(',').map(s => s.trim()).filter(Boolean) : [],
       };
 
-      const result = await addProduct(parsedData, imageFile, image2File);
+      let result;
+      if (editingProductId) {
+        result = await updateProduct(editingProductId, parsedData, imageFile, image2File);
+      } else {
+        result = await addProduct(parsedData, imageFile, image2File);
+      }
       
       if (!result.success) {
         setError(result.error || 'Failed to save product');
@@ -56,6 +62,7 @@ const ProductsPage = () => {
 
       setIsSubmitting(false);
       setIsAdding(false);
+      setEditingProductId(null);
       setFormData({ name: '', price: '', sizes: '' });
       setImageFile(null);
       setImage2File(null);
@@ -66,12 +73,34 @@ const ProductsPage = () => {
     }
   };
 
+  const handleEditClick = (product) => {
+    setEditingProductId(product.id);
+    setFormData({
+      name: product.name,
+      price: product.price.toString(),
+      sizes: (product.sizes || []).join(', ')
+    });
+    setImageFile(null);
+    setImage2File(null);
+    setIsAdding(true);
+    setError('');
+  };
+
+  const handleCancelClick = () => {
+    setIsAdding(false);
+    setEditingProductId(null);
+    setFormData({ name: '', price: '', sizes: '' });
+    setImageFile(null);
+    setImage2File(null);
+    setError('');
+  };
+
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <h2 style={{ margin: 0, fontSize: '1.2rem', color: '#0f172a' }}>Product Catalog</h2>
         <button 
-          onClick={() => { setIsAdding(!isAdding); setError(''); }}
+          onClick={isAdding ? handleCancelClick : () => { setIsAdding(true); setError(''); }}
           className="admin-btn admin-btn-primary"
           style={{ padding: '8px 16px', borderRadius: '8px' }}
         >
@@ -83,7 +112,7 @@ const ProductsPage = () => {
       {isAdding && (
         <div className="admin-card" style={{ marginBottom: '24px' }}>
           <div className="admin-card-header">
-            <span className="admin-card-title">Add New Product</span>
+            <span className="admin-card-title">{editingProductId ? 'Edit Product' : 'Add New Product'}</span>
           </div>
           <div className="admin-card-body" style={{ padding: '24px' }}>
             {error && (
@@ -130,14 +159,14 @@ const ProductsPage = () => {
                   >
                     <Image size={32} style={{ marginBottom: '12px', color: '#94a3b8' }} />
                     <span style={{ fontWeight: 600, color: '#334155', textAlign: 'center' }}>
-                      {imageFile ? imageFile.name : 'Select Primary Image'}
+                      {imageFile ? imageFile.name : (editingProductId ? 'Keep Current Primary Image' : 'Select Primary Image')}
                     </span>
-                    {!imageFile && <span style={{ fontSize: '0.75rem', marginTop: '4px', textAlign: 'center' }}>PNG, JPG up to 5MB.</span>}
+                    {!imageFile && !editingProductId && <span style={{ fontSize: '0.75rem', marginTop: '4px', textAlign: 'center' }}>PNG, JPG up to 5MB.</span>}
                     <input 
                       type="file" 
                       accept="image/*" 
                       onChange={e => setImageFile(e.target.files[0])} 
-                      required
+                      required={!editingProductId}
                       style={{ display: 'none' }}
                     />
                   </label>
@@ -164,9 +193,9 @@ const ProductsPage = () => {
                   >
                     <Image size={32} style={{ marginBottom: '12px', color: '#94a3b8' }} />
                     <span style={{ fontWeight: 600, color: '#334155', textAlign: 'center' }}>
-                      {image2File ? image2File.name : 'Select Secondary Image'}
+                      {image2File ? image2File.name : (editingProductId ? 'Keep Current Secondary Image' : 'Select Secondary Image')}
                     </span>
-                    {!image2File && <span style={{ fontSize: '0.75rem', marginTop: '4px', textAlign: 'center' }}>Shown on hover/details.</span>}
+                    {!image2File && !editingProductId && <span style={{ fontSize: '0.75rem', marginTop: '4px', textAlign: 'center' }}>Shown on hover/details.</span>}
                     <input 
                       type="file" 
                       accept="image/*" 
@@ -180,8 +209,8 @@ const ProductsPage = () => {
               {error && <p style={{ color: '#dc2626', fontSize: '0.8rem', margin: 0 }}>{error}</p>}
 
               <button type="submit" className="admin-btn admin-btn-primary" disabled={isSubmitting} style={{ gridColumn: '1 / -1', marginTop: '10px' }}>
-                  {isSubmitting ? 'Uploading & Saving...' : 'Save Product'}
-                </button>
+                {isSubmitting ? (editingProductId ? 'Updating...' : 'Uploading & Saving...') : (editingProductId ? 'Update Product' : 'Save Product')}
+              </button>
             </form>
           </div>
         </div>
@@ -235,12 +264,22 @@ const ProductsPage = () => {
                       </div>
                     </td>
                     <td>
-                      <button 
-                        onClick={(e) => { e.stopPropagation(); deleteProduct(product.id); }}
-                        style={{ color: '#dc2626', background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); handleEditClick(product); }}
+                          style={{ color: '#0ea5e9', background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}
+                          title="Edit Product"
+                        >
+                          <Edit2 size={16} />
+                        </button>
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); deleteProduct(product.id); }}
+                          style={{ color: '#dc2626', background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}
+                          title="Delete Product"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 </React.Fragment>

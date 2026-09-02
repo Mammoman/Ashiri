@@ -215,6 +215,63 @@ export function AdminProvider({ children }) {
     return { success: false, error: 'Supabase not connected' };
   };
 
+  const updateProduct = async (productId, productData, imageFile, image2File) => {
+    let imageUrl = productData.image || '';
+    let image2Url = productData.image2 || '';
+    
+    if (supabase && imageFile) {
+      const fileExt = imageFile.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `products/${fileName}`;
+      
+      const { error: uploadError } = await supabase.storage.from('brand_assets').upload(filePath, imageFile);
+      if (uploadError) {
+        console.error('Upload error', uploadError);
+        return { success: false, error: uploadError.message };
+      }
+      
+      const { data } = supabase.storage.from('brand_assets').getPublicUrl(filePath);
+      imageUrl = data.publicUrl;
+    }
+
+    if (supabase && image2File) {
+      const fileExt = image2File.name.split('.').pop();
+      const fileName = `${Math.random()}_2.${fileExt}`;
+      const filePath = `products/${fileName}`;
+      
+      const { error: uploadError } = await supabase.storage.from('brand_assets').upload(filePath, image2File);
+      if (uploadError) {
+        console.error('Secondary upload error', uploadError);
+      } else {
+        const { data } = supabase.storage.from('brand_assets').getPublicUrl(filePath);
+        image2Url = data.publicUrl;
+      }
+    }
+
+    const updatedProductData = {
+      name: productData.name,
+      price: productData.price,
+      image: imageUrl,
+      image2: image2Url || null,
+      sizes: productData.sizes || [],
+    };
+
+    if (supabase) {
+      const { data, error } = await supabase.from('products').update(updatedProductData).eq('id', productId).select();
+      if (error) return { success: false, error: error.message };
+      
+      if (data && data.length > 0) {
+        const p = data[0];
+        setProducts(prev => prev.map(item => item.id === productId ? {
+          id: p.id, name: p.name, price: parseFloat(p.price),
+          image: p.image, image2: p.image2, sizes: p.sizes || [],
+        } : item));
+      }
+      return { success: true };
+    }
+    return { success: false, error: 'Supabase not connected' };
+  };
+
   const deleteProduct = async (productId) => {
     if (supabase) {
       const { error } = await supabase.from('products').delete().eq('id', productId);
@@ -472,7 +529,7 @@ export function AdminProvider({ children }) {
 
   const value = {
     isAuthenticated, login, logout,
-    products, addProduct, deleteProduct,
+    products, addProduct, updateProduct, deleteProduct,
     galleryImages, addGalleryImage, addGalleryImages, deleteGalleryImage, updateGalleryOrder,
     storeSettings, updateSettings,
     orders, addOrder, updateOrderStatus, deleteOrder,

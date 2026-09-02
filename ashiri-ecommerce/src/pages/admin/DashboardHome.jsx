@@ -4,7 +4,7 @@ import { DollarSign, ShoppingBag, TrendingUp, Package, Clock } from 'lucide-reac
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const DashboardHome = () => {
-  const { orders, getStats, products } = useAdmin();
+  const { orders, getStats, products, isLoadingSupabase } = useAdmin();
   const stats = getStats();
 
   // Generate chart data from orders (last 7 days)
@@ -34,34 +34,45 @@ const DashboardHome = () => {
     <div>
       {/* KPI Cards */}
       <div className="admin-kpi-grid">
-        <div className="admin-kpi-card">
-          <div className="admin-kpi-label">Total Revenue</div>
-          <div className="admin-kpi-value">₦{stats.totalRevenue.toLocaleString()}</div>
-          <div className="admin-kpi-icon">
-            <DollarSign size={24} />
-          </div>
-        </div>
-        <div className="admin-kpi-card">
-          <div className="admin-kpi-label">Total Orders</div>
-          <div className="admin-kpi-value">{stats.totalOrders}</div>
-          <div className="admin-kpi-icon">
-            <ShoppingBag size={24} />
-          </div>
-        </div>
-        <div className="admin-kpi-card">
-          <div className="admin-kpi-label">Avg. Order Value</div>
-          <div className="admin-kpi-value">₦{stats.avgOrderValue.toLocaleString()}</div>
-          <div className="admin-kpi-icon">
-            <TrendingUp size={24} />
-          </div>
-        </div>
-        <div className="admin-kpi-card">
-          <div className="admin-kpi-label">Pending Orders</div>
-          <div className="admin-kpi-value">{stats.pendingOrders}</div>
-          <div className="admin-kpi-icon">
-            <Clock size={24} />
-          </div>
-        </div>
+        {isLoadingSupabase ? (
+          [...Array(4)].map((_, i) => (
+            <div key={i} className="admin-kpi-card" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div className="skeleton-text shimmer-bg short" style={{ height: '14px', marginBottom: 0 }}></div>
+              <div className="skeleton-text shimmer-bg" style={{ height: '28px', width: '60%', margin: 0 }}></div>
+            </div>
+          ))
+        ) : (
+          <>
+            <div className="admin-kpi-card">
+              <div className="admin-kpi-label">Total Revenue</div>
+              <div className="admin-kpi-value">₦{stats.totalRevenue.toLocaleString()}</div>
+              <div className="admin-kpi-icon">
+                <DollarSign size={24} />
+              </div>
+            </div>
+            <div className="admin-kpi-card">
+              <div className="admin-kpi-label">Total Orders</div>
+              <div className="admin-kpi-value">{stats.totalOrders}</div>
+              <div className="admin-kpi-icon">
+                <ShoppingBag size={24} />
+              </div>
+            </div>
+            <div className="admin-kpi-card">
+              <div className="admin-kpi-label">Avg. Order Value</div>
+              <div className="admin-kpi-value">₦{stats.avgOrderValue.toLocaleString()}</div>
+              <div className="admin-kpi-icon">
+                <TrendingUp size={24} />
+              </div>
+            </div>
+            <div className="admin-kpi-card">
+              <div className="admin-kpi-label">Pending Orders</div>
+              <div className="admin-kpi-value">{stats.pendingOrders}</div>
+              <div className="admin-kpi-icon">
+                <Clock size={24} />
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Charts + Recent Orders */}
