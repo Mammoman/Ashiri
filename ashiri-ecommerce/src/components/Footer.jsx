@@ -34,10 +34,10 @@ const Footer = ({ onPageChange }) => {
 
   return (
     <footer style={{
-      background: '#ffffff',
-      borderTop: '1px solid var(--color-border)',
+      background: 'var(--text-dark)',
+      borderTop: 'none',
       padding: '60px 0 30px 0',
-      color: 'var(--text-muted)'
+      color: 'rgba(253, 251, 247, 0.7)' /* Light cream with some opacity for muted text */
     }} id="about">
       <div className="container">
 
@@ -51,18 +51,19 @@ const Footer = ({ onPageChange }) => {
 
           {/* Brand Column */}
           <div>
-            <h3
+            <h3 
+              className="brand-text"
               onClick={(e) => handleLinkClick(e, 'collection')}
               style={{
-                fontSize: '1.25rem',
+                fontSize: '1.5rem',
                 fontWeight: 700,
                 letterSpacing: '-0.02em',
                 marginBottom: '16px',
-                color: 'var(--text-dark)',
+                color: 'var(--bg-main)',
                 cursor: 'pointer'
               }}
             >
-              ASHIRI
+              ÀṢHÍRÍ
             </h3>
             <p style={{
               fontSize: '0.85rem',
@@ -70,7 +71,7 @@ const Footer = ({ onPageChange }) => {
               marginBottom: '20px',
               maxWidth: '300px'
             }}>
-              Ashiri is just about sharing beautiful designs with the world.
+              ÀṢHÍRÍ is just about sharing beautiful designs with the world.
             </p>
             {/* Socials */}
             <div style={{ display: 'flex', gap: '12px' }}>
@@ -110,14 +111,14 @@ const Footer = ({ onPageChange }) => {
 
           {/* Newsletter Column */}
           <div>
-            <h4 style={{
-              fontSize: '0.8rem',
-              fontWeight: 700,
+            <h4 className="brand-text" style={{
+              fontSize: '1rem',
+              fontWeight: 600,
               textTransform: 'uppercase',
-              color: 'var(--text-dark)',
+              color: 'var(--bg-main)',
               marginBottom: '16px'
             }}>
-              Ashiri Newsletter
+              ÀṢHÍRÍ Newsletter
             </h4>
             <p style={{
               fontSize: '0.85rem',
@@ -140,7 +141,9 @@ const Footer = ({ onPageChange }) => {
                   height: '42px',
                   fontSize: '0.85rem',
                   borderRadius: 'var(--radius-pill)',
-                  background: '#f3f4f6'
+                  background: 'rgba(253, 251, 247, 0.1)',
+                  color: 'var(--bg-main)',
+                  border: '1px solid rgba(253, 251, 247, 0.2)'
                 }}
                 required
               />
@@ -156,8 +159,8 @@ const Footer = ({ onPageChange }) => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: '#ffffff',
-                  background: 'var(--text-dark)',
+                  color: 'var(--text-dark)',
+                  background: 'var(--bg-main)',
                   borderRadius: '50%',
                   transition: 'var(--transition-fast)'
                 }}
@@ -175,7 +178,7 @@ const Footer = ({ onPageChange }) => {
                 color: '#10b981',
                 animation: 'fadeIn 0.2s ease-out'
               }}>
-                Welcome to Ashiri.
+                Welcome to ÀṢHÍRÍ.
               </span>
             )}
           </div>
@@ -186,7 +189,7 @@ const Footer = ({ onPageChange }) => {
         <div style={{
           width: '100%',
           height: '1px',
-          background: 'var(--color-border)',
+          background: 'rgba(253, 251, 247, 0.1)',
           marginBottom: '20px'
         }} />
 
@@ -199,10 +202,10 @@ const Footer = ({ onPageChange }) => {
           gap: '12px',
           fontSize: '0.75rem'
         }}>
-          <span>&copy; {new Date().getFullYear()} ASHIRI.</span>
+          <span>&copy; {new Date().getFullYear()} ÀṢHÍRÍ.</span>
           <div style={{ display: 'flex', gap: '16px' }}>
-            <a href="#" className="bottom-link">Privacy</a>
-            <a href="#" className="bottom-link">Terms</a>
+            <a href="/privacy" className="bottom-link">Privacy</a>
+            <a href="/tos" className="bottom-link">Terms</a>
           </div>
         </div>
 
@@ -211,7 +214,7 @@ const Footer = ({ onPageChange }) => {
       <style dangerouslySetInnerHTML={{
         __html: `
         .footer-list a:hover {
-          color: var(--text-dark) !important;
+          color: var(--bg-main) !important;
           padding-left: 2px;
         }
         .footer-list a {
@@ -223,21 +226,25 @@ const Footer = ({ onPageChange }) => {
           justify-content: center;
           width: 32px;
           height: 32px;
-          border: 1px solid var(--color-border);
+          border: 1px solid rgba(253, 251, 247, 0.2);
           border-radius: 50%;
-          color: var(--text-muted);
+          color: rgba(253, 251, 247, 0.7);
           transition: var(--transition-smooth);
         }
         .social-icon-link:hover {
           color: var(--text-dark) !important;
-          border-color: var(--text-dark) !important;
-          background: #f9fafb;
+          border-color: var(--bg-main) !important;
+          background: var(--bg-main);
         }
         .subscribe-btn:hover {
-          background: #1f2937 !important;
+          background: #ffffff !important;
+        }
+        .bottom-link {
+          color: rgba(253, 251, 247, 0.7);
+          text-decoration: none;
         }
         .bottom-link:hover {
-          color: var(--text-dark) !important;
+          color: var(--bg-main) !important;
         }
         @media (max-width: 1024px) {
           .footer-grid {

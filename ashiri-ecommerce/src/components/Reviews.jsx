@@ -305,7 +305,7 @@ const Reviews = () => {
               Write a Review
             </h3>
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '24px' }}>
-              Share your experience with the Ashiri collection.
+              Share your experience with the ÀṢHÍRÍ collection.
             </p>
 
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>

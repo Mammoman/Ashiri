@@ -1,18 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
 
 :root {
-  /* Modern Light-Grey Theme Colors */
-  --bg-main: #edf2f7;
-  --bg-card: #ffffff;
-  --text-dark: #111827;
-  --text-muted: #6b7280;
+  /* Cream & Forest Green Theme Colors */
+  --bg-main: #FDFBF7;
+  --bg-card: #FFFFFF;
+  --text-dark: #1A3626;
+  --text-muted: #4A6053;
   --color-sale: #ef4444;
-  --color-border: #e5e7eb;
-  --color-accent: #000000;
-  --color-accent-light: #f3f4f6;
+  --color-border: #E9EDEA;
+  --color-accent: #1A3626;
+  --color-accent-light: #E9EDEA;
 
   /* Fonts */
   --font-body: 'Outfit', sans-serif;
+  --font-brand: 'Playfair Display', serif;
 
   /* Sizing */
   --radius-sm: 8px;
@@ -27,6 +29,12 @@
   --shadow-subtle: 0 4px 12px rgba(0, 0, 0, 0.03);
   --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.06);
   --shadow-premium: 0 12px 40px rgba(0, 0, 0, 0.1);
+}
+
+.brand-text {
+  font-family: var(--font-brand) !important;
+  font-weight: 700;
+  letter-spacing: 0 !important;
 }
 
 * {

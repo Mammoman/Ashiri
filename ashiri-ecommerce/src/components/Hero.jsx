@@ -83,7 +83,7 @@ const Hero = () => {
 
             {/* Centred Ashiri wordmark — bottom-left */}
             <div className={`hero-wordmark ${isActive ? 'hero-wordmark--visible' : ''}`}>
-              <span className="hero-wordmark__text">Ashiri</span>
+              <span className="hero-wordmark__text brand-text">ÀṢHÍRÍ</span>
             </div>
           </div>
         );
@@ -194,7 +194,7 @@ const Hero = () => {
             transition: opacity 0.7s ease 0.3s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s;
           }
 
-          /* ---- Ashiri wordmark — bottom-left ---- */
+          /* ---- ÀṢHÍRÍ wordmark — bottom-left ---- */
           .hero-wordmark {
             position: absolute;
             bottom: 64px;

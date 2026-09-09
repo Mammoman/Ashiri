@@ -6,7 +6,7 @@ import whiteTank from '../assets/whitetank3.jpg';
 export const products = [
   {
     id: 1,
-    name: 'The Ashiri Red Tank',
+    name: 'The ÀṢHÍRÍ Red Tank',
     category: 'Female',
     price: 25000,
     originalPrice: 30000,
@@ -24,7 +24,7 @@ export const products = [
   },
   {
     id: 2,
-    name: 'The Ashiri Purple Tank',
+    name: 'The ÀṢHÍRÍ Purple Tank',
     category: 'Female',
     price: 20000,
     originalPrice: 25000,
@@ -42,7 +42,7 @@ export const products = [
   },
   {
     id: 3,
-    name: 'The Ashiri Grey Tank',
+    name: 'The ÀṢHÍRÍ Grey Tank',
     category: 'Male',
     price: 25000,
     originalPrice: 30000,
@@ -60,7 +60,7 @@ export const products = [
   },
   {
     id: 4,
-    name: 'The Ashiri White Tank',
+    name: 'The ÀṢHÍRÍ White Tank',
     category: 'Male',
     price: 20000,
     originalPrice: 25000,

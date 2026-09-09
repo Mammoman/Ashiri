@@ -25,14 +25,14 @@ const Navbar = ({ cartCount, onCartClick, wishlistCount, onWishlistClick, curren
         {/* Left Side: Logo & Navigation */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
           <a href="#" onClick={(e) => { e.preventDefault(); onPageChange('shop'); }} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{
+            <span className="brand-text" style={{
               fontSize: '1.5rem',
-              fontWeight: 700,
-              letterSpacing: '-0.03em',
+              fontWeight: 800,
+              letterSpacing: '-0.02em',
               lineHeight: 1,
               color: 'var(--text-dark)'
             }}>
-              ASHIRI
+              ÀṢHÍRÍ
             </span>
           </a>
 

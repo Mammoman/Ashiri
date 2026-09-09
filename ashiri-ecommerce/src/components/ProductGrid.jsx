@@ -306,7 +306,7 @@ const ProductGrid = ({ products = [], onProductSelect, onAddToCart, favorites = 
                       color: 'var(--text-muted)',
                       textTransform: 'uppercase'
                     }}>
-                      ASHIRI
+                      ÀṢHÍRÍ
                     </span>
                     {product.rating !== undefined && product.reviews !== undefined && (
                       <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>

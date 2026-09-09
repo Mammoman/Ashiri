@@ -24,6 +24,22 @@ const loadPaystackScript = () => {
   });
 };
 
+// Dynamic loader helper for Flutterwave script
+const loadFlutterwaveScript = () => {
+  return new Promise((resolve) => {
+    if (window.FlutterwaveCheckout) {
+      resolve(true);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://checkout.flutterwave.com/v3.js';
+    script.async = true;
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
+
 const CartSidebar = ({
   isOpen,
   onClose,
@@ -45,7 +61,8 @@ const CartSidebar = ({
   const [customerEmail, setCustomerEmail] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
-  const [paymentMethod] = useState('paystack'); // Only Paystack supported
+  const [paymentMethod, setPaymentMethod] = useState('flutterwave');
+  const [isMockFlutterwaveOpen, setIsMockFlutterwaveOpen] = useState(false);
   const [isMockPaystackOpen, setIsMockPaystackOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -56,7 +73,7 @@ const CartSidebar = ({
   }, [isOpen, defaultTab]);
 
   const calculateSubtotal = () => {
-    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return cartItems.reduce((total, item) => total + ((item.price + (item.isGift ? 2000 : 0)) * item.quantity), 0);
   };
 
   const handlePaymentSuccess = async (reference) => {
@@ -84,7 +101,7 @@ const CartSidebar = ({
           name:  item.isGift
             ? `${item.name} (Size: ${item.selectedSize}) 🎁${item.giftMessage ? ` — "${item.giftMessage}"` : ' Gift Packaged'}`
             : `${item.name} (Size: ${item.selectedSize})`,
-          price: (item.price * item.quantity).toLocaleString(), // template adds ₦ prefix: ₦{{price}}
+          price: ((item.price + (item.isGift ? 2000 : 0)) * item.quantity).toLocaleString(), // template adds ₦ prefix: ₦{{price}}
           units: item.quantity,
           image_url: absoluteImgUrl, // Passed to template as {{image_url}}
         };
@@ -132,7 +149,7 @@ const CartSidebar = ({
         customerPhone,
         customerAddress,
         subtotal: calculateSubtotal(),
-        paymentMethod: 'paystack',
+        paymentMethod: paymentMethod,
         paymentReference: reference,
         status: 'pending',
         cartItems: cartItems
@@ -170,7 +187,6 @@ const CartSidebar = ({
 
     if (paymentMethod === 'paystack') {
       const publicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || '';
-      // Detect if we are in Sandbox / Demo mode with a placeholder or missing key
       const isPlaceholderKey = !publicKey ||
         publicKey === 'pk_test_your_key_here' ||
         publicKey === 'pk_test_placeholder' ||
@@ -204,6 +220,54 @@ const CartSidebar = ({
           handler.openIframe();
         } catch (error) {
           console.error('Paystack checkout setup error:', error);
+          alert('Could not initialize payment. Please try again.');
+          setIsSubmitting(false);
+        }
+      }
+    } else if (paymentMethod === 'flutterwave') {
+      const publicKey = import.meta.env.VITE_FLUTTERWAVE_PUBLIC_KEY || '';
+      // Detect if we are in Sandbox / Demo mode with a placeholder or missing key
+      const isPlaceholderKey = !publicKey ||
+        publicKey === 'flwpubk_test_placeholder' ||
+        publicKey.length < 15;
+
+      if (isPlaceholderKey) {
+        setIsMockFlutterwaveOpen(true);
+      } else {
+        try {
+          const loaded = await loadFlutterwaveScript();
+          if (!loaded) {
+            alert('Failed to load payment gateway. Please check your internet connection and try again.');
+            setIsSubmitting(false);
+            return;
+          }
+
+          const paymentRef = 'ASH-' + Math.floor(Math.random() * 1000000000 + 1);
+          window.FlutterwaveCheckout({
+            public_key: publicKey,
+            tx_ref: paymentRef,
+            amount: calculateSubtotal(), // Flutterwave is in Naira
+            currency: 'NGN',
+            payment_options: 'card, banktransfer, ussd',
+            customer: {
+              email: customerEmail,
+              phone_number: customerPhone,
+              name: customerName,
+            },
+            customizations: {
+              title: 'ÀṢHÍRÍ',
+              description: 'Payment for items in cart',
+              logo: 'https://ashiri-ecommerce.vercel.app/favicon.svg',
+            },
+            callback: function (data) {
+              handlePaymentSuccess(data.transaction_id || data.tx_ref);
+            },
+            onclose: function () {
+              setIsSubmitting(false);
+            }
+          });
+        } catch (error) {
+          console.error('Flutterwave checkout setup error:', error);
           alert('Could not initialize payment. Please try again.');
           setIsSubmitting(false);
         }
@@ -651,7 +715,7 @@ const CartSidebar = ({
                             color: 'var(--text-dark)',
                             textAlign: 'right'
                           }}>
-                            ₦{(item.price * item.quantity).toLocaleString()}
+                            ₦{((item.price + (item.isGift ? 2000 : 0)) * item.quantity).toLocaleString()}
                           </div>
                         </div>
                       ))}
@@ -871,7 +935,7 @@ const CartSidebar = ({
                 </span>
               </div>
 
-              {/* Payment Method — Paystack only */}
+              {/* Payment Method Toggle */}
               <div>
                 <label style={{
                   fontSize: '0.75rem',
@@ -884,35 +948,68 @@ const CartSidebar = ({
                 }}>
                   Payment Method
                 </label>
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  padding: '14px 16px',
-                  borderRadius: 'var(--radius-sm)',
-                  border: '1px solid var(--text-dark)',
-                  background: '#fbfbfb',
-                }}>
-                  <div style={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '8px',
-                    background: '#09a5db',
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {/* Paystack Option */}
+                  <label style={{
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
+                    gap: '12px',
+                    padding: '14px 16px',
+                    borderRadius: 'var(--radius-sm)',
+                    border: paymentMethod === 'paystack' ? '2px solid var(--text-dark)' : '1px solid var(--color-border)',
+                    background: paymentMethod === 'paystack' ? '#fbfbfb' : '#ffffff',
+                    cursor: 'pointer',
+                    transition: 'var(--transition-fast)'
                   }}>
-                    <span style={{ fontSize: '0.6rem', fontWeight: 900, color: '#fff', letterSpacing: '-0.03em' }}>PAY</span>
-                  </div>
-                  <div>
-                    <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-dark)', display: 'block' }}>
-                      Pay Online (Cards, Bank Transfer)
-                    </span>
-                    <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-                      Securely processed via Paystack
-                    </span>
-                  </div>
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="paystack"
+                      checked={paymentMethod === 'paystack'}
+                      onChange={() => setPaymentMethod('paystack')}
+                      style={{ margin: 0, cursor: 'pointer' }}
+                    />
+                    <div style={{
+                      width: '36px', height: '36px', borderRadius: '8px', background: '#09a5db', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
+                    }}>
+                      <span style={{ fontSize: '0.6rem', fontWeight: 900, color: '#fff', letterSpacing: '-0.03em' }}>PAY</span>
+                    </div>
+                    <div>
+                      <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-dark)', display: 'block' }}>Paystack</span>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Cards, Bank Transfer, USSD</span>
+                    </div>
+                  </label>
+
+                  {/* Flutterwave Option */}
+                  <label style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '14px 16px',
+                    borderRadius: 'var(--radius-sm)',
+                    border: paymentMethod === 'flutterwave' ? '2px solid var(--text-dark)' : '1px solid var(--color-border)',
+                    background: paymentMethod === 'flutterwave' ? '#fbfbfb' : '#ffffff',
+                    cursor: 'pointer',
+                    transition: 'var(--transition-fast)'
+                  }}>
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="flutterwave"
+                      checked={paymentMethod === 'flutterwave'}
+                      onChange={() => setPaymentMethod('flutterwave')}
+                      style={{ margin: 0, cursor: 'pointer' }}
+                    />
+                    <div style={{
+                      width: '36px', height: '36px', borderRadius: '8px', background: '#f5a623', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
+                    }}>
+                      <span style={{ fontSize: '0.6rem', fontWeight: 900, color: '#fff', letterSpacing: '-0.03em' }}>FLW</span>
+                    </div>
+                    <div>
+                      <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-dark)', display: 'block' }}>Flutterwave</span>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Cards, Bank Transfer, Mobile Money</span>
+                    </div>
+                  </label>
                 </div>
               </div>
 
@@ -1075,7 +1172,7 @@ const CartSidebar = ({
                 ✕
               </button>
               <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', opacity: 0.9, marginBottom: '4px' }}>
-                Ashiri  Payment Gateway
+                ÀṢHÍRÍ Payment Gateway
               </div>
               <div style={{ fontSize: '1.4rem', fontWeight: 700 }}>
                 ₦{calculateSubtotal().toLocaleString()}
@@ -1099,6 +1196,128 @@ const CartSidebar = ({
               }}>
                 <strong>PAYSTACK DEMO MODE</strong><br />
                 Since no custom Paystack Public Key is configured, you are running in sandbox demo mode. Click the button below to simulate a successful card transaction.
+              </div>
+
+              {/* Fake card form */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
+                <div>
+                  <label style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', display: 'block', marginBottom: '4px', fontWeight: 600 }}>
+                    Card Number
+                  </label>
+                  <input type="text" value="4081 0000 0000 0000" disabled style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid var(--color-border)', fontSize: '0.85rem', background: '#f9fafb', color: 'var(--text-dark)' }} />
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  <div>
+                    <label style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', display: 'block', marginBottom: '4px', fontWeight: 600 }}>Expiry</label>
+                    <input type="text" value="12/29" disabled style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid var(--color-border)', fontSize: '0.85rem', background: '#f9fafb', color: 'var(--text-dark)' }} />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', display: 'block', marginBottom: '4px', fontWeight: 600 }}>CVV</label>
+                    <input type="text" value="123" disabled style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid var(--color-border)', fontSize: '0.85rem', background: '#f9fafb', color: 'var(--text-dark)' }} />
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => {
+                  setIsMockPaystackOpen(false);
+                  handlePaymentSuccess('MOCK-ASH-' + Math.floor(Math.random() * 1000000000 + 1));
+                }}
+                style={{ width: '100%', background: '#3ac5a0', color: '#ffffff', border: 'none', padding: '14px', borderRadius: '4px', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(58, 197, 160, 0.2)' }}
+                className="mock-success-btn"
+              >
+                Simulate Payment of ₦{calculateSubtotal().toLocaleString()}
+              </button>
+            </div>
+
+            {/* Footer */}
+            <div style={{ background: '#f9fafb', padding: '12px', textAlign: 'center', borderTop: '1px solid var(--color-border)', fontSize: '0.7rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+              🔒 Secured by Paystack Demo Integration
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mock Flutterwave Payment Modal Overlay */}
+      {isMockFlutterwaveOpen && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          zIndex: 3000,
+          background: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '16px',
+          animation: 'fadeIn 0.2s ease-out'
+        }} className="mock-paystack-overlay">
+          <div style={{
+            background: '#ffffff',
+            width: '100%',
+            maxWidth: '380px',
+            borderRadius: '8px',
+            overflow: 'hidden',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+            animation: 'slideUp 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+            border: '1px solid var(--color-border)',
+            position: 'relative'
+          }}>
+            {/* Header */}
+            <div style={{
+              background: '#f5a623', /* Flutterwave uses a different brand color, but we'll stick to a distinct color for demo */
+              padding: '20px',
+              color: '#ffffff',
+              position: 'relative',
+              textAlign: 'center'
+            }}>
+              <button
+                onClick={() => {
+                  setIsMockFlutterwaveOpen(false);
+                  setIsSubmitting(false);
+                }}
+                style={{
+                  position: 'absolute',
+                  top: '12px',
+                  right: '12px',
+                  background: 'none',
+                  border: 'none',
+                  color: '#ffffff',
+                  fontSize: '1.2rem',
+                  cursor: 'pointer',
+                  opacity: 0.8
+                }}
+                aria-label="Close payment"
+              >
+                ✕
+              </button>
+              <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', opacity: 0.9, marginBottom: '4px' }}>
+                ÀṢHÍRÍ Payment Gateway
+              </div>
+              <div style={{ fontSize: '1.4rem', fontWeight: 700 }}>
+                ₦{calculateSubtotal().toLocaleString()}
+              </div>
+              <div style={{ fontSize: '0.8rem', opacity: 0.9, marginTop: '2px' }}>
+                {customerEmail}
+              </div>
+            </div>
+
+            {/* Body */}
+            <div style={{ padding: '24px 20px' }}>
+              <div style={{
+                background: '#fffbeb',
+                border: '1px solid #fde68a',
+                borderRadius: '6px',
+                padding: '12px',
+                fontSize: '0.75rem',
+                color: '#b45309',
+                marginBottom: '16px',
+                lineHeight: 1.4
+              }}>
+                <strong>FLUTTERWAVE DEMO MODE</strong><br />
+                Since no custom Flutterwave Public Key is configured, you are running in sandbox demo mode. Click the button below to simulate a successful card transaction.
               </div>
 
               {/* Fake card form */}
@@ -1167,12 +1386,12 @@ const CartSidebar = ({
               {/* Action Button */}
               <button
                 onClick={() => {
-                  setIsMockPaystackOpen(false);
+                  setIsMockFlutterwaveOpen(false);
                   handlePaymentSuccess('MOCK-ASH-' + Math.floor(Math.random() * 1000000000 + 1));
                 }}
                 style={{
                   width: '100%',
-                  background: '#3ac5a0',
+                  background: '#f5a623',
                   color: '#ffffff',
                   border: 'none',
                   padding: '14px',
@@ -1180,7 +1399,7 @@ const CartSidebar = ({
                   fontWeight: 700,
                   fontSize: '0.9rem',
                   cursor: 'pointer',
-                  boxShadow: '0 4px 6px -1px rgba(58, 197, 160, 0.2)'
+                  boxShadow: '0 4px 6px -1px rgba(245, 166, 35, 0.2)'
                 }}
                 className="mock-success-btn"
               >
@@ -1201,7 +1420,7 @@ const CartSidebar = ({
               justifyContent: 'center',
               gap: '6px'
             }}>
-              🔒 Secured by Paystack Demo Integration
+              🔒 Secured by Flutterwave Demo Integration
             </div>
           </div>
         </div>

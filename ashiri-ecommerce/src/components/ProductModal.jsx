@@ -190,7 +190,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
                   color: 'var(--text-dark)',
                   textTransform: 'uppercase'
                 }}>
-                  ASHIRI
+                  ÀṢHÍRÍ
                 </span>
               </div>
               <span style={{
@@ -417,7 +417,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
                     alignItems: 'center',
                     gap: '5px',
                   }}>
-                    <Gift size={10} /> Wrapped in our signature matte kraft box with a handwritten note.
+                    <Gift size={10} /> Comes With A Card (+ ₦2,000)
                   </p>
                 </div>
               )}

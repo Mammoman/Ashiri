@@ -164,7 +164,7 @@ const OrdersPage = () => {
                               <div>
                                 <div className="admin-drawer-title">Payment</div>
                                 <p style={{ fontSize: '0.82rem', color: '#334155', lineHeight: 1.5 }}>
-                                  <strong>Method:</strong> {order.paymentMethod || 'Paystack'}<br />
+                                  <strong>Method:</strong> {order.paymentMethod || 'Flutterwave'}<br />
                                   <strong>Reference:</strong> {order.paymentReference || '—'}<br />
                                   <strong>Verification:</strong> {order.verificationStatus || '—'}
                                 </p>

@@ -112,7 +112,7 @@ function StorefrontPage() {
   return (
     <div className="app-wrapper">
       <Helmet>
-        <title>{selectedProduct ? `${selectedProduct.name} — ASHIRI` : 'ASHIRI — Premium Artisanal Tank Tops'}</title>
+        <title>{selectedProduct ? `${selectedProduct.name} — ÀṢHÍRÍ` : 'ÀṢHÍRÍ — Premium Artisanal Tank Tops'}</title>
       </Helmet>
 
       <Navbar

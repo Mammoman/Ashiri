@@ -11,6 +11,9 @@ import ProductsPage from './pages/admin/ProductsPage';
 import ReviewsPage from './pages/admin/ReviewsPage';
 import GalleryAdmin from './pages/admin/GalleryAdmin';
 import SettingsPage from './pages/admin/SettingsPage';
+import TermsOfService from './pages/TermsOfService';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import CookieConsent from './components/CookieConsent';
 import './admin.css';
 
 // Admin route guard — shows login if not authenticated
@@ -25,6 +28,8 @@ function AppRoutes() {
     <Routes>
       {/* Storefront */}
       <Route path="/" element={<StorefrontPage />} />
+      <Route path="/tos" element={<TermsOfService />} />
+      <Route path="/privacy" element={<PrivacyPolicy />} />
 
       {/* Admin Dashboard */}
       <Route
@@ -55,6 +60,7 @@ function App() {
       <BrowserRouter>
         <AdminProvider>
           <AppRoutes />
+          <CookieConsent />
         </AdminProvider>
       </BrowserRouter>
     </HelmetProvider>

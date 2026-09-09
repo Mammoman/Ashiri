@@ -27,7 +27,7 @@ const AdminLogin = () => {
   return (
     <div className="admin-login-page">
       <div className="admin-login-card">
-        <div className="admin-login-brand">ASHIRI</div>
+        <div className="admin-login-brand brand-text">ÀṢHÍRÍ</div>
         <p className="admin-login-subtitle">Admin Dashboard Access</p>
 
         <form onSubmit={handleSubmit} style={{ textAlign: 'left' }}>

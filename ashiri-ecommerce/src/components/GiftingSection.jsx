@@ -13,7 +13,7 @@ const giftOptions = [
   {
     icon: Package,
     title: 'Luxury Gift Wrapping',
-    desc: 'Every order, wrapped in our signature matte kraft box, ribbon-tied with a personalised handwritten note.',
+    desc: 'Every order comes with a card (+ ₦2,000).',
     cta: 'Add Gift Wrapping',
     accent: '#d97706',
     bg: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)',
@@ -21,7 +21,7 @@ const giftOptions = [
   {
     icon: Sparkles,
     title: 'Curated Gift Sets',
-    desc: 'Thoughtfully curated pairings — from the tank + accessory bundle to full Ashiri starter sets.',
+    desc: 'Thoughtfully curated pairings — from the tank + accessory bundle to full ÀṢHÍRÍ starter sets.',
     cta: 'Browse Gift Sets',
     accent: '#0891b2',
     bg: 'linear-gradient(135deg, #ecfeff 0%, #cffafe 100%)',
@@ -68,7 +68,7 @@ const GiftingSection = () => {
             lineHeight: 1.6,
           }}>
             Whether you're celebrating a birthday, anniversary, or just want to show someone you care —
-            Ashiri  makes gifting effortless and unforgettable.
+            ÀṢHÍRÍ makes gifting effortless and unforgettable.
           </p>
         </div>
 

@@ -59,8 +59,8 @@ const AdminLayout = () => {
       {/* Sidebar */}
       <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="admin-sidebar-header">
-          <div className="admin-sidebar-brand">
-            ASHIRI <span>Admin</span>
+          <div className="admin-logo brand-text" onClick={() => navigate('/admin')} style={{ cursor: 'pointer' }}>
+            ÀṢHÍRÍ <span>Admin</span>
           </div>
         </div>
 

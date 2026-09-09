@@ -20,7 +20,7 @@ export function AdminProvider({ children }) {
   const [adminReviews, setAdminReviews] = useState([]);
   const [galleryImages, setGalleryImages] = useState([]);
   const [storeSettings, setStoreSettings] = useState({
-    storeName: 'ASHIRI',
+    storeName: 'ÀṢHÍRÍ',
     storeEmail: 'ashiri@gmail.com',
     storePhone: '+234 000 000 0000',
     currency: '₦',
@@ -62,7 +62,7 @@ export function AdminProvider({ children }) {
         if (settingsData) {
           setStoreSettings(prev => ({
             ...prev,
-            storeName: settingsData.store_name || 'ASHIRI',
+            storeName: settingsData.store_name || 'ÀṢHÍRÍ',
             storeEmail: settingsData.store_email || '',
             storePhone: settingsData.store_phone || '',
             currency: settingsData.currency || '₦',

@@ -88,6 +88,24 @@ const SettingsPage = () => {
                   border: '1px solid #e2e8f0',
                 }}>
                   <div>
+                    <div style={{ fontWeight: 600, fontSize: '0.85rem', color: '#0f172a' }}>Flutterwave Payments</div>
+                    <div style={{ fontSize: '0.72rem', color: '#64748b' }}>Online card & bank transfer payments</div>
+                  </div>
+                  <span className={`admin-badge ${import.meta.env.VITE_FLUTTERWAVE_PUBLIC_KEY ? 'delivered' : 'pending'}`}>
+                    {import.meta.env.VITE_FLUTTERWAVE_PUBLIC_KEY ? 'Connected' : 'Demo Mode'}
+                  </span>
+                </div>
+
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '14px 18px',
+                  background: '#f8fafc',
+                  borderRadius: '10px',
+                  border: '1px solid #e2e8f0',
+                }}>
+                  <div>
                     <div style={{ fontWeight: 600, fontSize: '0.85rem', color: '#0f172a' }}>Paystack Payments</div>
                     <div style={{ fontSize: '0.72rem', color: '#64748b' }}>Online card & bank transfer payments</div>
                   </div>
