@@ -17,7 +17,7 @@ import {
 import { SortableGalleryItem } from '../../components/SortableGalleryItem';
 
 const GalleryAdmin = () => {
-  const { galleryImages, addGalleryImage, addGalleryImages, deleteGalleryImage, updateGalleryOrder } = useAdmin();
+  const { galleryImages, addGalleryImage, addGalleryImages, deleteGalleryImage, updateGalleryOrder, approveCommunityFit } = useAdmin();
   const [isAdding, setIsAdding] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [imageFiles, setImageFiles] = useState([]);
@@ -194,6 +194,7 @@ const GalleryAdmin = () => {
                               url={img.url}
                               folder={img.folder}
                               onDelete={deleteGalleryImage}
+                              onApprove={approveCommunityFit}
                             />
                           ))}
                         </SortableContext>

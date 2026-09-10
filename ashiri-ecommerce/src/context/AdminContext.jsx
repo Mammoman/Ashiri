@@ -393,6 +393,18 @@ export function AdminProvider({ children }) {
     setGalleryImages(prev => prev.filter(img => img.id !== imageId));
   };
 
+  const approveCommunityFit = async (imageId) => {
+    if (supabase) {
+      const { error } = await supabase.from('gallery').update({ folder: 'community' }).eq('id', imageId);
+      if (error) {
+        console.error('Error approving fit:', error);
+        return { success: false, error: error.message };
+      }
+    }
+    setGalleryImages(prev => prev.map(img => img.id === imageId ? { ...img, folder: 'community' } : img));
+    return { success: true };
+  };
+
   // Pagination helpers
   const fetchProductsPage = async (page = 1, limit = 20) => {
     if (!supabase) return { data: [], total: 0 };
@@ -530,7 +542,12 @@ export function AdminProvider({ children }) {
   const value = {
     isAuthenticated, login, logout,
     products, addProduct, updateProduct, deleteProduct,
-    galleryImages, addGalleryImage, addGalleryImages, deleteGalleryImage, updateGalleryOrder,
+    galleryImages, 
+    addGalleryImage,
+    addGalleryImages,
+    updateGalleryOrder,
+    deleteGalleryImage,
+    approveCommunityFit,
     storeSettings, updateSettings,
     orders, addOrder, updateOrderStatus, deleteOrder,
     fetchProductsPage, fetchOrdersPage,

@@ -8,12 +8,13 @@ import CartSidebar from '../components/CartSidebar';
 import Gallery from '../components/Gallery';
 import GalleryPage from '../components/GalleryPage';
 import Reviews from '../components/Reviews';
+import CommunityFits from '../components/CommunityFits';
 import Footer from '../components/Footer';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useAdmin } from '../context/AdminContext';
 
 function StorefrontPage() {
-  const { products, isLoadingSupabase } = useAdmin();
+  const { products, isLoadingSupabase, galleryImages } = useAdmin();
   const [currentPage, setCurrentPage] = React.useState('shop');
   const [cart, setCart] = useLocalStorage('ashiri_cart', []);
   const [selectedProduct, setSelectedProduct] = React.useState(null);
@@ -136,6 +137,7 @@ function StorefrontPage() {
               onToggleFavorite={handleToggleFavorite}
             />
             <Gallery onViewGallery={() => handlePageChange('gallery')} />
+            <CommunityFits images={(galleryImages || []).filter(img => img.folder === 'community')} />
             <Reviews />
           </>
         ) : (

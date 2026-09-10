@@ -1,9 +1,9 @@
 import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Trash2, GripVertical } from 'lucide-react';
+import { Trash2, GripVertical, CheckCircle2 } from 'lucide-react';
 
-export function SortableGalleryItem({ id, url, folder, onDelete }) {
+export function SortableGalleryItem({ id, url, folder, onDelete, onApprove }) {
   const {
     attributes,
     listeners,
@@ -70,25 +70,49 @@ export function SortableGalleryItem({ id, url, folder, onDelete }) {
           >
             <GripVertical size={16} />
           </div>
-          <button
-            onClick={() => onDelete(id)}
-            style={{
-              background: '#ef4444',
-              color: 'white',
-              border: 'none',
-              width: '32px',
-              height: '32px',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
-            }}
-            title="Delete Image"
-          >
-            <Trash2 size={16} />
-          </button>
+          </div>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            {folder === 'community_pending' && onApprove && (
+              <button
+                onClick={() => onApprove(id)}
+                style={{
+                  background: '#10b981',
+                  color: 'white',
+                  border: 'none',
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                }}
+                title="Approve Fit"
+              >
+                <CheckCircle2 size={16} />
+              </button>
+            )}
+            <button
+              onClick={() => onDelete(id)}
+              style={{
+                background: '#ef4444',
+                color: 'white',
+                border: 'none',
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+              }}
+              title="Delete Image"
+            >
+              <Trash2 size={16} />
+            </button>
+          </div>
         </div>
         <div>
           <span style={{ 
