@@ -30,7 +30,7 @@ const ProductsPage = () => {
   const [error, setError] = useState('');
   const [editingProductId, setEditingProductId] = useState(null);
   const [formData, setFormData] = useState({
-    name: '', price: '', sizes: '', image: '', image2: ''
+    name: '', price: '', sizes: 'S, M, L, XL', image: '', image2: ''
   });
   const [imageFile, setImageFile] = useState(null);
   const [image2File, setImage2File] = useState(null);
@@ -63,7 +63,7 @@ const ProductsPage = () => {
       setIsSubmitting(false);
       setIsAdding(false);
       setEditingProductId(null);
-      setFormData({ name: '', price: '', sizes: '', image: '', image2: '' });
+      setFormData({ name: '', price: '', sizes: 'S, M, L, XL', image: '', image2: '' });
       setImageFile(null);
       setImage2File(null);
     } catch (err) {
@@ -91,7 +91,7 @@ const ProductsPage = () => {
   const handleCancelClick = () => {
     setIsAdding(false);
     setEditingProductId(null);
-    setFormData({ name: '', price: '', sizes: '', image: '', image2: '' });
+    setFormData({ name: '', price: '', sizes: 'S, M, L, XL', image: '', image2: '' });
     setImageFile(null);
     setImage2File(null);
     setError('');
