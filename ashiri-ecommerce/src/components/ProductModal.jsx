@@ -102,11 +102,11 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
           borderRight: '1px solid var(--color-border)'
         }} className="modal-left-panel">
 
-          {/* Large Main Preview Image with Warm Cream Background */}
+          {/* Large Main Preview Image */}
           <div style={{
             position: 'relative',
             width: '100%',
-            paddingTop: '105%', // Taller portrait ratio to fit apparel
+            paddingTop: '105%',
             background: '#f4f3f0', // Warm cream background
             borderRadius: 'var(--radius-md)',
             overflow: 'hidden',
@@ -130,7 +130,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
           </div>
 
           {product.image2 && (
-            <div style={{ display: 'flex', gap: '12px', marginTop: '16px', width: '100%', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', gap: '12px', marginTop: '16px', width: '100%', justifyContent: 'center' }} className="thumbnails-row">
               <button 
                 onClick={() => setActiveView('front')}
                 style={{
@@ -183,10 +183,10 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
               marginBottom: '10px'
             }} className="modal-brand-row">
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span style={{
-                  fontSize: '0.85rem',
-                  fontWeight: 800,
-                  letterSpacing: '0.05em',
+                <span className="brand-text" style={{
+                  fontSize: '1.2rem',
+                  fontWeight: 600,
+                  letterSpacing: '0.02em',
                   color: 'var(--text-dark)',
                   textTransform: 'uppercase'
                 }}>
@@ -211,7 +211,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
               lineHeight: 1.25,
               marginBottom: '10px',
               letterSpacing: '-0.02em'
-            }} className="modal-title">
+            }} className="modal-title brand-text">
               {product.name}
             </h2>
 
@@ -426,7 +426,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
           </div>
 
           {/* Action CTAs: Add to Cart and Favorite side-by-side */}
-          <div>
+          <div className="mobile-sticky-action">
             <div style={{
               display: 'flex',
               gap: '10px',
@@ -532,99 +532,125 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
         @media (max-width: 768px) {
           .glass-panel {
             grid-template-columns: 1fr !important;
-            max-height: 90vh !important;
-            width: 95% !important;
-            margin: auto !important;
+            height: 100% !important;
+            max-height: 100vh !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            border-radius: 0 !important;
+            border: none !important;
           }
           .modal-left-panel {
             border-right: none !important;
-            border-bottom: 1px solid var(--color-border);
-            padding: 40px 12px 12px 12px !important;
-            gap: 12px !important;
+            border-bottom: none !important;
+            padding: 0 !important;
+            gap: 0 !important;
             position: relative !important;
           }
           .main-image-wrap {
-            padding-top: 115% !important; /* Taller portrait ratio to maximize size */
-            position: relative !important;
+            padding-top: 130% !important;
+            border-radius: 0 !important;
+            border: none !important;
           }
           .main-image {
-            padding: 0px !important; /* Zero padding to make the product image fill the card */
+            padding: 0px !important;
+            object-fit: cover !important;
           }
           .thumbnails-row {
             position: absolute !important;
-            bottom: 24px !important;
-            left: 24px !important;
+            bottom: 20px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
             z-index: 10 !important;
-            background: rgba(255, 255, 255, 0.75) !important;
+            background: rgba(253, 251, 247, 0.7) !important;
             backdrop-filter: blur(10px) !important;
             -webkit-backdrop-filter: blur(10px) !important;
             padding: 6px !important;
-            border-radius: 10px !important;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
-            border: 1px solid rgba(255, 255, 255, 0.4) !important;
-            gap: 8px !important;
+            border-radius: 12px !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+            border: 1px solid rgba(255, 255, 255, 0.5) !important;
+            gap: 12px !important;
             width: auto !important;
             display: flex !important;
+            margin-top: 0 !important;
           }
           .thumbnail-btn {
-            width: 44px !important;
-            height: 48px !important;
-            padding: 3px !important;
-            background: #f4f3f0 !important;
-            border-radius: 6px !important;
+            width: 50px !important;
+            height: 50px !important;
+            padding: 0 !important;
+            border-radius: 8px !important;
             border-width: 2px !important;
+            overflow: hidden !important;
           }
           .modal-right-panel {
-            padding: 12px 16px 16px 16px !important;
-          }
-          .modal-breadcrumbs {
-            margin-bottom: 6px !important;
-          }
-          .modal-brand-row {
-            margin-bottom: 4px !important;
-          }
-          .modal-title {
-            font-size: 1.25rem !important;
-            margin-bottom: 6px !important;
-          }
-          .modal-rating-row {
-            margin-bottom: 10px !important;
-          }
-          .modal-price-tag {
-            font-size: 1.45rem !important;
-            margin-bottom: 12px !important;
-          }
-          .modal-size-section {
-            margin-bottom: 14px !important;
-          }
-          .size-grid {
-            gap: 6px !important;
-          }
-          .size-square-btn {
-            height: 36px !important;
-            font-size: 0.8rem !important;
-          }
-          .modal-actions-row {
-            margin-bottom: 10px !important;
-            gap: 8px !important;
-          }
-          .cart-action-solid-btn {
-            height: 42px !important;
-            font-size: 0.8rem !important;
-          }
-          .heart-action-btn {
-            width: 42px !important;
-            height: 42px !important;
+            padding: 24px 20px 100px 20px !important; /* Extra bottom padding for sticky bar */
           }
           .modal-close-btn {
-            top: 10px !important;
-            left: 10px !important;
-            width: 32px !important;
-            height: 32px !important;
+            top: 16px !important;
+            left: 16px !important;
+            width: 44px !important;
+            height: 44px !important;
+            background: rgba(255, 255, 255, 0.3) !important;
+            backdrop-filter: blur(12px) !important;
+            -webkit-backdrop-filter: blur(12px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.5) !important;
+            color: #000 !important;
           }
           .modal-close-btn svg {
-            width: 14px !important;
-            height: 14px !important;
+            width: 20px !important;
+            height: 20px !important;
+          }
+          .mobile-sticky-action {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            padding: 16px 20px 24px 20px !important;
+            background: rgba(253, 251, 247, 0.85) !important;
+            backdrop-filter: blur(15px) !important;
+            -webkit-backdrop-filter: blur(15px) !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.6) !important;
+            z-index: 50 !important;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05) !important;
+          }
+          .modal-brand-row {
+            margin-bottom: 8px !important;
+          }
+          .modal-title {
+            font-size: 1.8rem !important;
+            margin-bottom: 8px !important;
+            line-height: 1.1 !important;
+          }
+          .modal-price-tag {
+            font-size: 1.4rem !important;
+            margin-bottom: 16px !important;
+          }
+          .modal-size-section {
+            margin-bottom: 16px !important;
+          }
+          .size-grid {
+            gap: 8px !important;
+          }
+          .size-square-btn {
+            height: 44px !important;
+            font-size: 0.85rem !important;
+            border-radius: 8px !important;
+          }
+          .gift-toggle-btn {
+            padding: 14px 16px !important;
+          }
+          .cart-action-solid-btn {
+            height: 52px !important;
+            font-size: 0.9rem !important;
+            border-radius: 12px !important;
+          }
+          .heart-action-btn {
+            height: 52px !important;
+            width: 52px !important;
+            border-radius: 12px !important;
+          }
+          .modal-delivery-text {
+            margin-top: 8px !important;
           }
         }
       `}} />
