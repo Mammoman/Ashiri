@@ -327,7 +327,7 @@ const ProductGrid = ({ products = [], onProductSelect, onAddToCart, favorites = 
                     color: 'var(--text-dark)',
                     lineHeight: '1.3',
                     marginBottom: '8px',
-                    height: '38px',
+                    height: '54px',
                     overflow: 'hidden',
                     display: '-webkit-box',
                     WebkitLineClamp: 2,

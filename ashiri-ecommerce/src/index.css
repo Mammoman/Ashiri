@@ -13,8 +13,8 @@
   --color-accent-light: #E9EDEA;
 
   /* Fonts */
-  --font-body: 'Outfit', sans-serif;
-  --font-brand: 'Playfair Display', serif;
+  --font-body: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-brand: 'Playfair Display', Georgia, 'Times New Roman', serif;
 
   /* Sizing */
   --radius-sm: 8px;
