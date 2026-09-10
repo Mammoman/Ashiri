@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ArrowLeft, ShoppingBag, Check, Heart, HelpCircle, Gift } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowLeft, ShoppingBag, Check, Heart, HelpCircle, Gift, Plus, Minus } from 'lucide-react';
 
 const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleFavorite }) => {
   const [selectedSize, setSelectedSize] = useState(product?.sizes ? product.sizes[0] : 'S');
@@ -7,6 +7,11 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
   const [isAdded, setIsAdded] = useState(false);
   const [isGift, setIsGift] = useState(false);
   const [giftMessage, setGiftMessage] = useState('');
+  const [quantity, setQuantity] = useState(1);
+
+  useEffect(() => {
+    setIsAdded(false);
+  }, [selectedSize, quantity, isGift, giftMessage]);
 
   if (!product) return null;
   const isFavorite = !!favorites[product.id];
@@ -17,14 +22,12 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
       selectedSize,
       selectedColor: 'Standard', // No color selection, default to Standard
       isGift,
-      giftMessage: isGift ? giftMessage : ''
+      giftMessage: isGift ? giftMessage : '',
+      quantity
     });
     setIsAdded(true);
     setIsGift(false);
     setGiftMessage('');
-    setTimeout(() => {
-      setIsAdded(false);
-    }, 1500);
   };
 
   return (
@@ -128,42 +131,6 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
               className="main-image"
             />
           </div>
-
-          {product.image2 && (
-            <div style={{ display: 'flex', gap: '12px', marginTop: '16px', width: '100%', justifyContent: 'center' }} className="thumbnails-row">
-              <button 
-                onClick={() => setActiveView('front')}
-                style={{
-                  width: '64px',
-                  height: '64px',
-                  borderRadius: '8px',
-                  border: activeView === 'front' ? '2px solid #0f172a' : '2px solid transparent',
-                  padding: '2px',
-                  cursor: 'pointer',
-                  background: '#f4f3f0',
-                  transition: 'all 0.2s'
-                }}
-              >
-                <img src={product.image} alt="Thumbnail 1" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }} />
-              </button>
-              <button 
-                onClick={() => setActiveView('back')}
-                style={{
-                  width: '64px',
-                  height: '64px',
-                  borderRadius: '8px',
-                  border: activeView === 'back' ? '2px solid #0f172a' : '2px solid transparent',
-                  padding: '2px',
-                  cursor: 'pointer',
-                  background: '#f4f3f0',
-                  transition: 'all 0.2s'
-                }}
-              >
-                <img src={product.image2} alt="Thumbnail 2" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }} />
-              </button>
-            </div>
-          )}
-
         </div>
 
         {/* Right Side: Product Details & Size Grid */}
@@ -454,7 +421,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
               >
                 {isAdded ? (
                   <>
-                    <Check size={16} /> Added to Cart
+                    <Check size={16} /> Added ({quantity})
                   </>
                 ) : (
                   <>
@@ -463,26 +430,32 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
                 )}
               </button>
 
-              {/* Heart Favorite Button */}
-              <button
-                onClick={() => onToggleFavorite(product.id)}
-                aria-label="Add to wishlist"
-                style={{
-                  width: '50px',
-                  height: '50px',
-                  borderRadius: '4px',
-                  border: '1px solid var(--color-border)',
-                  background: isFavorite ? '#fef2f2' : '#ffffff',
-                  color: isFavorite ? '#ef4444' : 'var(--text-dark)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'var(--transition-fast)'
-                }}
-                className="heart-action-btn"
-              >
-                <Heart size={18} fill={isFavorite ? "currentColor" : "none"} />
-              </button>
+              {/* Quantity Selector */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                width: '110px',
+                height: '50px',
+                borderRadius: '4px',
+                border: '1px solid var(--color-border)',
+                background: '#ffffff',
+                padding: '0 8px'
+              }} className="modal-quantity-selector">
+                <button 
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f3f4f6', borderRadius: '4px', border: 'none', cursor: 'pointer', color: 'var(--text-dark)' }}
+                >
+                  <Minus size={16} />
+                </button>
+                <span style={{ fontSize: '0.9rem', fontWeight: 700 }}>{quantity}</span>
+                <button 
+                  onClick={() => setQuantity(quantity + 1)}
+                  style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f3f4f6', borderRadius: '4px', border: 'none', cursor: 'pointer', color: 'var(--text-dark)' }}
+                >
+                  <Plus size={16} />
+                </button>
+              </div>
             </div>
 
             {/* Delivery terms info */}
@@ -644,9 +617,8 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
             font-size: 0.9rem !important;
             border-radius: 12px !important;
           }
-          .heart-action-btn {
+          .modal-quantity-selector {
             height: 52px !important;
-            width: 52px !important;
             border-radius: 12px !important;
           }
           .modal-delivery-text {

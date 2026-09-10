@@ -50,7 +50,7 @@ function StorefrontPage() {
 
       if (existingItemIndex > -1) {
         const updatedCart = [...prevCart];
-        updatedCart[existingItemIndex].quantity += 1;
+        updatedCart[existingItemIndex].quantity += (product.quantity || 1);
         return updatedCart;
       } else {
         return [
@@ -61,7 +61,7 @@ function StorefrontPage() {
             selectedColor: chosenColor,
             isGift: isGiftItem,
             giftMessage: giftMessageText,
-            quantity: 1,
+            quantity: product.quantity || 1,
           },
         ];
       }

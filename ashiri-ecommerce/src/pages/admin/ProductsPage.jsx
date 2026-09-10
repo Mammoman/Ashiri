@@ -122,8 +122,18 @@ const ProductsPage = () => {
             )}
             <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               <div className="admin-form-group">
-                <label className="admin-form-label">Product Name</label>
-                <input required className="admin-form-input" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
+                <label className="admin-form-label">Tank Color (e.g. Grey)</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#f8fafc', padding: '0 12px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 500 }}>The Ashiri</span>
+                  <input 
+                    required 
+                    style={{ flex: 1, border: 'none', background: 'transparent', padding: '12px 0', fontSize: '0.9rem', outline: 'none', color: 'var(--text-dark)' }}
+                    placeholder="Color" 
+                    value={formData.name ? formData.name.replace('The Ashiri ', '').replace(' Tank', '') : ''} 
+                    onChange={e => setFormData({...formData, name: `The Ashiri ${e.target.value} Tank`})} 
+                  />
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 500 }}>Tank</span>
+                </div>
               </div>
 
               <div className="admin-form-group">

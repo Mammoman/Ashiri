@@ -35,6 +35,12 @@ export default function CookieConsent() {
       </p>
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
         <button 
+          onClick={() => { localStorage.setItem('ashiri_cookie_consent', 'rejected'); setShow(false); }}
+          style={{ background: 'transparent', color: '#ffffff', border: '1px solid rgba(255,255,255,0.2)', padding: '6px 16px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}
+        >
+          Reject
+        </button>
+        <button 
           onClick={() => { localStorage.setItem('ashiri_cookie_consent', 'true'); setShow(false); }}
           style={{ background: '#ffffff', color: '#111827', border: 'none', padding: '6px 16px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}
         >

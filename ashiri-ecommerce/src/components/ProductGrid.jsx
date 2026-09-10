@@ -300,10 +300,10 @@ const ProductGrid = ({ products = [], onProductSelect, onAddToCart, favorites = 
                     justifyContent: 'space-between',
                     marginBottom: '6px'
                   }}>
-                    <span style={{
-                      fontSize: '0.7rem',
+                    <span className="brand-text" style={{
+                      fontSize: '1rem',
                       fontWeight: 700,
-                      color: 'var(--text-muted)',
+                      color: 'var(--text-dark)',
                       textTransform: 'uppercase'
                     }}>
                       ÀṢHÍRÍ
@@ -321,13 +321,13 @@ const ProductGrid = ({ products = [], onProductSelect, onAddToCart, favorites = 
                   </div>
 
                   {/* Product Title */}
-                  <h3 style={{
-                    fontSize: '0.85rem',
+                  <h3 className="brand-text" style={{
+                    fontSize: '1.25rem',
                     fontWeight: 600,
                     color: 'var(--text-dark)',
                     lineHeight: '1.3',
                     marginBottom: '8px',
-                    height: '34px',
+                    height: '38px',
                     overflow: 'hidden',
                     display: '-webkit-box',
                     WebkitLineClamp: 2,
