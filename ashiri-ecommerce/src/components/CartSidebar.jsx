@@ -557,7 +557,7 @@ const CartSidebar = ({
                                 {item.name}
                               </h4>
                               <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                                Size: {item.selectedSize} | Tone: {item.selectedColor}
+                                Size: {item.selectedSize}
                               </span>
                               {item.isGift && (
                                 <div style={{ 

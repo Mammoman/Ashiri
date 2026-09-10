@@ -284,7 +284,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
                     );
                   })
                 ) : (
-                  ['S', 'M', 'L'].map(size => (
+                  ['S', 'M', 'L', 'XL'].map(size => (
                     <button key={size} className="size-square-btn">{size}</button>
                   ))
                 )}
