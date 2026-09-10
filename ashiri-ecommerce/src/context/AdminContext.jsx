@@ -419,7 +419,7 @@ export function AdminProvider({ children }) {
     return {
       data: data ? data.map(p => ({
         id: p.id, name: p.name, price: parseFloat(p.price),
-        image: p.image, sizes: p.sizes || []
+        image: p.image, image2: p.image2, sizes: p.sizes || []
       })) : [],
       total: count || 0
     };
