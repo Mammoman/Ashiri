@@ -158,7 +158,7 @@ const Reviews = () => {
                   flex: '0 0 auto',
                   width: '340px',
                   scrollSnapAlign: 'start',
-                  background: '#ffffff',
+                  background: 'var(--bg-main)',
                   border: '1px solid var(--color-border)',
                   borderRadius: '16px',
                   padding: '28px',
@@ -265,7 +265,7 @@ const Reviews = () => {
           padding: '20px'
         }}>
           <div style={{
-            background: '#ffffff',
+            background: 'var(--bg-main)',
             width: '100%',
             maxWidth: '500px',
             borderRadius: '20px',

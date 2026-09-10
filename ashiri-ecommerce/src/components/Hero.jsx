@@ -188,7 +188,7 @@ const Hero = () => {
             left: 60px;
             right: 60px;
             z-index: 2;
-            color: #ffffff;
+            color: var(--bg-main);
             opacity: 0;
             transform: translateY(28px);
             transition: opacity 0.7s ease 0.3s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s;
@@ -231,7 +231,7 @@ const Hero = () => {
             border-radius: 50%;
             background: rgba(255,255,255,0.12);
             border: 1px solid rgba(255,255,255,0.25);
-            color: #ffffff;
+            color: var(--bg-main);
             backdrop-filter: blur(8px);
             display: flex;
             align-items: center;
@@ -264,7 +264,7 @@ const Hero = () => {
             width: 20px;
           }
           .hero-dot--active {
-            background: #ffffff;
+            background: var(--bg-main);
             width: 44px;
           }
 
@@ -283,7 +283,7 @@ const Hero = () => {
             color: rgba(255,255,255,0.6);
           }
           .hero-counter__current {
-            color: #ffffff;
+            color: var(--bg-main);
             font-size: 0.85rem;
           }
           .hero-counter__sep {

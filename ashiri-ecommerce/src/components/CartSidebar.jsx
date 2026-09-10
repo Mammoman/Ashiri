@@ -248,7 +248,7 @@ const CartSidebar = ({
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          background: '#ffffff',
+          background: 'var(--bg-main)',
           borderLeft: '1px solid var(--color-border)',
           borderTop: 'none',
           borderBottom: 'none',
@@ -300,7 +300,7 @@ const CartSidebar = ({
             <div style={{
               display: 'flex',
               borderBottom: '1px solid var(--color-border)',
-              background: '#ffffff',
+              background: 'var(--bg-main)',
               padding: '0 10px'
             }}>
               <button
@@ -1032,7 +1032,7 @@ const CartSidebar = ({
           animation: 'fadeIn 0.2s ease-out'
         }} className="mock-paystack-overlay">
           <div style={{
-            background: '#ffffff',
+            background: 'var(--bg-main)',
             width: '100%',
             maxWidth: '380px',
             borderRadius: '8px',

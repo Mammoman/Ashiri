@@ -113,7 +113,7 @@ const Gallery = ({ onViewGallery }) => {
                   padding: '24px',
                   boxSizing: 'border-box',
                   transition: 'opacity 0.4s ease',
-                  color: '#ffffff'
+                  color: 'var(--bg-main)'
                 }}
               >
                 <div style={{
@@ -147,7 +147,7 @@ const Gallery = ({ onViewGallery }) => {
               fontWeight: 600,
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
-              color: '#ffffff',
+              color: 'var(--bg-main)',
               background: 'var(--color-accent)',
               borderRadius: 'var(--radius-pill)',
               boxShadow: 'var(--shadow-subtle)',
@@ -187,7 +187,7 @@ const Gallery = ({ onViewGallery }) => {
               position: 'absolute',
               top: '24px',
               right: '24px',
-              color: '#ffffff',
+              color: 'var(--bg-main)',
               background: 'rgba(255,255,255,0.1)',
               borderRadius: '50%',
               width: '40px',
@@ -209,7 +209,7 @@ const Gallery = ({ onViewGallery }) => {
             style={{
               position: 'absolute',
               left: '24px',
-              color: '#ffffff',
+              color: 'var(--bg-main)',
               background: 'rgba(255,255,255,0.1)',
               borderRadius: '50%',
               width: '48px',
@@ -230,7 +230,7 @@ const Gallery = ({ onViewGallery }) => {
             style={{
               position: 'absolute',
               right: '24px',
-              color: '#ffffff',
+              color: 'var(--bg-main)',
               background: 'rgba(255,255,255,0.1)',
               borderRadius: '50%',
               width: '48px',
@@ -255,7 +255,7 @@ const Gallery = ({ onViewGallery }) => {
               alignItems: 'center',
               maxWidth: '85vw',
               maxHeight: '80vh',
-              color: '#ffffff'
+              color: 'var(--bg-main)'
             }}
           >
             <ImageWithSkeleton

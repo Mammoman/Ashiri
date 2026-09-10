@@ -59,16 +59,14 @@ const GalleryPage = ({ onBackToShop }) => {
             <ArrowLeft size={14} /> Back to Shop
           </button>
 
-          <span style={{
-            fontSize: '0.75rem',
-            fontWeight: 700,
-            letterSpacing: '0.2em',
+          <span className="brand-text" style={{
+            fontSize: '0.9rem',
             textTransform: 'uppercase',
             color: 'var(--text-muted)',
             display: 'block',
             marginBottom: '10px'
           }}>
-            ASIRI VISUAL ARCHIVE
+            ÀṢHÍRÍ VISUAL ARCHIVE
           </span>
 
           <h1 style={{
@@ -89,7 +87,7 @@ const GalleryPage = ({ onBackToShop }) => {
             lineHeight: '1.6',
             marginBottom: '32px'
           }}>
-            A curated visual history of our slow-fashion garments, textures, Lagos studio vats, and editorial drapes.
+            Explore our visual archive.
           </p>
 
           {/* Filter Bar removed per user request */}
@@ -172,7 +170,7 @@ const GalleryPage = ({ onBackToShop }) => {
               position: 'absolute',
               top: '24px',
               right: '24px',
-              color: '#ffffff',
+              color: 'var(--bg-main)',
               background: 'rgba(255,255,255,0.08)',
               borderRadius: '50%',
               width: '44px',
@@ -195,7 +193,7 @@ const GalleryPage = ({ onBackToShop }) => {
             style={{
               position: 'absolute',
               left: '24px',
-              color: '#ffffff',
+              color: 'var(--bg-main)',
               background: 'rgba(255,255,255,0.08)',
               borderRadius: '50%',
               width: '52px',
@@ -217,7 +215,7 @@ const GalleryPage = ({ onBackToShop }) => {
             style={{
               position: 'absolute',
               right: '24px',
-              color: '#ffffff',
+              color: 'var(--bg-main)',
               background: 'rgba(255,255,255,0.08)',
               borderRadius: '50%',
               width: '52px',
@@ -242,7 +240,7 @@ const GalleryPage = ({ onBackToShop }) => {
               alignItems: 'center',
               maxWidth: '85vw',
               maxHeight: '85vh',
-              color: '#ffffff',
+              color: 'var(--bg-main)',
               position: 'relative'
             }}
           >
@@ -329,7 +327,7 @@ const GalleryPage = ({ onBackToShop }) => {
             flex-direction: column;
             justify-content: flex-end;
             padding: clamp(8px, 2vw, 24px);
-            color: #ffffff;
+            color: var(--bg-main);
             opacity: 0;
             transition: opacity 0.4s ease;
           }
@@ -350,7 +348,7 @@ const GalleryPage = ({ onBackToShop }) => {
           .masonry-title {
             font-size: clamp(0.7rem, 1.5vw, 1.1rem);
             font-weight: 700;
-            color: #ffffff;
+            color: var(--bg-main);
             letter-spacing: -0.02em;
             margin: 0;
           }

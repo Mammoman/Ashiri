@@ -62,7 +62,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
           position: 'relative',
           display: 'grid',
           gridTemplateColumns: '1.1fr 1fr',
-          background: '#ffffff',
+          background: 'var(--bg-main)',
           animation: 'slideUp 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
           boxShadow: 'var(--shadow-premium)',
           border: '1px solid var(--color-border)'
@@ -79,7 +79,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
             top: '20px',
             left: '20px',
             zIndex: 10,
-            background: '#ffffff',
+            background: 'var(--bg-main)',
             border: '1px solid var(--color-border)',
             color: 'var(--text-dark)',
             width: '40px',
@@ -362,7 +362,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
                     left: isGift ? '18px' : '3px',
                     width: '14px', height: '14px',
                     borderRadius: '50%',
-                    background: '#ffffff',
+                    background: 'var(--bg-main)',
                     boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
                     transition: 'left 0.2s ease',
                   }} />
@@ -374,7 +374,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
                 <div style={{
                   padding: '12px 14px',
                   borderTop: '1px solid var(--color-border)',
-                  background: '#ffffff',
+                  background: 'var(--bg-main)',
                 }}>
                   <label style={{
                     display: 'block',
@@ -401,7 +401,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
                       padding: '8px 10px',
                       borderRadius: '6px',
                       border: '1px solid var(--color-border)',
-                      background: '#ffffff',
+                      background: 'var(--bg-main)',
                       outline: 'none',
                       color: 'var(--text-dark)',
                       lineHeight: 1.5,
@@ -474,7 +474,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
                 height: '50px',
                 borderRadius: '4px',
                 border: '1px solid var(--color-border)',
-                background: '#ffffff',
+                background: 'var(--bg-main)',
                 padding: '0 8px'
               }} className="modal-quantity-selector">
                 <button 

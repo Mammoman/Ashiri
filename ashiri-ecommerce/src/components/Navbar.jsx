@@ -13,7 +13,8 @@ const Navbar = ({ cartCount, onCartClick, wishlistCount, onWishlistClick, curren
       display: 'flex',
       alignItems: 'center',
       transition: 'var(--transition-smooth)',
-      background: '#ffffff',
+      background: 'rgba(253, 251, 247, 0.9)', // Cream with slight transparency for glass effect
+      backdropFilter: 'blur(8px)',
       borderBottom: '1px solid var(--color-border)'
     }}>
       <div className="container" style={{

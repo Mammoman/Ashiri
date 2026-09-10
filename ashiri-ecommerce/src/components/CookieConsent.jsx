@@ -42,7 +42,7 @@ export default function CookieConsent() {
         </button>
         <button 
           onClick={() => { localStorage.setItem('ashiri_cookie_consent', 'true'); setShow(false); }}
-          style={{ background: '#ffffff', color: '#111827', border: 'none', padding: '6px 16px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}
+          style={{ background: 'var(--bg-main)', color: '#111827', border: 'none', padding: '6px 16px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}
         >
           Accept
         </button>

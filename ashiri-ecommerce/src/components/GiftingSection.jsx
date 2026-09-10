@@ -232,7 +232,7 @@ const GiftingSection = () => {
               alignItems: 'center',
               gap: '8px',
               padding: '14px 30px',
-              background: '#ffffff',
+              background: 'var(--bg-main)',
               color: '#000000',
               borderRadius: '50px',
               fontSize: '0.75rem',

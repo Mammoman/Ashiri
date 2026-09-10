@@ -153,8 +153,8 @@ const ProductGrid = ({ products = [], onProductSelect, onAddToCart, favorites = 
                   width: '70px',
                   height: '70px',
                   borderRadius: '50%',
-                  background: activeCategory === 'All' ? 'var(--text-dark)' : '#ffffff',
-                  color: activeCategory === 'All' ? '#ffffff' : 'var(--text-dark)',
+                  background: activeCategory === 'All' ? 'var(--text-dark)' : 'var(--bg-card)',
+                  color: activeCategory === 'All' ? 'var(--bg-main)' : 'var(--text-dark)',
                   border: `2px solid ${activeCategory === 'All' ? 'var(--text-dark)' : 'var(--color-border)'}`,
                   transition: 'all 0.2s ease',
                   boxShadow: activeCategory === 'All' ? '0 4px 12px rgba(0,0,0,0.1)' : 'none'
@@ -290,7 +290,7 @@ const ProductGrid = ({ products = [], onProductSelect, onAddToCart, favorites = 
                       width: '32px',
                       height: '32px',
                       borderRadius: '50%',
-                      background: '#ffffff',
+                      background: 'var(--bg-main)',
                       boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
                       color: favorites[product.id] ? 'var(--color-sale)' : 'var(--text-muted)'
                     }}

@@ -237,7 +237,7 @@ const Footer = ({ onPageChange }) => {
           background: var(--bg-main);
         }
         .subscribe-btn:hover {
-          background: #ffffff !important;
+          background: var(--bg-main) !important;
         }
         .bottom-link {
           color: rgba(253, 251, 247, 0.7);
