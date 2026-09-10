@@ -296,7 +296,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
               marginBottom: '20px',
               borderRadius: '8px',
               border: '1px solid',
-              borderColor: isGift ? '#7c3aed' : 'var(--color-border)',
+              borderColor: isGift ? 'var(--color-accent)' : 'var(--color-border)',
               overflow: 'hidden',
               transition: 'border-color 0.2s ease',
             }}>
@@ -310,7 +310,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   padding: '11px 14px',
-                  background: isGift ? '#f5f3ff' : '#fafafa',
+                  background: isGift ? 'var(--bg-card)' : '#fafafa',
                   border: 'none',
                   cursor: 'pointer',
                   transition: 'background 0.2s ease',
@@ -321,7 +321,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
                   <span style={{
                     width: '28px', height: '28px',
                     borderRadius: '7px',
-                    background: isGift ? '#7c3aed' : '#e5e7eb',
+                    background: isGift ? 'var(--color-accent)' : '#e5e7eb',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     transition: 'background 0.2s ease',
                     flexShrink: 0,
@@ -331,7 +331,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
                   <span style={{
                     fontSize: '0.82rem',
                     fontWeight: 600,
-                    color: isGift ? '#5b21b6' : 'var(--text-dark)',
+                    color: isGift ? 'var(--color-accent)' : 'var(--text-dark)',
                   }}>
                     Gift this item
                   </span>
@@ -340,8 +340,8 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
                       fontSize: '0.65rem',
                       fontWeight: 700,
                       letterSpacing: '0.08em',
-                      color: '#7c3aed',
-                      background: '#ede9fe',
+                      color: 'var(--color-accent)',
+                      background: 'var(--color-accent-light)',
                       padding: '2px 7px',
                       borderRadius: '20px',
                     }}>ACTIVE</span>
@@ -351,7 +351,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
                 <span style={{
                   width: '36px', height: '20px',
                   borderRadius: '20px',
-                  background: isGift ? '#7c3aed' : '#d1d5db',
+                  background: isGift ? 'var(--color-accent)' : '#d1d5db',
                   position: 'relative',
                   flexShrink: 0,
                   transition: 'background 0.2s ease',
@@ -373,14 +373,14 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
               {isGift && (
                 <div style={{
                   padding: '12px 14px',
-                  borderTop: '1px solid #ede9fe',
-                  background: '#fdfcff',
+                  borderTop: '1px solid var(--color-border)',
+                  background: '#ffffff',
                 }}>
                   <label style={{
                     display: 'block',
                     fontSize: '0.7rem',
                     fontWeight: 700,
-                    color: '#7c3aed',
+                    color: 'var(--color-accent)',
                     textTransform: 'uppercase',
                     letterSpacing: '0.08em',
                     marginBottom: '6px',
@@ -400,7 +400,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
                       fontFamily: 'var(--font-body)',
                       padding: '8px 10px',
                       borderRadius: '6px',
-                      border: '1px solid #ddd6fe',
+                      border: '1px solid var(--color-border)',
                       background: '#ffffff',
                       outline: 'none',
                       color: 'var(--text-dark)',
@@ -408,12 +408,12 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
                     }}
                     className="gift-message-input"
                   />
-                  <span style={{ fontSize: '0.65rem', color: '#a78bfa', display: 'block', textAlign: 'right', marginTop: '2px' }}>
+                  <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', display: 'block', textAlign: 'right', marginTop: '2px' }}>
                     {giftMessage.length}/120
                   </span>
                   <p style={{
                     fontSize: '0.7rem',
-                    color: '#7c3aed',
+                    color: 'var(--color-accent)',
                     marginTop: '6px',
                     display: 'flex',
                     alignItems: 'center',
@@ -456,7 +456,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
               >
                 {isAdded ? (
                   <>
-                    <Check size={16} /> Added ({quantity})
+                    <Check size={16} /> Added to cart ({quantity})
                   </>
                 ) : (
                   <>

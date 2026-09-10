@@ -783,7 +783,7 @@ const CartSidebar = ({
                 </label>
                 <input
                   type="text"
-                  placeholder="E.g. Kehinde Etti"
+                  placeholder="John Doe"
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
                   required
@@ -806,7 +806,7 @@ const CartSidebar = ({
                 </label>
                 <input
                   type="email"
-                  placeholder="name@domain.com"
+                  placeholder="name@gmail.com"
                   value={customerEmail}
                   onChange={(e) => setCustomerEmail(e.target.value)}
                   required
@@ -832,7 +832,7 @@ const CartSidebar = ({
                 </label>
                 <input
                   type="tel"
-                  placeholder="E.g. +234 801 234 5678"
+                  placeholder="+234 809 000 7000"
                   value={customerPhone}
                   onChange={(e) => setCustomerPhone(e.target.value)}
                   required
