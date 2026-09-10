@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Star, Heart, SlidersHorizontal, ChevronDown, Check } from 'lucide-react';
+import ImageWithSkeleton from './ImageWithSkeleton';
 
 // Premium Shimmering Skeleton Loader for Product Cards
 const ProductCardSkeleton = () => (
@@ -248,7 +249,7 @@ const ProductGrid = ({ products = [], onProductSelect, onAddToCart, favorites = 
                     background: '#f3f4f6'
                   }}
                 >
-                  <img
+                  <ImageWithSkeleton
                     src={product.image}
                     alt={product.name}
                     className="primary-img"
@@ -262,10 +263,18 @@ const ProductGrid = ({ products = [], onProductSelect, onAddToCart, favorites = 
                     }}
                   />
                   {product.image2 && (
-                    <img
+                    <ImageWithSkeleton
                       src={product.image2}
                       alt={`${product.name} alternate view`}
                       className="secondary-img"
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover'
+                      }}
                     />
                   )}
 

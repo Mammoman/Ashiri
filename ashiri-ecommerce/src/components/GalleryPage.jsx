@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, ChevronLeft, ChevronRight, Maximize2, ArrowLeft } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
+import ImageWithSkeleton from './ImageWithSkeleton';
 
 const GalleryPage = ({ onBackToShop }) => {
   const { galleryImages, isLoadingSupabase } = useAdmin();
@@ -125,10 +126,11 @@ const GalleryPage = ({ onBackToShop }) => {
                 className={`masonry-item ${item.type || ''}`}
                 onClick={() => setLightboxIndex(idx)}
               >
-                <img
+                <ImageWithSkeleton
                   src={item.image}
                   alt={`Gallery ${idx}`}
                   className="masonry-img"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
                 <div className="masonry-overlay">
                   <div className="masonry-zoom">
@@ -244,16 +246,16 @@ const GalleryPage = ({ onBackToShop }) => {
               position: 'relative'
             }}
           >
-            <img
+            <ImageWithSkeleton
               src={filteredItems[lightboxIndex].image}
-              alt={filteredItems[lightboxIndex].title}
+              alt={`Gallery ${lightboxIndex}`}
               style={{
                 maxWidth: '100%',
                 maxHeight: '70vh',
                 objectFit: 'contain',
-                borderRadius: 'var(--radius-sm)',
-                boxShadow: '0 30px 60px rgba(0,0,0,0.6)',
-                marginBottom: '20px'
+                borderRadius: '4px',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+                marginBottom: '16px'
               }}
             />
 

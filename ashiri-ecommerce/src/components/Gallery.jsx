@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
+import ImageWithSkeleton from './ImageWithSkeleton';
 
 const Gallery = ({ onViewGallery }) => {
   const { galleryImages } = useAdmin();
@@ -83,7 +84,7 @@ const Gallery = ({ onViewGallery }) => {
                 transition: 'var(--transition-smooth)'
               }}
             >
-              <img
+              <ImageWithSkeleton
                 src={item.image}
                 alt={item.title}
                 style={{
@@ -257,7 +258,7 @@ const Gallery = ({ onViewGallery }) => {
               color: '#ffffff'
             }}
           >
-            <img
+            <ImageWithSkeleton
               src={galleryItems[lightboxIndex].image}
               alt={galleryItems[lightboxIndex].title}
               style={{
