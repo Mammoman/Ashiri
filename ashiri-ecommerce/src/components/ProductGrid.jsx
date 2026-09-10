@@ -333,7 +333,7 @@ const ProductGrid = ({ products = [], onProductSelect, onAddToCart, favorites = 
                     WebkitLineClamp: 2,
                     WebkitBoxOrient: 'vertical'
                   }}>
-                    {product.name}
+                    {product.name.replace('The Ashiri ', '')}
                   </h3>
 
                   {/* Price Layout: Clean single price */}

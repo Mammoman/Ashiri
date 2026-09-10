@@ -30,7 +30,7 @@ const ProductsPage = () => {
   const [error, setError] = useState('');
   const [editingProductId, setEditingProductId] = useState(null);
   const [formData, setFormData] = useState({
-    name: '', price: '', sizes: ''
+    name: '', price: '', sizes: '', image: '', image2: ''
   });
   const [imageFile, setImageFile] = useState(null);
   const [image2File, setImage2File] = useState(null);
@@ -63,7 +63,7 @@ const ProductsPage = () => {
       setIsSubmitting(false);
       setIsAdding(false);
       setEditingProductId(null);
-      setFormData({ name: '', price: '', sizes: '' });
+      setFormData({ name: '', price: '', sizes: '', image: '', image2: '' });
       setImageFile(null);
       setImage2File(null);
     } catch (err) {
@@ -78,7 +78,9 @@ const ProductsPage = () => {
     setFormData({
       name: product.name,
       price: product.price.toString(),
-      sizes: (product.sizes || []).join(', ')
+      sizes: (product.sizes || []).join(', '),
+      image: product.image || '',
+      image2: product.image2 || ''
     });
     setImageFile(null);
     setImage2File(null);
@@ -89,7 +91,7 @@ const ProductsPage = () => {
   const handleCancelClick = () => {
     setIsAdding(false);
     setEditingProductId(null);
-    setFormData({ name: '', price: '', sizes: '' });
+    setFormData({ name: '', price: '', sizes: '', image: '', image2: '' });
     setImageFile(null);
     setImage2File(null);
     setError('');
@@ -124,13 +126,12 @@ const ProductsPage = () => {
               <div className="admin-form-group">
                 <label className="admin-form-label">Tank Color (e.g. Grey)</label>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#f8fafc', padding: '0 12px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
-                  <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 500 }}>The Ashiri</span>
                   <input 
                     required 
                     style={{ flex: 1, border: 'none', background: 'transparent', padding: '12px 0', fontSize: '0.9rem', outline: 'none', color: 'var(--text-dark)' }}
                     placeholder="Color" 
                     value={formData.name ? formData.name.replace('The Ashiri ', '').replace(' Tank', '') : ''} 
-                    onChange={e => setFormData({...formData, name: `The Ashiri ${e.target.value} Tank`})} 
+                    onChange={e => setFormData({...formData, name: `${e.target.value} Tank`})} 
                   />
                   <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 500 }}>Tank</span>
                 </div>
@@ -163,15 +164,23 @@ const ProductsPage = () => {
                       transition: 'all 0.2s',
                       color: '#64748b',
                       height: '100%',
+                      position: 'relative',
+                      overflow: 'hidden'
                     }}
                     onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#0f172a'; e.currentTarget.style.background = '#f1f5f9'; }}
                     onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#cbd5e1'; e.currentTarget.style.background = '#f8fafc'; }}
                   >
-                    <Image size={32} style={{ marginBottom: '12px', color: '#94a3b8' }} />
-                    <span style={{ fontWeight: 600, color: '#334155', textAlign: 'center' }}>
-                      {imageFile ? imageFile.name : (editingProductId ? 'Keep Current Primary Image' : 'Select Primary Image')}
-                    </span>
-                    {!imageFile && !editingProductId && <span style={{ fontSize: '0.75rem', marginTop: '4px', textAlign: 'center' }}>PNG, JPG up to 5MB.</span>}
+                    {(imageFile || formData.image) ? (
+                      <img src={imageFile ? URL.createObjectURL(imageFile) : formData.image} alt="Primary" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      <>
+                        <Image size={32} style={{ marginBottom: '12px', color: '#94a3b8' }} />
+                        <span style={{ fontWeight: 600, color: '#334155', textAlign: 'center' }}>
+                          Select Primary Image
+                        </span>
+                        <span style={{ fontSize: '0.75rem', marginTop: '4px', textAlign: 'center' }}>PNG, JPG up to 5MB.</span>
+                      </>
+                    )}
                     <input 
                       type="file" 
                       accept="image/*" 
@@ -197,15 +206,23 @@ const ProductsPage = () => {
                       transition: 'all 0.2s',
                       color: '#64748b',
                       height: '100%',
+                      position: 'relative',
+                      overflow: 'hidden'
                     }}
                     onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#0f172a'; e.currentTarget.style.background = '#f1f5f9'; }}
                     onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#cbd5e1'; e.currentTarget.style.background = '#f8fafc'; }}
                   >
-                    <Image size={32} style={{ marginBottom: '12px', color: '#94a3b8' }} />
-                    <span style={{ fontWeight: 600, color: '#334155', textAlign: 'center' }}>
-                      {image2File ? image2File.name : (editingProductId ? 'Keep Current Secondary Image' : 'Select Secondary Image')}
-                    </span>
-                    {!image2File && !editingProductId && <span style={{ fontSize: '0.75rem', marginTop: '4px', textAlign: 'center' }}>Shown on hover/details.</span>}
+                    {(image2File || formData.image2) ? (
+                      <img src={image2File ? URL.createObjectURL(image2File) : formData.image2} alt="Secondary" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      <>
+                        <Image size={32} style={{ marginBottom: '12px', color: '#94a3b8' }} />
+                        <span style={{ fontWeight: 600, color: '#334155', textAlign: 'center' }}>
+                          Select Secondary Image
+                        </span>
+                        <span style={{ fontSize: '0.75rem', marginTop: '4px', textAlign: 'center' }}>Shown on hover/details.</span>
+                      </>
+                    )}
                     <input 
                       type="file" 
                       accept="image/*" 

@@ -131,6 +131,41 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
               className="main-image"
             />
           </div>
+
+          {product.image2 && (
+            <div style={{ display: 'flex', gap: '12px', marginTop: '16px', width: '100%', justifyContent: 'center' }} className="thumbnails-row">
+              <button 
+                onClick={() => setActiveView('front')}
+                style={{
+                  width: '64px',
+                  height: '64px',
+                  borderRadius: '8px',
+                  border: activeView === 'front' ? '2px solid #0f172a' : '2px solid transparent',
+                  padding: '2px',
+                  cursor: 'pointer',
+                  background: '#f4f3f0',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <img src={product.image} alt="Thumbnail 1" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }} />
+              </button>
+              <button 
+                onClick={() => setActiveView('back')}
+                style={{
+                  width: '64px',
+                  height: '64px',
+                  borderRadius: '8px',
+                  border: activeView === 'back' ? '2px solid #0f172a' : '2px solid transparent',
+                  padding: '2px',
+                  cursor: 'pointer',
+                  background: '#f4f3f0',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <img src={product.image2} alt="Thumbnail 2" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }} />
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Right Side: Product Details & Size Grid */}
@@ -179,7 +214,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
               marginBottom: '10px',
               letterSpacing: '-0.02em'
             }} className="modal-title brand-text">
-              {product.name}
+              {product.name.replace('The Ashiri ', '')}
             </h2>
 
             {/* Ratings Stars Row */}

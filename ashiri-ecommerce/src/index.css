@@ -296,13 +296,6 @@ button {
   transition: opacity 0.4s ease;
 }
 
-.product-card:hover .has-secondary .primary-img {
-  opacity: 0;
-}
-
-.product-card:hover .has-secondary .secondary-img {
-  opacity: 1;
-}
 
 /* Skeleton Loading Styles */
 @keyframes shimmer {
