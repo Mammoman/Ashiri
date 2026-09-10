@@ -70,7 +70,6 @@ export function SortableGalleryItem({ id, url, folder, onDelete, onApprove }) {
           >
             <GripVertical size={16} />
           </div>
-          </div>
           <div style={{ display: 'flex', gap: '8px' }}>
             {folder === 'community_pending' && onApprove && (
               <button
