@@ -124,7 +124,7 @@ export function SortableGalleryItem({ id, url, folder, onDelete, onApprove }) {
             borderRadius: '4px',
             fontWeight: 500,
           }}>
-            {folder}/
+            {folder}
           </span>
         </div>
       </div>
