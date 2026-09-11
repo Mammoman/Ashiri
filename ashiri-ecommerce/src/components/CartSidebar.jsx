@@ -42,6 +42,8 @@ const CartSidebar = ({
   const [paymentMethod] = useState('flutterwave');
   const [isMockFlutterwaveOpen, setIsMockFlutterwaveOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [checkoutSuccess, setCheckoutSuccess] = useState(false);
+  const [checkoutEmail, setCheckoutEmail] = useState('');
 
   useEffect(() => {
     if (isOpen) {
@@ -150,22 +152,17 @@ const CartSidebar = ({
       console.error('Failed to save order to database:', dbErr);
     }
 
-    // Clear cart and close panel regardless of email outcome
+    // Clear cart and close forms
     onClearCart();
-    setIsCheckoutOpen(false);
+    setCheckoutEmail(customerEmail);
     setCustomerName('');
     setCustomerEmail('');
     setCustomerPhone('');
     setCustomerAddress('');
     setIsSubmitting(false);
-    onClose();
 
-    // Friendly success message
-    if (emailSent) {
-      alert(`🎉 Payment successful! Your order has been placed.\n\nA confirmation has been sent to ${customerEmail}.`);
-    } else {
-      alert(`✅ Payment successful! Your order is confirmed (Ref: ${officialOrderId}).\n\nNote: We couldn't send your email receipt right now — please screenshot this for your records.`);
-    }
+    // Show custom success screen instead of alert
+    setCheckoutSuccess(true);
   };
 
   const handleCheckoutSubmit = async (e) => {
@@ -201,7 +198,7 @@ const CartSidebar = ({
             tx_ref: paymentRef,
             amount: calculateSubtotal(), // Flutterwave is in Naira
             currency: 'NGN',
-            payment_options: 'card, banktransfer, ussd',
+            payment_options: 'banktransfer, card, ussd',
             customer: {
               email: customerEmail,
               phone_number: customerPhone,
@@ -256,7 +253,7 @@ const CartSidebar = ({
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between',
+          justifyContent: checkoutSuccess ? 'center' : 'space-between',
           background: 'var(--bg-main)',
           borderLeft: '1px solid var(--color-border)',
           borderTop: 'none',
@@ -266,266 +263,205 @@ const CartSidebar = ({
         }}
         onClick={(e) => e.stopPropagation()}
       >
-
-        {/* VIEW 1: SHOPPING BAG ITEMS LIST */}
-        {!isCheckoutOpen ? (
-          <>
-            {/* Header */}
+        {checkoutSuccess ? (
+          <div style={{ padding: '40px 24px', textAlign: 'center' }}>
             <div style={{
-              padding: '20px 20px 10px 20px',
+              width: '80px',
+              height: '80px',
+              borderRadius: '50%',
+              background: 'var(--text-dark)',
+              color: 'var(--bg-main)',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'space-between'
+              justifyContent: 'center',
+              margin: '0 auto 24px',
+              animation: 'bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
             }}>
-              <span style={{
+              <Check size={40} strokeWidth={3} />
+            </div>
+            
+            <h2 style={{
+              fontSize: '1.5rem',
+              fontWeight: 700,
+              color: 'var(--text-dark)',
+              marginBottom: '16px',
+              fontFamily: 'var(--font-brand)'
+            }}>
+              Payment Successful!
+            </h2>
+            
+            <p style={{
+              color: 'var(--text-muted)',
+              fontSize: '0.95rem',
+              lineHeight: 1.6,
+              marginBottom: '32px'
+            }}>
+              Your order has been successfully placed. A confirmation email has been sent to <strong>{checkoutEmail}</strong>.
+            </p>
+
+            <button
+              onClick={() => {
+                setCheckoutSuccess(false);
+                setIsCheckoutOpen(false);
+                onClose();
+              }}
+              style={{
+                width: '100%',
+                padding: '16px',
+                background: 'var(--text-dark)',
+                color: 'var(--bg-main)',
+                border: 'none',
+                borderRadius: '8px',
+                fontWeight: 600,
                 fontSize: '1rem',
-                fontWeight: 700,
-                color: 'var(--text-dark)'
-              }}>
-                Client Panel
-              </span>
-              <button
-                onClick={onClose}
-                aria-label="Close panel"
-                style={{
-                  color: 'var(--text-dark)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '50%',
-                  background: '#f3f4f6',
-                  border: 'none',
-                  cursor: 'pointer'
-                }}
-                className="cart-close-btn"
-              >
-                <ArrowRight size={16} />
-              </button>
-            </div>
-
-            {/* Horizontal Tabs */}
-            <div style={{
-              display: 'flex',
-              borderBottom: '1px solid var(--color-border)',
-              background: 'var(--bg-main)',
-              padding: '0 10px'
-            }}>
-              <button
-                type="button"
-                onClick={() => setActiveTab('cart')}
-                style={{
-                  flex: 1,
-                  padding: '12px 6px',
-                  fontSize: '0.8rem',
-                  fontWeight: activeTab === 'cart' ? 700 : 500,
-                  color: activeTab === 'cart' ? 'var(--text-dark)' : 'var(--text-muted)',
-                  borderBottom: '2px solid',
-                  borderColor: activeTab === 'cart' ? 'var(--text-dark)' : 'transparent',
-                  background: 'none',
-                  borderLeft: 'none',
-                  borderRight: 'none',
-                  borderTop: 'none',
-                  cursor: 'pointer',
-                  transition: 'var(--transition-fast)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px'
-                }}
-              >
-                <ShoppingBag size={14} />
-                Bag ({cartItems.length})
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTab('wishlist')}
-                style={{
-                  flex: 1,
-                  padding: '12px 6px',
-                  fontSize: '0.8rem',
-                  fontWeight: activeTab === 'wishlist' ? 700 : 500,
-                  color: activeTab === 'wishlist' ? 'var(--text-dark)' : 'var(--text-muted)',
-                  borderBottom: '2px solid',
-                  borderColor: activeTab === 'wishlist' ? 'var(--text-dark)' : 'transparent',
-                  background: 'none',
-                  borderLeft: 'none',
-                  borderRight: 'none',
-                  borderTop: 'none',
-                  cursor: 'pointer',
-                  transition: 'var(--transition-fast)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px'
-                }}
-              >
-                <Heart size={14} fill={activeTab === 'wishlist' ? 'currentColor' : 'none'} />
-                Wishlist ({wishlistItems.length})
-              </button>
-            </div>
-
-            {activeTab === 'wishlist' ? (
-              /* VIEW 1A: WISHLIST ITEMS LIST */
+                cursor: 'pointer',
+                transition: 'opacity 0.2s',
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.opacity = '0.9')}
+              onMouseOut={(e) => (e.currentTarget.style.opacity = '1')}
+            >
+              Continue Shopping
+            </button>
+            <style dangerouslySetInnerHTML={{
+              __html: `
+                @keyframes bounceIn {
+                  0% { transform: scale(0); }
+                  50% { transform: scale(1.1); }
+                  100% { transform: scale(1); }
+                }
+              `
+            }} />
+          </div>
+        ) : (
+          /* VIEW 1: SHOPPING BAG ITEMS LIST */
+          !isCheckoutOpen ? (
+            <>
+              {/* Header */}
               <div style={{
-                flexGrow: 1,
-                overflowY: 'auto',
-                padding: '20px'
-              }} className="cart-items-scroll">
-                {wishlistItems.length === 0 ? (
-                  <div className="flex-center" style={{
-                    height: '100%',
-                    flexDirection: 'column',
-                    textAlign: 'center',
-                    gap: '12px'
-                  }}>
-                    <Heart size={32} style={{ color: 'var(--text-muted)' }} />
-                    <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Your wishlist is empty.</p>
-                    <button
-                      type="button"
-                      onClick={onClose}
-                      className="filter-btn active"
-                      style={{ padding: '8px 18px', fontSize: '0.75rem' }}
-                    >
-                      Browse  Collection
-                    </button>
-                  </div>
-                ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    {wishlistItems.map((item) => (
-                      <div
-                        key={item.id}
-                        style={{
-                          display: 'flex',
-                          gap: '14px',
-                          paddingBottom: '16px',
-                          borderBottom: '1px solid var(--color-border)'
-                        }}
-                      >
-                        {/* Image */}
-                        <div style={{
-                          width: '70px',
-                          height: '85px',
-                          overflow: 'hidden',
-                          background: '#f3f4f6',
-                          borderRadius: 'var(--radius-sm)'
-                        }}>
-                          <img
-                            src={item.image}
-                            alt={item.name}
-                            style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '4px' }}
-                          />
-                        </div>
-
-                        {/* Info */}
-                        <div style={{
-                          flexGrow: 1,
-                          display: 'flex',
-                          flexDirection: 'column',
-                          justifyContent: 'space-between'
-                        }}>
-                          <div>
-                            <h4 style={{
-                              fontSize: '0.8rem',
-                              fontWeight: 600,
-                              color: 'var(--text-dark)',
-                              lineHeight: 1.3,
-                              marginBottom: '2px'
-                            }}>
-                              {item.name}
-                            </h4>
-                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                              ₦{item.price.toLocaleString()}
-                            </span>
-                          </div>
-
-                          {/* Actions */}
-                          <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '12px',
-                            marginTop: '6px'
-                          }}>
-                            {/* Move to bag button */}
-                            <button
-                              type="button"
-                              onClick={() => {
-                                onAddToCart(item);
-                                setActiveTab('cart');
-                              }}
-                              style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '4px',
-                                fontSize: '0.7rem',
-                                color: 'var(--text-dark)',
-                                fontWeight: 700,
-                                background: 'var(--color-accent-light)',
-                                border: 'none',
-                                padding: '4px 10px',
-                                borderRadius: '4px',
-                                cursor: 'pointer'
-                              }}
-                            >
-                              Add to Bag
-                            </button>
-
-                            {/* Remove from wishlist */}
-                            <button
-                              type="button"
-                              onClick={() => onToggleFavorite(item.id)}
-                              style={{
-                                color: 'var(--text-muted)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '3px',
-                                fontSize: '0.7rem',
-                                background: 'none',
-                                border: 'none',
-                                cursor: 'pointer'
-                              }}
-                              className="remove-btn"
-                            >
-                              <Trash2 size={11} /> Remove
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                padding: '20px 20px 10px 20px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}>
+                <span style={{
+                  fontSize: '1rem',
+                  fontWeight: 700,
+                  color: 'var(--text-dark)'
+                }}>
+                  Client Panel
+                </span>
+                <button
+                  onClick={onClose}
+                  aria-label="Close panel"
+                  style={{
+                    color: 'var(--text-dark)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    background: '#f3f4f6',
+                    border: 'none',
+                    cursor: 'pointer'
+                  }}
+                  className="cart-close-btn"
+                >
+                  <ArrowRight size={16} />
+                </button>
               </div>
-            ) : (
-              /* VIEW 1B: SHOPPING BAG ITEMS LIST (Existing) */
-              <>
+
+              {/* Horizontal Tabs */}
+              <div style={{
+                display: 'flex',
+                borderBottom: '1px solid var(--color-border)',
+                background: 'var(--bg-main)',
+                padding: '0 10px'
+              }}>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('cart')}
+                  style={{
+                    flex: 1,
+                    padding: '12px 6px',
+                    fontSize: '0.8rem',
+                    fontWeight: activeTab === 'cart' ? 700 : 500,
+                    color: activeTab === 'cart' ? 'var(--text-dark)' : 'var(--text-muted)',
+                    borderBottom: '2px solid',
+                    borderColor: activeTab === 'cart' ? 'var(--text-dark)' : 'transparent',
+                    background: 'none',
+                    borderLeft: 'none',
+                    borderRight: 'none',
+                    borderTop: 'none',
+                    cursor: 'pointer',
+                    transition: 'var(--transition-fast)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px'
+                  }}
+                >
+                  <ShoppingBag size={14} />
+                  Bag ({cartItems.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('wishlist')}
+                  style={{
+                    flex: 1,
+                    padding: '12px 6px',
+                    fontSize: '0.8rem',
+                    fontWeight: activeTab === 'wishlist' ? 700 : 500,
+                    color: activeTab === 'wishlist' ? 'var(--text-dark)' : 'var(--text-muted)',
+                    borderBottom: '2px solid',
+                    borderColor: activeTab === 'wishlist' ? 'var(--text-dark)' : 'transparent',
+                    background: 'none',
+                    borderLeft: 'none',
+                    borderRight: 'none',
+                    borderTop: 'none',
+                    cursor: 'pointer',
+                    transition: 'var(--transition-fast)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px'
+                  }}
+                >
+                  <Heart size={14} fill={activeTab === 'wishlist' ? 'currentColor' : 'none'} />
+                  Wishlist ({wishlistItems.length})
+                </button>
+              </div>
+
+              {activeTab === 'wishlist' ? (
+                /* VIEW 1A: WISHLIST ITEMS LIST */
                 <div style={{
                   flexGrow: 1,
                   overflowY: 'auto',
                   padding: '20px'
                 }} className="cart-items-scroll">
-                  {cartItems.length === 0 ? (
+                  {wishlistItems.length === 0 ? (
                     <div className="flex-center" style={{
                       height: '100%',
                       flexDirection: 'column',
                       textAlign: 'center',
                       gap: '12px'
                     }}>
-                      <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Your bag is empty.</p>
+                      <Heart size={32} style={{ color: 'var(--text-muted)' }} />
+                      <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Your wishlist is empty.</p>
                       <button
                         type="button"
                         onClick={onClose}
                         className="filter-btn active"
                         style={{ padding: '8px 18px', fontSize: '0.75rem' }}
                       >
-                        Start Shopping
+                        Browse  Collection
                       </button>
                     </div>
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                      {cartItems.map((item, idx) => (
+                      {wishlistItems.map((item) => (
                         <div
-                          key={`${item.id}-${item.selectedSize}-${item.selectedColor}-${idx}`}
+                          key={item.id}
                           style={{
                             display: 'flex',
                             gap: '14px',
@@ -566,93 +502,54 @@ const CartSidebar = ({
                                 {item.name}
                               </h4>
                               <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                                Size: {item.selectedSize}
+                                ₦{item.price.toLocaleString()}
                               </span>
-                              {item.isGift && (
-                                <div style={{ 
-                                  display: 'flex', 
-                                  flexDirection: 'column',
-                                  gap: '4px',
-                                  marginTop: '6px',
-                                  padding: '6px 10px',
-                                  background: '#f5f3ff', 
-                                  borderRadius: '6px',
-                                  border: '1px solid #ddd6fe',
-                                  maxWidth: '100%',
-                                  textAlign: 'left'
-                                }}>
-                                  <span style={{ 
-                                    display: 'flex', 
-                                    alignItems: 'center', 
-                                    gap: '4px', 
-                                    fontSize: '0.65rem', 
-                                    fontWeight: 700, 
-                                    color: '#7c3aed' 
-                                  }}>
-                                    <Gift size={10} /> GIFT PACKAGING
-                                  </span>
-                                  {item.giftMessage && (
-                                    <p style={{ 
-                                      fontSize: '0.7rem', 
-                                      color: '#5b21b6', 
-                                      fontStyle: 'italic',
-                                      margin: 0,
-                                      wordBreak: 'break-word',
-                                      lineHeight: 1.3
-                                    }}>
-                                      "{item.giftMessage}"
-                                    </p>
-                                  )}
-                                </div>
-                              )}
                             </div>
 
                             {/* Actions */}
                             <div style={{
                               display: 'flex',
                               alignItems: 'center',
-                              justifyContent: 'space-between',
+                              gap: '12px',
                               marginTop: '6px'
                             }}>
-                              {/* Qty */}
-                              <div style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                border: '1px solid var(--color-border)',
-                                borderRadius: 'var(--radius-pill)',
-                                background: '#f9fafb'
-                              }}>
-                                <button
-                                  type="button"
-                                  onClick={() => onUpdateQuantity(item, item.quantity - 1)}
-                                  style={{ padding: '4px 8px', color: 'var(--text-muted)' }}
-                                  className="qty-btn"
-                                >
-                                  <Minus size={10} />
-                                </button>
-                                <span style={{ padding: '0 4px', fontSize: '0.75rem', fontWeight: 600 }}>
-                                  {item.quantity}
-                                </span>
-                                <button
-                                  type="button"
-                                  onClick={() => onUpdateQuantity(item, item.quantity + 1)}
-                                  style={{ padding: '4px 8px', color: 'var(--text-muted)' }}
-                                  className="qty-btn"
-                                >
-                                  <Plus size={10} />
-                                </button>
-                              </div>
-
-                              {/* Remove */}
+                              {/* Move to bag button */}
                               <button
                                 type="button"
-                                onClick={() => onRemoveItem(item)}
+                                onClick={() => {
+                                  onAddToCart(item);
+                                  setActiveTab('cart');
+                                }}
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '4px',
+                                  fontSize: '0.7rem',
+                                  color: 'var(--text-dark)',
+                                  fontWeight: 700,
+                                  background: 'var(--color-accent-light)',
+                                  border: 'none',
+                                  padding: '4px 10px',
+                                  borderRadius: '4px',
+                                  cursor: 'pointer'
+                                }}
+                              >
+                                Add to Bag
+                              </button>
+
+                              {/* Remove from wishlist */}
+                              <button
+                                type="button"
+                                onClick={() => onToggleFavorite(item.id)}
                                 style={{
                                   color: 'var(--text-muted)',
                                   display: 'flex',
                                   alignItems: 'center',
                                   gap: '3px',
-                                  fontSize: '0.7rem'
+                                  fontSize: '0.7rem',
+                                  background: 'none',
+                                  border: 'none',
+                                  cursor: 'pointer'
                                 }}
                                 className="remove-btn"
                               >
@@ -660,132 +557,247 @@ const CartSidebar = ({
                               </button>
                             </div>
                           </div>
-
-                          {/* Price */}
-                          <div style={{
-                            fontSize: '0.85rem',
-                            fontWeight: 700,
-                            color: 'var(--text-dark)',
-                            textAlign: 'right'
-                          }}>
-                            ₦{((item.price + (item.isGift ? 2000 : 0)) * item.quantity).toLocaleString()}
-                          </div>
                         </div>
                       ))}
                     </div>
                   )}
                 </div>
-
-                {/* Footer info */}
-                {cartItems.length > 0 && (
+              ) : (
+                /* VIEW 1B: SHOPPING BAG ITEMS LIST (Existing) */
+                <>
                   <div style={{
-                    padding: '20px',
-                    borderTop: '1px solid var(--color-border)',
-                    background: '#fafafa'
-                  }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
-                        <span style={{ color: 'var(--text-muted)' }}>Subtotal</span>
-                        <span style={{ fontWeight: 700, color: 'var(--text-dark)' }}>
-                          ₦{calculateSubtotal().toLocaleString()}
-                        </span>
+                    flexGrow: 1,
+                    overflowY: 'auto',
+                    padding: '20px'
+                  }} className="cart-items-scroll">
+                    {cartItems.length === 0 ? (
+                      <div className="flex-center" style={{
+                        height: '100%',
+                        flexDirection: 'column',
+                        textAlign: 'center',
+                        gap: '12px'
+                      }}>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Your bag is empty.</p>
+                        <button
+                          type="button"
+                          onClick={onClose}
+                          className="filter-btn active"
+                          style={{ padding: '8px 18px', fontSize: '0.75rem' }}
+                        >
+                          Start Shopping
+                        </button>
                       </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
-                        <span style={{ color: 'var(--text-muted)' }}>Shipping</span>
-                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>
-                          VARIES WITH LOCATION
-                        </span>
-                      </div>
-                      <div style={{ width: '100%', height: '1px', background: 'var(--color-border)' }} />
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem', fontWeight: 700 }}>
-                        <span>Total</span>
-                        <span style={{ color: 'var(--color-sale)' }}>
-                          ₦{calculateSubtotal().toLocaleString()}
-                        </span>
-                      </div>
-                    </div>
+                    ) : (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        {cartItems.map((item, idx) => (
+                          <div
+                            key={`${item.id}-${item.selectedSize}-${item.selectedColor}-${idx}`}
+                            style={{
+                              display: 'flex',
+                              gap: '14px',
+                              paddingBottom: '16px',
+                              borderBottom: '1px solid var(--color-border)'
+                            }}
+                          >
+                            {/* Image */}
+                            <div style={{
+                              width: '70px',
+                              height: '85px',
+                              overflow: 'hidden',
+                              background: '#f3f4f6',
+                              borderRadius: 'var(--radius-sm)'
+                            }}>
+                              <img
+                                src={item.image}
+                                alt={item.name}
+                                style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '4px' }}
+                              />
+                            </div>
 
-                    <button
-                      type="button"
-                      onClick={() => setIsCheckoutOpen(true)}
-                      style={{
-                        width: '100%',
-                        padding: '14px',
-                        fontSize: '0.8rem',
-                        fontWeight: 700,
-                        background: 'var(--text-dark)',
-                        color: '#ffffff',
-                        borderRadius: 'var(--radius-pill)',
-                        boxShadow: 'var(--shadow-subtle)'
-                      }}
-                      className="checkout-btn"
-                    >
-                      Checkout Now
-                    </button>
+                            {/* Info */}
+                            <div style={{
+                              flexGrow: 1,
+                              display: 'flex',
+                              flexDirection: 'column',
+                              justifyContent: 'space-between'
+                            }}>
+                              <div>
+                                <h4 style={{
+                                  fontSize: '0.8rem',
+                                  fontWeight: 600,
+                                  color: 'var(--text-dark)',
+                                  lineHeight: 1.3,
+                                  marginBottom: '2px'
+                                }}>
+                                  {item.name}
+                                </h4>
+                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                                  Size: {item.selectedSize}
+                                </span>
+                                {item.isGift && (
+                                  <div style={{ 
+                                    display: 'flex', 
+                                    flexDirection: 'column',
+                                    gap: '4px',
+                                    marginTop: '6px',
+                                    padding: '6px 10px',
+                                    background: '#f5f3ff', 
+                                    borderRadius: '6px',
+                                    border: '1px solid #ddd6fe',
+                                    maxWidth: '100%',
+                                    textAlign: 'left'
+                                  }}>
+                                    <span style={{ 
+                                      display: 'flex', 
+                                      alignItems: 'center', 
+                                      gap: '4px', 
+                                      fontSize: '0.65rem', 
+                                      fontWeight: 700, 
+                                      color: '#7c3aed' 
+                                    }}>
+                                      <Gift size={10} /> GIFT PACKAGING
+                                    </span>
+                                    {item.giftMessage && (
+                                      <p style={{ 
+                                        fontSize: '0.7rem', 
+                                        color: '#5b21b6', 
+                                        fontStyle: 'italic',
+                                        margin: 0,
+                                        wordBreak: 'break-word',
+                                        lineHeight: 1.3
+                                      }}>
+                                        "{item.giftMessage}"
+                                      </p>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Actions */}
+                              <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                marginTop: '6px'
+                              }}>
+                                {/* Qty */}
+                                <div style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  border: '1px solid var(--color-border)',
+                                  borderRadius: 'var(--radius-pill)',
+                                  background: '#f9fafb'
+                                }}>
+                                  <button
+                                    type="button"
+                                    onClick={() => onUpdateQuantity(item, item.quantity - 1)}
+                                    style={{ padding: '4px 8px', color: 'var(--text-muted)' }}
+                                    className="qty-btn"
+                                  >
+                                    <Minus size={10} />
+                                  </button>
+                                  <span style={{ padding: '0 4px', fontSize: '0.75rem', fontWeight: 600 }}>
+                                    {item.quantity}
+                                  </span>
+                                  <button
+                                    type="button"
+                                    onClick={() => onUpdateQuantity(item, item.quantity + 1)}
+                                    style={{ padding: '4px 8px', color: 'var(--text-muted)' }}
+                                    className="qty-btn"
+                                  >
+                                    <Plus size={10} />
+                                  </button>
+                                </div>
+
+                                {/* Remove */}
+                                <button
+                                  type="button"
+                                  onClick={() => onRemoveItem(item)}
+                                  style={{
+                                    color: 'var(--text-muted)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '3px',
+                                    fontSize: '0.7rem'
+                                  }}
+                                  className="remove-btn"
+                                >
+                                  <Trash2 size={11} /> Remove
+                                </button>
+                              </div>
+                            </div>
+
+                            {/* Price */}
+                            <div style={{
+                              fontSize: '0.85rem',
+                              fontWeight: 700,
+                              color: 'var(--text-dark)',
+                              textAlign: 'right'
+                            }}>
+                              ₦{((item.price + (item.isGift ? 2000 : 0)) * item.quantity).toLocaleString()}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                )}
-              </>
-            )}
-          </>
-        ) : (
-          /* VIEW 2: CHECKOUT SHIPPING & EMAIL FORM */
-          <form onSubmit={handleCheckoutSubmit} style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-            height: '100%'
-          }}>
-            {/* Form Header */}
-            <div style={{
-              padding: '20px',
-              borderBottom: '1px solid var(--color-border)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px'
-            }}>
-              <button
-                type="button"
-                onClick={() => setIsCheckoutOpen(false)}
-                style={{
-                  color: 'var(--text-dark)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '50%',
-                  background: '#f3f4f6'
-                }}
-                className="cart-close-btn"
-              >
-                <ArrowLeft size={16} />
-              </button>
-              <span style={{
-                fontSize: '1rem',
-                fontWeight: 700,
-                color: 'var(--text-dark)'
-              }}>
-                Delivery Information
-              </span>
-            </div>
 
-            {/* Inputs Body */}
-            <div style={{
-              flexGrow: 1,
-              padding: '24px 20px',
+                  {/* Footer info */}
+                  {cartItems.length > 0 && (
+                    <div style={{
+                      padding: '20px',
+                      borderTop: '1px solid var(--color-border)',
+                      background: '#fafafa'
+                    }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                          <span style={{ color: 'var(--text-muted)' }}>Subtotal</span>
+                          <span style={{ fontWeight: 700, color: 'var(--text-dark)' }}>
+                            ₦{calculateSubtotal().toLocaleString()}
+                          </span>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                          <span style={{ color: 'var(--text-muted)' }}>Shipping</span>
+                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+                            VARIES WITH LOCATION
+                          </span>
+                        </div>
+                        <div style={{ width: '100%', height: '1px', background: 'var(--color-border)' }} />
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem', fontWeight: 700 }}>
+                          <span>Total</span>
+                          <span style={{ color: 'var(--color-sale)' }}>
+                            ₦{calculateSubtotal().toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => setIsCheckoutOpen(true)}
+                        style={{
+                          width: '100%',
+                          padding: '14px',
+                          fontSize: '0.8rem',
+                          fontWeight: 700,
+                          background: 'var(--text-dark)',
+                          color: '#ffffff',
+                          borderRadius: 'var(--radius-pill)',
+                          boxShadow: 'var(--shadow-subtle)'
+                        }}
+                        className="checkout-btn"
+                      >
+                        Checkout Now
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+            </>
+          ) : (
+            /* VIEW 2: CHECKOUT SHIPPING & EMAIL FORM */
+            <form onSubmit={handleCheckoutSubmit} style={{
               display: 'flex',
               flexDirection: 'column',
-              gap: '16px',
-              overflowY: 'auto'
-            }}>
-              {/* Name */}
-              <div>
-                <label style={{
-                  fontSize: '0.75rem',
-                  fontWeight: 700,
-                  color: 'var(--text-muted)',
-                  display: 'block',
-                  marginBottom: '6px',
                   textTransform: 'uppercase'
                 }}>
                   Full Name
