@@ -180,7 +180,7 @@ const TrackOrdersPage = () => {
                               {item.name}
                             </div>
                             <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                              Size: {item.size} | Qty: {item.quantity}
+                              Size: {item.selectedSize} | Qty: {item.quantity}
                             </div>
                           </div>
                           <div style={{ fontWeight: 600, color: 'var(--text-dark)' }}>

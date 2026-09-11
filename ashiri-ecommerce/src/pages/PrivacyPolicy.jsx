@@ -15,7 +15,7 @@ export default function PrivacyPolicy() {
         <p style={{ marginBottom: '20px', color: 'var(--text-muted)' }}>Last updated: {new Date().toLocaleDateString()}</p>
         
         <h2 style={{ marginTop: '24px', fontSize: '1.2rem', fontWeight: 600 }}>1. Information We Collect</h2>
-        <p style={{ marginTop: '8px', lineHeight: 1.6 }}>We collect information you provide directly to us, such as when you create or modify your account, request on-demand services, contact customer support, or otherwise communicate with us.</p>
+        <p style={{ marginTop: '8px', lineHeight: 1.6 }}>We collect information you provide directly to us, such as when you place a guest order, request support, or otherwise communicate with us. Because we do not require user accounts, we only collect the essential information needed to fulfill and deliver your orders (name, email, phone number, and delivery address).</p>
         
         <h2 style={{ marginTop: '24px', fontSize: '1.2rem', fontWeight: 600 }}>2. How We Use Information</h2>
         <p style={{ marginTop: '8px', lineHeight: 1.6 }}>We may use the information we collect to provide, maintain, and improve our services, including to process transactions, send related information, and enhance the user experience on the ÀṢHÍRÍ storefront.</p>
@@ -23,8 +23,8 @@ export default function PrivacyPolicy() {
         <h2 style={{ marginTop: '24px', fontSize: '1.2rem', fontWeight: 600 }}>3. Information Sharing</h2>
         <p style={{ marginTop: '8px', lineHeight: 1.6 }}>We do not share your personal information with third parties except as necessary to provide our services (e.g., payment processing via Flutterwave) or as required by law.</p>
 
-        <h2 style={{ marginTop: '24px', fontSize: '1.2rem', fontWeight: 600 }}>4. Cookies</h2>
-        <p style={{ marginTop: '8px', lineHeight: 1.6 }}>We use cookies and similar technologies to track activity on our service and hold certain information to enhance your experience. You can instruct your browser to refuse all cookies.</p>
+        <h2 style={{ marginTop: '24px', fontSize: '1.2rem', fontWeight: 600 }}>4. Local Storage and Cookies</h2>
+        <p style={{ marginTop: '8px', lineHeight: 1.6 }}>We do not use tracking cookies for advertising. Instead of traditional user accounts, we use your device's secure Local Storage to remember your cart and save your Order History ("Track My Orders"). This means your order history is stored directly on your phone or computer, completely private to you. Clearing your browser data will clear this saved history from your device.</p>
       </main>
       <Footer />
     </div>

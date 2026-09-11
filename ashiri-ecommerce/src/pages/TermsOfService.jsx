@@ -25,6 +25,9 @@ export default function TermsOfService() {
 
         <h2 style={{ marginTop: '24px', fontSize: '1.2rem', fontWeight: 600 }}>4. Shipping and Returns</h2>
         <p style={{ marginTop: '8px', lineHeight: 1.6 }}>All artisanal pieces are made with care. Shipping costs vary by location and will be calculated at checkout. For returns, please contact our support team within 7 days of receiving your order.</p>
+
+        <h2 style={{ marginTop: '24px', fontSize: '1.2rem', fontWeight: 600 }}>5. Guest Orders and Tracking</h2>
+        <p style={{ marginTop: '8px', lineHeight: 1.6 }}>ÀṢHÍRÍ operates without traditional user accounts to provide a seamless checkout experience. Your order history and tracking capabilities are linked directly to the device and browser you used to make the purchase. If you clear your browser history or use a different device, you will need to rely on your email receipts for order information.</p>
       </main>
       <Footer />
     </div>
