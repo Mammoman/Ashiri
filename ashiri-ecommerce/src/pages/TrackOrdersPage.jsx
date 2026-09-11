@@ -13,6 +13,39 @@ const TrackOrdersPage = () => {
     // Sort so newest are first
     const sortedOrders = savedOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     setOrders(sortedOrders);
+
+    // Try to fetch live statuses
+    const fetchLiveStatuses = async () => {
+      try {
+        const orderIds = sortedOrders.map(o => o.id);
+        if (orderIds.length === 0) return;
+        
+        const response = await fetch('/api/track-orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orderIds })
+        });
+        
+        if (response.ok) {
+          const liveData = await response.json();
+          // Update the saved orders with live statuses
+          const updatedOrders = sortedOrders.map(order => {
+            const liveOrder = liveData.find(lo => lo.id === order.id);
+            if (liveOrder) {
+              return { ...order, status: liveOrder.status };
+            }
+            return order;
+          });
+          setOrders(updatedOrders);
+          // Update localStorage with the new statuses
+          localStorage.setItem('ashiri_guest_orders', JSON.stringify(updatedOrders));
+        }
+      } catch (err) {
+        console.error('Failed to fetch live tracking:', err);
+      }
+    };
+    
+    fetchLiveStatuses();
   }, []);
 
   const getStatusInfo = (status) => {

@@ -30,12 +30,24 @@ export default async function handler(req, res) {
     }
 
     const html = `
-      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; width: 100%; background-color: #FDFBF7;">
-        <div style="background-color: #1a4731; padding: 24px; text-align: center;">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="color-scheme" content="light only">
+  <meta name="supported-color-schemes" content="light only">
+  <style>
+    :root { color-scheme: light only; }
+    body { background-color: #FDFBF7 !important; }
+  </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #FDFBF7;">
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; width: 100%; background-color: #FDFBF7; background-image: linear-gradient(#FDFBF7, #FDFBF7);">
+        <div style="background-color: #1a4731; background-image: linear-gradient(#1a4731, #1a4731); padding: 24px; text-align: center;">
           <h1 style="color: #FDFBF7; margin: 0; font-size: 24px; letter-spacing: 2px;">ÀṢHÍRÍ</h1>
         </div>
         
-        <div style="background-color: #FDFBF7; padding: 24px 16px; border: 1px solid #eaeaea; border-top: none;">
+        <div style="background-color: #FDFBF7; background-image: linear-gradient(#FDFBF7, #FDFBF7); padding: 24px 16px; border: 1px solid #eaeaea; border-top: none;">
           <h2 style="margin: 0 0 20px 0; color: #1a4731; font-size: 22px;">Order Update</h2>
           
           <p style="margin: 0 0 16px 0; color: #4b5563; font-size: 15px; line-height: 1.6;">
@@ -46,7 +58,7 @@ export default async function handler(req, res) {
             ${message}
           </p>
 
-          <div style="margin: 0 0 24px 0; padding: 16px; background-color: ${badgeBg}; border: 1px solid ${badgeBorder}; border-radius: 6px; text-align: center;">
+          <div style="margin: 0 0 24px 0; padding: 16px; background-color: ${badgeBg}; background-image: linear-gradient(${badgeBg}, ${badgeBg}); border: 1px solid ${badgeBorder}; border-radius: 6px; text-align: center;">
             <strong style="color: ${badgeText}; font-size: 16px;">${title}</strong>
           </div>
           
@@ -55,6 +67,8 @@ export default async function handler(req, res) {
           </p>
         </div>
       </div>
+</body>
+</html>
     `;
 
     const { data: resendData, error } = await resend.emails.send({
