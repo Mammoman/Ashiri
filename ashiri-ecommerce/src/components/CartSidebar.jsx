@@ -201,6 +201,7 @@ const CartSidebar = ({
             tx_ref: paymentRef,
             amount: calculateSubtotal(), // Flutterwave is in Naira
             currency: 'NGN',
+            payment_options: 'card, banktransfer, ussd',
             customer: {
               email: customerEmail,
               phone_number: customerPhone,
