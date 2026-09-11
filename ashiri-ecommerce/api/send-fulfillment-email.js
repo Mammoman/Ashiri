@@ -30,12 +30,12 @@ export default async function handler(req, res) {
     }
 
     const html = `
-      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 10px; background-color: #fbfbfb;">
-        <div style="background-color: #111827; padding: 24px; border-radius: 8px 8px 0 0; text-align: center;">
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; width: 100%; background-color: #fbfbfb;">
+        <div style="background-color: #111827; padding: 24px; text-align: center;">
           <h1 style="color: #ffffff; margin: 0; font-size: 24px; letter-spacing: 2px;">ÀṢHÍRÍ</h1>
         </div>
         
-        <div style="background-color: #ffffff; padding: 24px; border-radius: 0 0 8px 8px; border: 1px solid #eaeaea; border-top: none;">
+        <div style="background-color: #ffffff; padding: 24px 16px; border: 1px solid #eaeaea; border-top: none;">
           <h2 style="margin: 0 0 20px 0; color: #111827; font-size: 22px;">Order Update</h2>
           
           <p style="margin: 0 0 16px 0; color: #4b5563; font-size: 15px; line-height: 1.6;">
