@@ -11,7 +11,7 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
 
   useEffect(() => {
     setIsAdded(false);
-  }, [selectedSize, quantity, isGift, giftMessage]);
+  }, [selectedSize, quantity]);
 
   if (!product) return null;
   const isFavorite = !!favorites[product.id];
@@ -26,6 +26,8 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
       quantity
     });
     setIsAdded(true);
+    setIsGift(false);
+    setGiftMessage('');
   };
 
   return (
