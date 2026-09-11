@@ -13,14 +13,18 @@ export default async function handler(req, res) {
 
     // Build the HTML email
     const orderItemsHtml = data.orders.map(item => `
-      <div style="display: flex; gap: 16px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #eaeaea;">
-        <img src="${item.image_url}" alt="${item.name}" width="60" style="border-radius: 4px; object-fit: contain;" />
-        <div>
-          <h4 style="margin: 0 0 4px 0; font-size: 14px; color: #111827;">${item.name}</h4>
-          <p style="margin: 0; font-size: 13px; color: #6b7280;">Quantity: ${item.units}</p>
-          <p style="margin: 4px 0 0 0; font-size: 14px; font-weight: 600; color: #111827;">₦${item.price}</p>
-        </div>
-      </div>
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #eaeaea;">
+        <tr>
+          <td width="70" valign="top">
+            <img src="${item.image_url}" alt="${item.name}" width="60" style="border-radius: 6px; display: block;" />
+          </td>
+          <td valign="top" style="padding-left: 16px;">
+            <h4 style="margin: 0 0 6px 0; font-size: 15px; color: #111827; line-height: 1.4;">${item.name}</h4>
+            <p style="margin: 0 0 6px 0; font-size: 13px; color: #6b7280; line-height: 1.4;">Quantity: ${item.units}</p>
+            <p style="margin: 0; font-size: 14px; font-weight: 600; color: #111827; line-height: 1.4;">₦${item.price}</p>
+          </td>
+        </tr>
+      </table>
     `).join('');
 
     const html = `

@@ -11,13 +11,15 @@ export default async function handler(req, res) {
     const data = req.body;
     // data contains: email, order_id, status, customer_name
 
-    let title, message;
+    let title, message, footerMessage;
     if (data.status === 'shipped') {
       title = 'Your order is on the way!';
       message = `Great news! We are writing to let you know that your order <strong>${data.order_id}</strong> has been shipped and is on its way to you.`;
+      footerMessage = 'Our logistics partner will contact you shortly if they require further details. Thank you for shopping with Ashiri!';
     } else {
       title = 'Your order has been delivered!';
       message = `Great news! We are writing to let you know that the status of your order <strong>${data.order_id}</strong> has been updated to <strong>delivered</strong>.`;
+      footerMessage = 'Thank you, and we hope you love Ashiri!';
     }
 
     const html = `
@@ -38,7 +40,7 @@ export default async function handler(req, res) {
           </div>
           
           <p style="color: #4b5563; font-size: 15px; line-height: 1.6;">
-            Our logistics partner will contact you shortly if they require further details. Thank you for shopping with Ashiri!
+            ${footerMessage}
           </p>
         </div>
       </div>
