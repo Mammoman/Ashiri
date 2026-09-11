@@ -71,10 +71,67 @@ const TrackOrdersPage = () => {
       flexDirection: 'column',
       alignItems: 'center'
     }}>
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          .track-orders-header {
+            font-size: 2rem;
+          }
+          .order-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+          }
+          .order-card-right {
+            display: flex; 
+            align-items: center; 
+            gap: 16px;
+          }
+          .order-item-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+          }
+          .order-item-price {
+            font-weight: 600;
+            color: var(--text-dark);
+          }
+          @media (max-width: 480px) {
+            .track-orders-header {
+              font-size: 1.5rem;
+            }
+            .order-card-header {
+              flex-direction: column;
+              align-items: flex-start;
+              gap: 16px;
+            }
+            .order-card-right {
+              width: 100%;
+              justify-content: space-between;
+            }
+            .order-item-row {
+              align-items: flex-start;
+            }
+            .order-item-details {
+              display: flex;
+              flex-direction: column;
+              gap: 4px;
+            }
+            .order-item-price {
+              margin-top: 8px;
+            }
+            .order-card-footer {
+              flex-direction: column;
+              gap: 8px;
+              align-items: flex-start;
+            }
+          }
+        `
+      }} />
       <div style={{ width: '100%', maxWidth: '800px' }}>
-        <h1 style={{
+        <h1 className="track-orders-header" style={{
           fontFamily: 'var(--font-brand)',
-          fontSize: '2rem',
           color: 'var(--text-dark)',
           marginBottom: '8px',
           textAlign: 'center'
@@ -112,14 +169,9 @@ const TrackOrdersPage = () => {
                   overflow: 'hidden'
                 }}>
                   {/* Order Header */}
-                  <div style={{
+                  <div className="order-card-header" style={{
                     padding: '16px 20px',
-                    borderBottom: '1px solid rgba(0,0,0,0.05)',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    flexWrap: 'wrap',
-                    gap: '12px'
+                    borderBottom: '1px solid rgba(0,0,0,0.05)'
                   }}>
                     <div>
                       <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '4px' }}>
@@ -130,7 +182,7 @@ const TrackOrdersPage = () => {
                       </div>
                     </div>
                     
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <div className="order-card-right">
                       <div style={{ textAlign: 'right' }}>
                         <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '4px' }}>
                           Date
@@ -160,7 +212,7 @@ const TrackOrdersPage = () => {
                   <div style={{ padding: '20px' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                       {order.cartItems?.map((item, i) => (
-                        <div key={i} style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                        <div key={i} className="order-item-row">
                           <div style={{
                             width: '70px',
                             height: '70px',
@@ -175,7 +227,7 @@ const TrackOrdersPage = () => {
                               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                             />
                           </div>
-                          <div style={{ flex: 1 }}>
+                          <div className="order-item-details" style={{ flex: 1 }}>
                             <div style={{ fontWeight: 600, color: 'var(--text-dark)', fontSize: '0.95rem', marginBottom: '4px' }}>
                               {item.name}
                             </div>
@@ -183,7 +235,7 @@ const TrackOrdersPage = () => {
                               Size: {item.selectedSize} | Qty: {item.quantity}
                             </div>
                           </div>
-                          <div style={{ fontWeight: 600, color: 'var(--text-dark)' }}>
+                          <div className="order-item-price">
                             ₦{(item.price * item.quantity).toLocaleString()}
                           </div>
                         </div>
@@ -192,7 +244,7 @@ const TrackOrdersPage = () => {
                   </div>
 
                   {/* Order Footer */}
-                  <div style={{
+                  <div className="order-card-footer" style={{
                     padding: '16px 20px',
                     background: 'rgba(0,0,0,0.02)',
                     display: 'flex',
