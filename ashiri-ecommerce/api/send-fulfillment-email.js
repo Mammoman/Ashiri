@@ -30,13 +30,13 @@ export default async function handler(req, res) {
     }
 
     const html = `
-      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; width: 100%; background-color: #fbfbfb;">
-        <div style="background-color: #111827; padding: 24px; text-align: center;">
-          <h1 style="color: #ffffff; margin: 0; font-size: 24px; letter-spacing: 2px;">ÀṢHÍRÍ</h1>
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; width: 100%; background-color: #FDFBF7;">
+        <div style="background-color: #1a4731; padding: 24px; text-align: center;">
+          <h1 style="color: #FDFBF7; margin: 0; font-size: 24px; letter-spacing: 2px;">ÀṢHÍRÍ</h1>
         </div>
         
-        <div style="background-color: #ffffff; padding: 24px 16px; border: 1px solid #eaeaea; border-top: none;">
-          <h2 style="margin: 0 0 20px 0; color: #111827; font-size: 22px;">Order Update</h2>
+        <div style="background-color: #FDFBF7; padding: 24px 16px; border: 1px solid #eaeaea; border-top: none;">
+          <h2 style="margin: 0 0 20px 0; color: #1a4731; font-size: 22px;">Order Update</h2>
           
           <p style="margin: 0 0 16px 0; color: #4b5563; font-size: 15px; line-height: 1.6;">
             Hello <strong>${data.customer_name}</strong>,

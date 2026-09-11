@@ -19,22 +19,22 @@ export default async function handler(req, res) {
             <img src="${item.image_url}" alt="${item.name}" width="60" style="border-radius: 6px; display: block;" />
           </td>
           <td valign="top" style="padding-left: 16px;">
-            <h4 style="margin: 0 0 6px 0; font-size: 15px; color: #111827; line-height: 1.4;">${item.name}</h4>
-            <p style="margin: 0 0 6px 0; font-size: 13px; color: #6b7280; line-height: 1.4;">Quantity: ${item.units}</p>
-            <p style="margin: 0; font-size: 14px; font-weight: 600; color: #111827; line-height: 1.4;">₦${item.price}</p>
+            <h4 style="margin: 0 0 6px 0; font-size: 15px; color: #1a4731; line-height: 1.4;">${item.name}</h4>
+            <p style="margin: 0 0 6px 0; font-size: 13px; color: #4b5563; line-height: 1.4;">Quantity: ${item.units}</p>
+            <p style="margin: 0; font-size: 14px; font-weight: 600; color: #1a4731; line-height: 1.4;">₦${item.price}</p>
           </td>
         </tr>
       </table>
     `).join('');
 
     const html = `
-      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; width: 100%; background-color: #fbfbfb;">
-        <div style="background-color: #111827; padding: 24px; text-align: center;">
-          <h1 style="color: #ffffff; margin: 0; font-size: 24px; letter-spacing: 2px;">ÀṢHÍRÍ</h1>
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; width: 100%; background-color: #FDFBF7;">
+        <div style="background-color: #1a4731; padding: 24px; text-align: center;">
+          <h1 style="color: #FDFBF7; margin: 0; font-size: 24px; letter-spacing: 2px;">ÀṢHÍRÍ</h1>
         </div>
         
-        <div style="background-color: #ffffff; padding: 24px 16px; border: 1px solid #eaeaea; border-top: none;">
-          <h2 style="margin: 0 0 20px 0; color: #111827; font-size: 22px;">Thank You for Your Order!</h2>
+        <div style="background-color: #FDFBF7; padding: 24px 16px; border: 1px solid #eaeaea; border-top: none;">
+          <h2 style="margin: 0 0 20px 0; color: #1a4731; font-size: 22px;">Thank You for Your Order!</h2>
           <p style="color: #4b5563; font-size: 15px; line-height: 1.6;">
             Hello <strong>${data.customer_name}</strong>,<br><br>
             Your order <strong>${data.order_id}</strong> has been confirmed and is currently being prepared. We will send you tracking information as soon as it ships.
@@ -49,17 +49,19 @@ export default async function handler(req, res) {
           ` : ''}
 
           <div style="margin: 32px 0;">
-            <h3 style="color: #111827; font-size: 16px; border-bottom: 2px solid #f3f4f6; padding-bottom: 8px;">Order Summary</h3>
+            <h3 style="color: #1a4731; font-size: 18px; margin-top: 32px; margin-bottom: 16px; border-bottom: 1px solid #eaeaea; padding-bottom: 8px;">Order Summary</h3>
             ${orderItemsHtml}
+
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top: 2px solid #1a4731; padding-top: 16px; margin-top: 16px;">
+              <tr>
+                <td align="left"><strong style="color: #1a4731; font-size: 16px;">Order Total</strong></td>
+                <td align="right"><strong style="color: #1a4731; font-size: 16px;">${data.cost.total}</strong></td>
+              </tr>
+            </table>
           </div>
 
-          <div style="display: flex; justify-content: space-between; border-top: 2px solid #111827; padding-top: 16px; margin-top: 16px;">
-            <strong style="color: #111827; font-size: 16px;">Order Total</strong>
-            <strong style="color: #111827; font-size: 16px;">${data.cost.total}</strong>
-          </div>
-
-          <div style="margin-top: 32px; padding: 16px; background-color: #f9fafb; border-radius: 6px;">
-            <h3 style="color: #111827; font-size: 14px; margin-top: 0;">Delivery Details</h3>
+          <div style="margin-top: 32px; padding: 16px; background-color: #f2f7f4; border-radius: 6px; border: 1px solid #d1e3d8;">
+            <h3 style="color: #1a4731; font-size: 14px; margin-top: 0;">Delivery Details</h3>
             <p style="margin: 0 0 4px 0; color: #4b5563; font-size: 14px;"><strong>Address:</strong> ${data.delivery_address}</p>
             <p style="margin: 0; color: #4b5563; font-size: 14px;"><strong>Phone:</strong> ${data.customer_phone}</p>
           </div>
