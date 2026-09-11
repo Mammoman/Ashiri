@@ -60,6 +60,8 @@ const CartSidebar = ({
   };
 
   const handlePaymentSuccess = async (reference) => {
+    // Generate one official Order ID for both the email and the database
+    const officialOrderId = 'ASH-ORD-' + Math.floor(Math.random() * 10000000 + 1);
 
     const hasGiftItems = cartItems.some((item) => item.isGift);
 
@@ -68,7 +70,7 @@ const CartSidebar = ({
     const templateParams = {
       // Core fields matching your existing template
       email:    customerEmail,             // → "To Email" field uses {{email}}
-      order_id: reference,                 // → Subject uses Order # {{order_id}}
+      order_id: officialOrderId,           // → Subject uses Order # {{order_id}}
       orders:   cartItems.map((item) => {
         // Resolve absolute image URL so email clients can read it
         let absoluteImgUrl = item.image || '';
@@ -127,6 +129,7 @@ const CartSidebar = ({
     // Save order to database
     try {
       await addOrder({
+        id: officialOrderId,
         customerName,
         customerEmail,
         customerPhone,
@@ -155,7 +158,7 @@ const CartSidebar = ({
     if (emailSent) {
       alert(`🎉 Payment successful! Your order has been placed.\n\nA confirmation has been sent to ${customerEmail}.`);
     } else {
-      alert(`✅ Payment successful! Your order is confirmed (Ref: ${reference}).\n\nNote: We couldn't send your email receipt right now — please screenshot this for your records.`);
+      alert(`✅ Payment successful! Your order is confirmed (Ref: ${officialOrderId}).\n\nNote: We couldn't send your email receipt right now — please screenshot this for your records.`);
     }
   };
 

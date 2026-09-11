@@ -450,7 +450,7 @@ export function AdminProvider({ children }) {
   // Order helpers
   const addOrder = async (order) => {
     const newOrder = {
-      id: 'ASH-ORD-' + Math.floor(Math.random() * 10000000 + 1),
+      id: order.id || 'ASH-ORD-' + Math.floor(Math.random() * 10000000 + 1),
       createdAt: new Date().toISOString(),
       status: 'pending',
       ...order,
