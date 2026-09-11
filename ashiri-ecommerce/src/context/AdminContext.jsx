@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { supabase } from '../lib/supabaseClient';
-import emailjs from '@emailjs/browser';
 
 const AdminContext = createContext(null);
 
@@ -477,22 +476,26 @@ export function AdminProvider({ children }) {
     // Send fulfillment email if shipped or delivered
     if (newStatus === 'shipped' || newStatus === 'delivered') {
       const order = orders.find(o => o.id === orderId);
-      if (order && import.meta.env.VITE_EMAILJS_FULFILLMENT_TEMPLATE_ID) {
+      if (order) {
         try {
-          await emailjs.send(
-            import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_xxxxxxx',
-            import.meta.env.VITE_EMAILJS_FULFILLMENT_TEMPLATE_ID,
-            {
+          const res = await fetch('/api/send-fulfillment-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
               customer_name: order.customerName,
               email: order.customerEmail,
               order_id: orderId,
               status: newStatus,
-            },
-            import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'xxxxxxxxxxxxxxxx'
-          );
-          console.log(`Fulfillment email sent for order ${orderId}`);
+            })
+          });
+          
+          if (res.ok) {
+            console.log(`Fulfillment email sent for order ${orderId}`);
+          } else {
+            console.error('Failed to send fulfillment email:', await res.text());
+          }
         } catch (err) {
-          console.error('Failed to send fulfillment email:', err);
+          console.error('Fetch to /api/send-fulfillment-email failed:', err);
         }
       }
     }

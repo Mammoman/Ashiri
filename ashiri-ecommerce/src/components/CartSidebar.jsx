@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Plus, Minus, Trash2, ArrowRight, ArrowLeft, Loader2, Heart, ShoppingBag, Gift, MessageCircle } from 'lucide-react';
-import emailjs from '@emailjs/browser';
 import { useAdmin } from '../context/AdminContext';
-
-// EmailJS credentials from .env.local — swap for real values from your EmailJS dashboard
-const EMAILJS_SERVICE_ID  = import.meta.env.VITE_EMAILJS_SERVICE_ID  || 'service_xxxxxxx';
-const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_xxxxxxx';
-const EMAILJS_PUBLIC_KEY  = import.meta.env.VITE_EMAILJS_PUBLIC_KEY  || 'xxxxxxxxxxxxxxxx';
 
 // Dynamic loader helper for Flutterwave script
 const loadFlutterwaveScript = () => {
@@ -110,19 +104,20 @@ const CartSidebar = ({
     let emailSent = false;
 
     try {
-      // Send the confirmation email directly from the browser via EmailJS
-      const emailRes = await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID,
-        templateParams,
-        EMAILJS_PUBLIC_KEY
-      );
-      if (emailRes.status === 200) {
+      // Send the confirmation email directly via our Vercel Serverless Function
+      const emailRes = await fetch('/api/send-order-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(templateParams)
+      });
+      if (emailRes.ok) {
         emailSent = true;
-        console.log('EmailJS order confirmation sent successfully:', emailRes.text);
+        console.log('Resend order confirmation sent successfully');
+      } else {
+        console.error('Failed to send order confirmation:', await emailRes.text());
       }
     } catch (emailErr) {
-      console.error('EmailJS failed to send order confirmation:', emailErr);
+      console.error('Fetch to /api/send-order-email failed:', emailErr);
       // Non-blocking — the order is still processed even if the email fails
     }
 

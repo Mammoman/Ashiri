@@ -106,11 +106,11 @@ const SettingsPage = () => {
                   border: '1px solid #e2e8f0',
                 }}>
                   <div>
-                    <div style={{ fontWeight: 600, fontSize: '0.85rem', color: '#0f172a' }}>EmailJS</div>
-                    <div style={{ fontSize: '0.72rem', color: '#64748b' }}>Browser-side order confirmation emails</div>
+                    <div style={{ fontWeight: 600, fontSize: '0.85rem', color: '#0f172a' }}>Resend (Vercel Serverless)</div>
+                    <div style={{ fontSize: '0.72rem', color: '#64748b' }}>Premium order & fulfillment emails</div>
                   </div>
-                  <span className={`admin-badge ${import.meta.env.VITE_EMAILJS_SERVICE_ID ? 'delivered' : 'pending'}`}>
-                    {import.meta.env.VITE_EMAILJS_SERVICE_ID ? 'Connected' : 'Not Configured'}
+                  <span className="admin-badge delivered">
+                    Connected
                   </span>
                 </div>
 
