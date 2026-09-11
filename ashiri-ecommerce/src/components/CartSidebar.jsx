@@ -950,6 +950,7 @@ const CartSidebar = ({
                   gap: '8px'
                 }}
                 className="checkout-btn"
+                disabled={isSubmitting}
               >
                 {isSubmitting ? (
                   <>
