@@ -123,7 +123,7 @@ const CartSidebar = ({
 
     // Save order to database
     try {
-      await addOrder({
+      const newOrderData = {
         id: officialOrderId,
         customerName,
         customerEmail,
@@ -133,8 +133,19 @@ const CartSidebar = ({
         paymentMethod: 'flutterwave',
         paymentReference: reference,
         status: 'pending',
-        cartItems: cartItems
-      });
+        cartItems: cartItems,
+        createdAt: new Date().toISOString()
+      };
+      
+      await addOrder(newOrderData);
+      
+      // Save full order to localStorage for guest tracking
+      const existingOrders = JSON.parse(localStorage.getItem('ashiri_guest_orders') || '[]');
+      // Check if order already exists in local storage
+      if (!existingOrders.some(o => o.id === officialOrderId)) {
+        existingOrders.push(newOrderData);
+        localStorage.setItem('ashiri_guest_orders', JSON.stringify(existingOrders));
+      }
     } catch (dbErr) {
       console.error('Failed to save order to database:', dbErr);
     }

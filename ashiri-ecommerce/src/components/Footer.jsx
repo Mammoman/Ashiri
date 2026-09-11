@@ -107,8 +107,41 @@ const Footer = ({ onPageChange }) => {
           </div>
 
           {/* Links Column 2: Service */}
-
-
+          <div>
+            <h4 className="brand-text" style={{
+              fontSize: '1rem',
+              fontWeight: 600,
+              textTransform: 'uppercase',
+              color: 'var(--bg-main)',
+              marginBottom: '16px'
+            }}>
+              Customer Care
+            </h4>
+            <ul className="footer-list" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+              <li>
+                <a 
+                  href="/track-orders" 
+                  onClick={(e) => {
+                    if (onPageChange) {
+                      e.preventDefault();
+                      window.location.href = '/track-orders';
+                    }
+                  }}
+                >
+                  Track My Orders
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="https://wa.me/2349110289330" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  WhatsApp Support
+                </a>
+              </li>
+            </ul>
+          </div>
           {/* Newsletter Column */}
           <div>
             <h4 className="brand-text" style={{

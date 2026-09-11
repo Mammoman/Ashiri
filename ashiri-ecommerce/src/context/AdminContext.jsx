@@ -473,8 +473,8 @@ export function AdminProvider({ children }) {
     setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o)));
     if (supabase) await supabase.from('orders').update({ status: newStatus }).eq('id', orderId);
 
-    // Send fulfillment email if shipped or delivered
-    if (newStatus === 'shipped' || newStatus === 'delivered') {
+    // Send fulfillment email if shipped, delivered, or cancelled
+    if (newStatus === 'shipped' || newStatus === 'delivered' || newStatus === 'cancelled') {
       const order = orders.find(o => o.id === orderId);
       if (order) {
         try {

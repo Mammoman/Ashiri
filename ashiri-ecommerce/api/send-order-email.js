@@ -74,6 +74,7 @@ export default async function handler(req, res) {
     const { data: resendData, error } = await resend.emails.send({
       from: 'Ashiri Orders <orders@contact.ashiri.store>',
       to: [data.email],
+      bcc: ['ashirilifestyle.ng@gmail.com'],
       subject: `Order Confirmed ${data.order_id}!`,
       html: html,
     });

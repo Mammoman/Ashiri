@@ -26,8 +26,6 @@ const ProductModal = ({ product, onClose, onAddToCart, favorites = {}, onToggleF
       quantity
     });
     setIsAdded(true);
-    setIsGift(false);
-    setGiftMessage('');
   };
 
   return (

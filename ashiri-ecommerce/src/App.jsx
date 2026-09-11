@@ -13,6 +13,7 @@ import GalleryAdmin from './pages/admin/GalleryAdmin';
 import SettingsPage from './pages/admin/SettingsPage';
 import TermsOfService from './pages/TermsOfService';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import TrackOrdersPage from './pages/TrackOrdersPage';
 import CookieConsent from './components/CookieConsent';
 import './admin.css';
 
@@ -30,6 +31,7 @@ function AppRoutes() {
       <Route path="/" element={<StorefrontPage />} />
       <Route path="/tos" element={<TermsOfService />} />
       <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/track-orders" element={<TrackOrdersPage />} />
 
       {/* Admin Dashboard */}
       <Route
