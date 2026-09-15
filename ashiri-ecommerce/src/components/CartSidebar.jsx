@@ -798,6 +798,26 @@ const CartSidebar = ({
             <form onSubmit={handleCheckoutSubmit} style={{
               display: 'flex',
               flexDirection: 'column',
+              height: '100%',
+              overflow: 'hidden'
+            }}>
+              {/* Scrollable fields area */}
+              <div style={{
+                flexGrow: 1,
+                overflowY: 'auto',
+                padding: '20px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '16px'
+              }} className="cart-items-scroll">
+              {/* Full Name */}
+              <div>
+                <label style={{
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  color: 'var(--text-muted)',
+                  display: 'block',
+                  marginBottom: '6px',
                   textTransform: 'uppercase'
                 }}>
                   Full Name
@@ -948,7 +968,7 @@ const CartSidebar = ({
                   <span style={{ color: 'var(--color-sale)' }}>₦{calculateSubtotal().toLocaleString()}</span>
                 </div>
               </div>
-            </div>
+              </div>{/* end scrollable fields */}
 
             {/* Form Actions Footer */}
             <div style={{
@@ -1010,7 +1030,7 @@ const CartSidebar = ({
               </a>
             </div>
           </form>
-        )}
+        ))}
 
       </div>
 
