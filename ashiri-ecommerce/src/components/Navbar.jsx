@@ -29,14 +29,15 @@ const Navbar = ({ cartCount, onCartClick, wishlistCount, onWishlistClick, curren
         {/* Left Side: Logo & Navigation */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
           <a href="#" onClick={(e) => { e.preventDefault(); onPageChange('shop'); }} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <img 
-              src={storeSettings?.logoUrl || '/logo.png'} 
-              alt="ÀṢHÍRÍ Logo" 
-              style={{ 
-                height: '40px',
-                objectFit: 'contain'
-              }} 
-            />
+            <span className="brand-text" style={{
+              fontSize: '1.5rem',
+              fontWeight: 800,
+              letterSpacing: '-0.02em',
+              lineHeight: 1,
+              color: 'var(--text-dark)'
+            }}>
+              ÀṢHÍRÍ
+            </span>
           </a>
 
           {/* Nav Links */}

@@ -61,11 +61,9 @@ const AdminLayout = () => {
       <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="admin-sidebar-header">
           <div className="admin-logo" onClick={() => navigate('/admin')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <img 
-              src={storeSettings?.logoUrl || '/logo.png'} 
-              alt="ÀṢHÍRÍ Logo" 
-              style={{ height: '32px', objectFit: 'contain' }} 
-            />
+            <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>
+              ÀṢHÍRÍ
+            </span>
             <span style={{ fontSize: '1rem', fontWeight: 600, color: '#64748b' }}>Admin</span>
           </div>
         </div>
