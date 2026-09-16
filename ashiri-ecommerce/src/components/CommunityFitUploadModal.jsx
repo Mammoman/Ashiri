@@ -3,7 +3,7 @@ import { X, Upload, Check } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
 
 const CommunityFitUploadModal = ({ onClose }) => {
-  const { addGalleryImage } = useAdmin();
+  const { submitCommunityFit } = useAdmin();
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,8 +30,7 @@ const CommunityFitUploadModal = ({ onClose }) => {
     setIsSubmitting(true);
     setError(null);
 
-    // Call addGalleryImage directly with the community_pending folder
-    const result = await addGalleryImage(imageFile, 'community_pending');
+    const result = await submitCommunityFit(imageFile);
     
     setIsSubmitting(false);
 
@@ -126,7 +125,7 @@ const CommunityFitUploadModal = ({ onClose }) => {
                 }}>
                   <input
                     type="file"
-                    accept="image/*"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
                     onChange={handleFileChange}
                     style={{ display: 'none' }}
                   />

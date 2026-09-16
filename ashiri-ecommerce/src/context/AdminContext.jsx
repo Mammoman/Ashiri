@@ -1,8 +1,29 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useLocalStorage } from '../hooks/useLocalStorage';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 
 const AdminContext = createContext(null);
+
+const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+
+// Unguessable storage path; the extension is derived from the MIME type, not the filename.
+function storagePath(folder, file) {
+  const ext = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' }[file.type] || 'bin';
+  return `${folder}/${crypto.randomUUID()}.${ext}`;
+}
+
+function validateImage(file) {
+  if (!file) return 'No image selected.';
+  if (!IMAGE_TYPES.includes(file.type)) return 'Only JPG, PNG, WEBP or GIF images are allowed.';
+  if (file.size > MAX_IMAGE_BYTES) return 'Image must be 5MB or smaller.';
+  return null;
+}
+
+// Bearer token for calls to admin-only serverless functions.
+async function authHeaders() {
+  const { data: { session } } = await supabase.auth.getSession();
+  return session ? { Authorization: `Bearer ${session.access_token}` } : {};
+}
 
 export function useAdmin() {
   const ctx = useContext(AdminContext);
@@ -28,31 +49,43 @@ export function AdminProvider({ children }) {
   });
 
   const [isLoadingSupabase, setIsLoadingSupabase] = useState(true);
+  // Bumped whenever the auth state changes so data is refetched under the new role
+  // (admins can see pending reviews / orders that anonymous visitors cannot).
+  const [authVersion, setAuthVersion] = useState(0);
+
+  // A session alone is not enough: the user must also be in public.admins.
+  const resolveAdmin = useCallback(async (session) => {
+    if (!session) {
+      setIsAuthenticated(false);
+      return false;
+    }
+    const { data, error } = await supabase.rpc('is_admin');
+    const ok = !error && data === true;
+    setIsAuthenticated(ok);
+    return ok;
+  }, []);
 
   // Listen for Supabase Auth state changes
   useEffect(() => {
     if (!supabase) return;
-    
-    // Check active session on mount
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setIsAuthenticated(!!session);
-    });
 
-    // Listen for auth changes (e.g., login, logout, token refresh)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsAuthenticated(!!session);
+    supabase.auth.getSession().then(({ data: { session } }) => resolveAdmin(session));
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      resolveAdmin(session);
+      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') setAuthVersion((v) => v + 1);
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [resolveAdmin]);
 
-  // Fetch all data from Supabase on mount
+  // Fetch all data from Supabase on mount and whenever the auth role changes
   useEffect(() => {
     if (!supabase) {
       setIsLoadingSupabase(false);
       return;
     }
-    
+
     const fetchSupabaseData = async () => {
       setIsLoadingSupabase(true);
       try {
@@ -135,14 +168,20 @@ export function AdminProvider({ children }) {
     };
 
     fetchSupabaseData();
-  }, []);
+  }, [authVersion]);
 
   const login = async (email, password) => {
     if (!supabase) {
       return { success: false, error: 'Supabase is not configured. Local fallback disabled.' };
     }
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) return { success: false, error: error.message };
+
+    const isAdmin = await resolveAdmin(data.session);
+    if (!isAdmin) {
+      await supabase.auth.signOut();
+      return { success: false, error: 'This account does not have admin access.' };
+    }
     return { success: true };
   };
 
@@ -150,44 +189,41 @@ export function AdminProvider({ children }) {
     if (supabase) await supabase.auth.signOut();
   };
 
+  // Uploads a validated image to brand_assets and returns its public URL.
+  const uploadImage = async (folder, file) => {
+    const problem = validateImage(file);
+    if (problem) return { error: problem };
+    const filePath = storagePath(folder, file);
+    const { error } = await supabase.storage.from('brand_assets').upload(filePath, file, { contentType: file.type });
+    if (error) return { error: error.message };
+    return { url: supabase.storage.from('brand_assets').getPublicUrl(filePath).data.publicUrl };
+  };
+
+  const formatProduct = (p) => ({
+    id: p.id, name: p.name, price: parseFloat(p.price),
+    image: p.image, image2: p.image2, sizes: p.sizes || [],
+  });
+
   // Products helpers
   const addProduct = async (productData, imageFile, image2File) => {
-    let imageUrl = '';
+    if (!supabase) return { success: false, error: 'Supabase not connected' };
+
+    let imageUrl = productData.image || '';
     let image2Url = '';
-    
-    if (supabase && imageFile) {
-      const fileExt = imageFile.name.split('.').pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `products/${fileName}`;
-      
-      const { error: uploadError } = await supabase.storage.from('brand_assets').upload(filePath, imageFile);
-      if (uploadError) {
-        console.error('Upload error', uploadError);
-        return { success: false, error: uploadError.message };
-      }
-      
-      const { data } = supabase.storage.from('brand_assets').getPublicUrl(filePath);
-      imageUrl = data.publicUrl;
-    } else if (productData.image) {
-      imageUrl = productData.image; // fallback to text URL if provided
+
+    if (imageFile) {
+      const { url, error } = await uploadImage('products', imageFile);
+      if (error) return { success: false, error };
+      imageUrl = url;
+    }
+    if (image2File) {
+      const { url, error } = await uploadImage('products', image2File);
+      if (error) console.error('Secondary upload error', error);
+      else image2Url = url;
     }
 
-    if (supabase && image2File) {
-      const fileExt = image2File.name.split('.').pop();
-      const fileName = `${Math.random()}_2.${fileExt}`;
-      const filePath = `products/${fileName}`;
-      
-      const { error: uploadError } = await supabase.storage.from('brand_assets').upload(filePath, image2File);
-      if (uploadError) {
-        console.error('Secondary upload error', uploadError);
-      } else {
-        const { data } = supabase.storage.from('brand_assets').getPublicUrl(filePath);
-        image2Url = data.publicUrl;
-      }
-    }
-
+    // id is generated by the database (products_id_seq).
     const newProduct = {
-      id: Math.floor(Math.random() * 1000000) + 10000, // DB missing auto-increment, generate random ID
       name: productData.name,
       category: 'Uncategorized', // Hardcoded default because it's required by the DB but removed from UI
       price: productData.price,
@@ -198,53 +234,27 @@ export function AdminProvider({ children }) {
       colors: [],
     };
 
-    if (supabase) {
-      const { data, error } = await supabase.from('products').insert([newProduct]).select();
-      if (error) return { success: false, error: error.message };
-      
-      if (data && data.length > 0) {
-        const p = data[0];
-        setProducts(prev => [...prev, {
-          id: p.id, name: p.name, price: parseFloat(p.price),
-          image: p.image, image2: p.image2, sizes: p.sizes || [],
-        }]);
-      }
-      return { success: true };
-    }
-    return { success: false, error: 'Supabase not connected' };
+    const { data, error } = await supabase.from('products').insert([newProduct]).select();
+    if (error) return { success: false, error: error.message };
+    if (data && data.length > 0) setProducts(prev => [...prev, formatProduct(data[0])]);
+    return { success: true };
   };
 
   const updateProduct = async (productId, productData, imageFile, image2File) => {
+    if (!supabase) return { success: false, error: 'Supabase not connected' };
+
     let imageUrl = productData.image || '';
     let image2Url = productData.image2 || '';
-    
-    if (supabase && imageFile) {
-      const fileExt = imageFile.name.split('.').pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `products/${fileName}`;
-      
-      const { error: uploadError } = await supabase.storage.from('brand_assets').upload(filePath, imageFile);
-      if (uploadError) {
-        console.error('Upload error', uploadError);
-        return { success: false, error: uploadError.message };
-      }
-      
-      const { data } = supabase.storage.from('brand_assets').getPublicUrl(filePath);
-      imageUrl = data.publicUrl;
-    }
 
-    if (supabase && image2File) {
-      const fileExt = image2File.name.split('.').pop();
-      const fileName = `${Math.random()}_2.${fileExt}`;
-      const filePath = `products/${fileName}`;
-      
-      const { error: uploadError } = await supabase.storage.from('brand_assets').upload(filePath, image2File);
-      if (uploadError) {
-        console.error('Secondary upload error', uploadError);
-      } else {
-        const { data } = supabase.storage.from('brand_assets').getPublicUrl(filePath);
-        image2Url = data.publicUrl;
-      }
+    if (imageFile) {
+      const { url, error } = await uploadImage('products', imageFile);
+      if (error) return { success: false, error };
+      imageUrl = url;
+    }
+    if (image2File) {
+      const { url, error } = await uploadImage('products', image2File);
+      if (error) console.error('Secondary upload error', error);
+      else image2Url = url;
     }
 
     const updatedProductData = {
@@ -255,20 +265,12 @@ export function AdminProvider({ children }) {
       sizes: productData.sizes || [],
     };
 
-    if (supabase) {
-      const { data, error } = await supabase.from('products').update(updatedProductData).eq('id', productId).select();
-      if (error) return { success: false, error: error.message };
-      
-      if (data && data.length > 0) {
-        const p = data[0];
-        setProducts(prev => prev.map(item => item.id === productId ? {
-          id: p.id, name: p.name, price: parseFloat(p.price),
-          image: p.image, image2: p.image2, sizes: p.sizes || [],
-        } : item));
-      }
-      return { success: true };
+    const { data, error } = await supabase.from('products').update(updatedProductData).eq('id', productId).select();
+    if (error) return { success: false, error: error.message };
+    if (data && data.length > 0) {
+      setProducts(prev => prev.map(item => item.id === productId ? formatProduct(data[0]) : item));
     }
-    return { success: false, error: 'Supabase not connected' };
+    return { success: true };
   };
 
   const deleteProduct = async (productId) => {
@@ -299,27 +301,30 @@ export function AdminProvider({ children }) {
 
   // Gallery helpers
   const addGalleryImage = async (imageFile, folder = 'Uncategorized') => {
-    if (!supabase || !imageFile) return { success: false, error: 'No image or Supabase connection' };
-    
-    const fileExt = imageFile.name.split('.').pop();
-    const fileName = `${Math.random()}.${fileExt}`;
-    const filePath = `gallery/${fileName}`;
-    
-    const { error: uploadError } = await supabase.storage.from('brand_assets').upload(filePath, imageFile);
-    if (uploadError) return { success: false, error: uploadError.message };
-    
-    const { data } = supabase.storage.from('brand_assets').getPublicUrl(filePath);
-    
-    const { data: dbData, error: dbError } = await supabase.from('gallery').insert([{
-      url: data.publicUrl,
-      folder: folder
-    }]).select();
-    
+    if (!supabase) return { success: false, error: 'No Supabase connection' };
+
+    const { url, error: uploadError } = await uploadImage('gallery', imageFile);
+    if (uploadError) return { success: false, error: uploadError };
+
+    const { data: dbData, error: dbError } = await supabase.from('gallery').insert([{ url, folder }]).select();
     if (dbError) return { success: false, error: dbError.message };
-    
+
     if (dbData && dbData.length > 0) {
       setGalleryImages(prev => [{ id: dbData[0].id, url: dbData[0].url, folder: dbData[0].folder }, ...prev]);
     }
+    return { success: true };
+  };
+
+  // Storefront "share your fit" — anonymous visitors may only upload into
+  // community/ and only create rows in the community_pending folder (enforced by RLS).
+  const submitCommunityFit = async (imageFile) => {
+    if (!supabase) return { success: false, error: 'No Supabase connection' };
+
+    const { url, error: uploadError } = await uploadImage('community', imageFile);
+    if (uploadError) return { success: false, error: uploadError };
+
+    const { error: dbError } = await supabase.from('gallery').insert([{ url, folder: 'community_pending' }]);
+    if (dbError) return { success: false, error: dbError.message };
     return { success: true };
   };
 
@@ -329,22 +334,12 @@ export function AdminProvider({ children }) {
     const uploadedImages = [];
     
     for (const file of imageFiles) {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `gallery/${fileName}`;
-      
-      const { error: uploadError } = await supabase.storage.from('brand_assets').upload(filePath, file);
-      if (uploadError) {
-        console.error('Upload error for file:', file.name, uploadError);
+      const { url, error } = await uploadImage('gallery', file);
+      if (error) {
+        console.error('Upload error for file:', file.name, error);
         continue; // skip this file and continue with others
       }
-      
-      const { data } = supabase.storage.from('brand_assets').getPublicUrl(filePath);
-      
-      uploadedImages.push({
-        url: data.publicUrl,
-        folder: folder
-      });
+      uploadedImages.push({ url, folder });
     }
     
     if (uploadedImages.length === 0) {
@@ -447,57 +442,56 @@ export function AdminProvider({ children }) {
   };
 
   // Order helpers
-  const addOrder = async (order) => {
-    const newOrder = {
-      id: order.id || 'ASH-ORD-' + Math.floor(Math.random() * 10000000 + 1),
-      createdAt: new Date().toISOString(),
-      status: 'pending',
-      ...order,
-    };
-    
-    setOrders((prev) => [newOrder, ...prev]);
-
-    if (supabase) {
-      const dbOrder = {
-        id: newOrder.id, customer_name: newOrder.customerName, customer_email: newOrder.customerEmail,
-        customer_phone: newOrder.customerPhone, customer_address: newOrder.customerAddress,
-        subtotal: newOrder.subtotal, payment_method: newOrder.paymentMethod,
-        payment_reference: newOrder.paymentReference, status: newOrder.status, cart_items: newOrder.cartItems
-      };
-      await supabase.from('orders').insert([dbOrder]);
-    }
-    return newOrder;
+  // Checkout goes through /api/create-order, which re-prices the cart from the
+  // database and verifies the Flutterwave transaction before saving anything.
+  const createOrder = async ({ customer, items, transactionId, txRef }) => {
+    const res = await fetch('/api/create-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        customerName: customer.name,
+        customerEmail: customer.email,
+        customerPhone: customer.phone,
+        customerAddress: customer.address,
+        transactionId,
+        txRef,
+        items: items.map((i) => ({
+          id: i.id,
+          selectedSize: i.selectedSize,
+          selectedColor: i.selectedColor,
+          quantity: i.quantity,
+          isGift: !!i.isGift,
+          giftMessage: i.giftMessage || '',
+        })),
+      }),
+    });
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) return { success: false, error: body.error || 'Could not place order.' };
+    return { success: true, order: body.order, emailSent: body.emailSent };
   };
 
   const updateOrderStatus = async (orderId, newStatus) => {
+    const previous = orders.find((o) => o.id === orderId)?.status;
     setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o)));
-    if (supabase) await supabase.from('orders').update({ status: newStatus }).eq('id', orderId);
 
-    // Send fulfillment email if shipped, delivered, or cancelled
-    if (newStatus === 'shipped' || newStatus === 'delivered' || newStatus === 'cancelled') {
-      const order = orders.find(o => o.id === orderId);
-      if (order) {
-        try {
-          const res = await fetch('/api/send-fulfillment-email', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              customer_name: order.customerName,
-              email: order.customerEmail,
-              order_id: orderId,
-              status: newStatus,
-            })
-          });
-          
-          if (res.ok) {
-            console.log(`Fulfillment email sent for order ${orderId}`);
-          } else {
-            console.error('Failed to send fulfillment email:', await res.text());
-          }
-        } catch (err) {
-          console.error('Fetch to /api/send-fulfillment-email failed:', err);
-        }
+    // The serverless function updates the row and emails the customer for
+    // shipped / delivered / cancelled. It requires the admin's session token.
+    try {
+      const res = await fetch('/api/update-order-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
+        body: JSON.stringify({ orderId, status: newStatus }),
+      });
+      if (!res.ok) {
+        console.error('Failed to update order status:', await res.text());
+        setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: previous } : o)));
+        return { success: false };
       }
+      return { success: true };
+    } catch (err) {
+      console.error('Fetch to /api/update-order-status failed:', err);
+      setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: previous } : o)));
+      return { success: false };
     }
   };
 
@@ -507,19 +501,18 @@ export function AdminProvider({ children }) {
   };
 
   // Review helpers
+  // Storefront submissions are always pending + unverified (also enforced by RLS);
+  // an admin approves them from the Reviews page.
   const addReview = async (review) => {
-    const tempId = Date.now();
-    const newReview = { id: tempId, date: new Date().toISOString().split('T')[0], status: 'pending', ...review };
-    setAdminReviews((prev) => [newReview, ...prev]);
-
-    if (supabase) {
-      const dbReview = { name: newReview.name, rating: newReview.rating, title: newReview.title, comment: newReview.comment, category: newReview.category, verified: newReview.verified, status: newReview.status };
-      const { data } = await supabase.from('reviews').insert([dbReview]).select();
-      if (data && data.length > 0) {
-        setAdminReviews((prev) => prev.map((r) => r.id === tempId ? { ...r, id: data[0].id } : r));
-      }
-    }
-    return newReview;
+    if (!supabase) return { success: false, error: 'Supabase not connected' };
+    const dbReview = {
+      name: review.name, rating: review.rating, title: review.title,
+      comment: review.comment, category: review.category,
+      verified: false, status: 'pending',
+    };
+    const { error } = await supabase.from('reviews').insert([dbReview]);
+    if (error) return { success: false, error: error.message };
+    return { success: true };
   };
 
   const updateReviewStatus = async (reviewId, newStatus) => {
@@ -551,8 +544,9 @@ export function AdminProvider({ children }) {
     updateGalleryOrder,
     deleteGalleryImage,
     approveCommunityFit,
+    submitCommunityFit,
     storeSettings, updateSettings,
-    orders, addOrder, updateOrderStatus, deleteOrder,
+    orders, createOrder, updateOrderStatus, deleteOrder,
     fetchProductsPage, fetchOrdersPage,
     adminReviews, addReview, updateReviewStatus, deleteReview,
     getStats, isLoadingSupabase

@@ -36,22 +36,25 @@ const Reviews = () => {
     setIsModalOpen(true);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formName.trim() || !formTitle.trim() || !formComment.trim()) {
       setFormError('Please complete all required fields.');
       return;
     }
 
-    addReview({
-      name: formName.trim(),
+    // Reviews go live only after an admin approves them.
+    const result = await addReview({
+      name: formName.trim().slice(0, 80),
       rating: formRating,
-      title: formTitle.trim(),
-      comment: formComment.trim(),
+      title: formTitle.trim().slice(0, 120),
+      comment: formComment.trim().slice(0, 2000),
       category: formCategory,
-      verified: true,
-      status: 'approved', // Auto-approved on storefront submit for smooth UX
     });
+    if (!result.success) {
+      setFormError(result.error || 'Could not submit your review. Please try again.');
+      return;
+    }
 
     setIsModalOpen(false);
     setShowSuccessToast(true);
@@ -441,7 +444,7 @@ const Reviews = () => {
           alignItems: 'center',
           gap: '8px'
         }}>
-          <Check size={16} color="#10b981" /> Review submitted and published!
+          <Check size={16} color="#10b981" /> Thanks! Your review will appear once it has been approved.
         </div>
       )}
 

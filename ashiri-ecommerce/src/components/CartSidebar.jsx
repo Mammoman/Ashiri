@@ -31,7 +31,7 @@ const CartSidebar = ({
   onToggleFavorite
 }) => {
   if (!isOpen) return null;
-  const { addOrder } = useAdmin();
+  const { createOrder } = useAdmin();
 
   const [activeTab, setActiveTab] = useState(defaultTab);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -55,101 +55,31 @@ const CartSidebar = ({
     return cartItems.reduce((total, item) => total + ((item.price + (item.isGift ? 2000 : 0)) * item.quantity), 0);
   };
 
-  const handlePaymentSuccess = async (reference) => {
-    // Generate one official Order ID for both the email and the database
-    const officialOrderId = 'ASH-ORD-' + Math.floor(Math.random() * 10000000 + 1);
+  const handlePaymentSuccess = async (payment) => {
+    // Everything that matters (prices, totals, payment validity) is decided by
+    // /api/create-order. The browser only sends what the customer chose.
+    const result = await createOrder({
+      customer: { name: customerName, email: customerEmail, phone: customerPhone, address: customerAddress },
+      items: cartItems,
+      transactionId: payment.transactionId || '',
+      txRef: payment.txRef || '',
+    });
 
-    const hasGiftItems = cartItems.some((item) => item.isGift);
-
-    // Template variables — matched to your EmailJS template variable names
-    // {{email}} → To Email field, {{order_id}} → Subject, {{#orders}} → item loop
-    const templateParams = {
-      // Core fields matching your existing template
-      email:    customerEmail,             // → "To Email" field uses {{email}}
-      order_id: officialOrderId,           // → Subject uses Order # {{order_id}}
-      orders:   cartItems.map((item) => {
-        // Resolve absolute image URL so email clients can read it
-        let absoluteImgUrl = item.image || '';
-        if (absoluteImgUrl && !absoluteImgUrl.startsWith('http')) {
-          const origin = window.location.origin.includes('localhost')
-            ? 'https://ashiri-ecommerce.vercel.app'
-            : window.location.origin;
-          const cleanPath = absoluteImgUrl.startsWith('/') ? absoluteImgUrl : `/${absoluteImgUrl}`;
-          absoluteImgUrl = `${origin}${cleanPath}`;
-        }
-
-        return {
-          name:  item.isGift
-            ? `${item.name} (Size: ${item.selectedSize}) 🎁${item.giftMessage ? ` — "${item.giftMessage}"` : ' Gift Packaged'}`
-            : `${item.name} (Size: ${item.selectedSize})`,
-          price: ((item.price + (item.isGift ? 2000 : 0)) * item.quantity).toLocaleString(), // template adds ₦ prefix: ₦{{price}}
-          units: item.quantity,
-          image_url: absoluteImgUrl, // Passed to template as {{image_url}}
-        };
-      }),
-
-      // Cost summary — populates Shipping / Taxes / Order Total rows in your template
-      cost: {
-        shipping: 'Varies with location',
-        tax:      'N/A',
-        total:    calculateSubtotal().toLocaleString(), // template adds ₦ prefix: ₦{{cost.total}}
-      },
-
-      // Extra fields used in the body text you added
-      customer_name:    customerName,
-      customer_phone:   customerPhone,
-      delivery_address: customerAddress,
-      order_total:      `₦${calculateSubtotal().toLocaleString()}`,
-      gift_note:        hasGiftItems ? '🎁 One or more items in this order include gift packaging.' : '',
-    };
-
-    let emailSent = false;
-
-    try {
-      // Send the confirmation email directly via our Vercel Serverless Function
-      const emailRes = await fetch('/api/send-order-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(templateParams)
-      });
-      if (emailRes.ok) {
-        emailSent = true;
-        console.log('Resend order confirmation sent successfully');
-      } else {
-        console.error('Failed to send order confirmation:', await emailRes.text());
-      }
-    } catch (emailErr) {
-      console.error('Fetch to /api/send-order-email failed:', emailErr);
-      // Non-blocking — the order is still processed even if the email fails
+    if (!result.success) {
+      alert(`${result.error} If you were charged, please contact us with your payment reference.`);
+      setIsSubmitting(false);
+      return;
     }
 
-    // Save order to database
+    // Save order to localStorage for guest tracking
     try {
-      const newOrderData = {
-        id: officialOrderId,
-        customerName,
-        customerEmail,
-        customerPhone,
-        customerAddress,
-        subtotal: calculateSubtotal(),
-        paymentMethod: 'flutterwave',
-        paymentReference: reference,
-        status: 'pending',
-        cartItems: cartItems,
-        createdAt: new Date().toISOString()
-      };
-      
-      await addOrder(newOrderData);
-      
-      // Save full order to localStorage for guest tracking
       const existingOrders = JSON.parse(localStorage.getItem('ashiri_guest_orders') || '[]');
-      // Check if order already exists in local storage
-      if (!existingOrders.some(o => o.id === officialOrderId)) {
-        existingOrders.push(newOrderData);
+      if (!existingOrders.some(o => o.id === result.order.id)) {
+        existingOrders.push(result.order);
         localStorage.setItem('ashiri_guest_orders', JSON.stringify(existingOrders));
       }
-    } catch (dbErr) {
-      console.error('Failed to save order to database:', dbErr);
+    } catch (err) {
+      console.error('Could not save order for tracking:', err);
     }
 
     // Clear cart and close forms
@@ -176,51 +106,55 @@ const CartSidebar = ({
 
     if (paymentMethod === 'flutterwave') {
       const publicKey = import.meta.env.VITE_FLUTTERWAVE_PUBLIC_KEY || '';
-      // Detect if we are in Sandbox / Demo mode with a placeholder or missing key
-      const isPlaceholderKey = !publicKey ||
-        publicKey === 'flwpubk_test_placeholder' ||
-        publicKey.length < 15;
 
-      if (isPlaceholderKey) {
-        setIsMockFlutterwaveOpen(true);
-      } else {
-        try {
-          const loaded = await loadFlutterwaveScript();
-          if (!loaded) {
-            alert('Failed to load payment gateway. Please check your internet connection and try again.');
-            setIsSubmitting(false);
-            return;
-          }
-
-          const paymentRef = 'ASH-' + Math.floor(Math.random() * 1000000000 + 1);
-          window.FlutterwaveCheckout({
-            public_key: publicKey,
-            tx_ref: paymentRef,
-            amount: calculateSubtotal(), // Flutterwave is in Naira
-            currency: 'NGN',
-            payment_options: 'banktransfer, card, ussd',
-            customer: {
-              email: customerEmail,
-              phone_number: customerPhone,
-              name: customerName,
-            },
-            customizations: {
-              title: 'ÀṢHÍRÍ',
-              description: 'Payment for items in cart',
-              logo: 'https://ashiri-ecommerce.vercel.app/favicon.svg',
-            },
-            callback: function (data) {
-              handlePaymentSuccess(data.transaction_id || data.tx_ref);
-            },
-            onclose: function () {
-              setIsSubmitting(false);
-            }
-          });
-        } catch (error) {
-          console.error('Flutterwave checkout setup error:', error);
-          alert('Could not initialize payment. Please try again.');
+      // The simulated gateway only exists in local development builds; a
+      // production build without a key must fail loudly rather than take fake payments.
+      if (!publicKey || publicKey.length < 15) {
+        if (import.meta.env.DEV) {
+          setIsMockFlutterwaveOpen(true);
+        } else {
+          alert('Payments are temporarily unavailable. Please try again later.');
           setIsSubmitting(false);
         }
+        return;
+      }
+
+      try {
+        const loaded = await loadFlutterwaveScript();
+        if (!loaded) {
+          alert('Failed to load payment gateway. Please check your internet connection and try again.');
+          setIsSubmitting(false);
+          return;
+        }
+
+        const paymentRef = 'ASH-' + crypto.randomUUID();
+        window.FlutterwaveCheckout({
+          public_key: publicKey,
+          tx_ref: paymentRef,
+          amount: calculateSubtotal(), // Flutterwave is in Naira; the server re-checks this against the DB
+          currency: 'NGN',
+          payment_options: 'banktransfer, card, ussd',
+          customer: {
+            email: customerEmail,
+            phone_number: customerPhone,
+            name: customerName,
+          },
+          customizations: {
+            title: 'ÀṢHÍRÍ',
+            description: 'Payment for items in cart',
+            logo: 'https://ashiri-ecommerce.vercel.app/favicon.svg',
+          },
+          callback: function (data) {
+            handlePaymentSuccess({ transactionId: data.transaction_id, txRef: data.tx_ref || paymentRef });
+          },
+          onclose: function () {
+            setIsSubmitting(false);
+          }
+        });
+      } catch (error) {
+        console.error('Flutterwave checkout setup error:', error);
+        alert('Could not initialize payment. Please try again.');
+        setIsSubmitting(false);
       }
     }
   };
@@ -1206,7 +1140,7 @@ const CartSidebar = ({
               <button
                 onClick={() => {
                   setIsMockFlutterwaveOpen(false);
-                  handlePaymentSuccess('MOCK-ASH-' + Math.floor(Math.random() * 1000000000 + 1));
+                  handlePaymentSuccess({ txRef: 'MOCK-' + crypto.randomUUID() });
                 }}
                 style={{
                   width: '100%',
