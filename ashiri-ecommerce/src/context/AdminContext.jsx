@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 
 const AdminContext = createContext(null);
@@ -44,6 +44,7 @@ export function AdminProvider({ children }) {
     storeEmail: 'ashiri@gmail.com',
     storePhone: '+234 000 000 0000',
     currency: '₦',
+    logoUrl: '/logo.png',
     paystackConfigured: false,
     emailConfigured: false,
   });
@@ -82,6 +83,7 @@ export function AdminProvider({ children }) {
   // Fetch all data from Supabase on mount and whenever the auth role changes
   useEffect(() => {
     if (!supabase) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsLoadingSupabase(false);
       return;
     }
@@ -98,6 +100,7 @@ export function AdminProvider({ children }) {
             storeEmail: settingsData.store_email || '',
             storePhone: settingsData.store_phone || '',
             currency: settingsData.currency || '₦',
+            logoUrl: settingsData.logo_url || '/logo.png',
           }));
         }
 
@@ -163,7 +166,8 @@ export function AdminProvider({ children }) {
       } catch (err) {
         console.error('Error fetching from Supabase:', err);
       } finally {
-        setIsLoadingSupabase(false);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsLoadingSupabase(false);
       }
     };
 
@@ -286,14 +290,28 @@ export function AdminProvider({ children }) {
   };
 
   // Settings helpers
-  const updateSettings = async (newSettings) => {
-    setStoreSettings(prev => ({ ...prev, ...newSettings }));
+  const updateSettings = async (newSettings, logoFile = null) => {
+    let logoUrl = newSettings.logoUrl;
+
+    if (logoFile && supabase) {
+      const { url, error } = await uploadImage('brand_assets', logoFile);
+      if (!error && url) {
+        logoUrl = url;
+      } else if (error) {
+        console.error('Error uploading logo:', error);
+      }
+    }
+
+    const updatedSettings = { ...newSettings, logoUrl };
+    setStoreSettings(prev => ({ ...prev, ...updatedSettings }));
+
     if (supabase) {
       const { error } = await supabase.from('settings').update({
-        store_name: newSettings.storeName,
-        store_email: newSettings.storeEmail,
-        store_phone: newSettings.storePhone,
-        currency: newSettings.currency
+        store_name: updatedSettings.storeName,
+        store_email: updatedSettings.storeEmail,
+        store_phone: updatedSettings.storePhone,
+        currency: updatedSettings.currency,
+        logo_url: updatedSettings.logoUrl
       }).eq('id', 1);
       if (error) console.error("Error updating settings:", error);
     }

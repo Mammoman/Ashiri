@@ -31,7 +31,7 @@ const CartSidebar = ({
   onToggleFavorite
 }) => {
   if (!isOpen) return null;
-  const { createOrder } = useAdmin();
+  const { createOrder, storeSettings } = useAdmin();
 
   const [activeTab, setActiveTab] = useState(defaultTab);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -142,7 +142,9 @@ const CartSidebar = ({
           customizations: {
             title: 'ÀṢHÍRÍ',
             description: 'Payment for items in cart',
-            logo: 'https://ashiri-ecommerce.vercel.app/favicon.svg',
+            logo: storeSettings?.logoUrl ? 
+              (storeSettings.logoUrl.startsWith('http') ? storeSettings.logoUrl : `https://ashiri-ecommerce.vercel.app${storeSettings.logoUrl}`) 
+              : 'https://ashiri-ecommerce.vercel.app/logo.png',
           },
           callback: function (data) {
             handlePaymentSuccess({ transactionId: data.transaction_id, txRef: data.tx_ref || paymentRef });

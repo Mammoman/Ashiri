@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAdmin } from '../../context/AdminContext';
 import { Save, Check } from 'lucide-react';
 
 const SettingsPage = () => {
   const { storeSettings, updateSettings } = useAdmin();
   const [form, setForm] = useState({ ...storeSettings });
+  const [logoFile, setLogoFile] = useState(null);
+  const [logoPreview, setLogoPreview] = useState('');
   const [saved, setSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setForm({ ...storeSettings });
   }, [storeSettings]);
 
@@ -19,10 +22,18 @@ const SettingsPage = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     setIsSaving(true);
-    await updateSettings(form);
+    await updateSettings(form, logoFile);
     setIsSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
+  };
+
+  const handleLogoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setLogoFile(file);
+      setLogoPreview(URL.createObjectURL(file));
+    }
   };
 
   return (
@@ -69,6 +80,62 @@ const SettingsPage = () => {
                   onChange={(e) => handleChange('storePhone', e.target.value)}
                   className="admin-form-input"
                 />
+              </div>
+            </div>
+
+            {/* Logo Upload Section */}
+            <div style={{ marginBottom: '24px' }}>
+              <h3 style={{ fontSize: '0.85rem', fontWeight: 700, color: '#0f172a', marginBottom: '16px' }}>
+                Store Logo
+              </h3>
+              <div style={{
+                padding: '20px',
+                background: '#f8fafc',
+                borderRadius: '10px',
+                border: '1px solid #e2e8f0',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '24px'
+              }}>
+                <div style={{
+                  width: '100px',
+                  height: '100px',
+                  borderRadius: '8px',
+                  background: '#e2e8f0',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  overflow: 'hidden'
+                }}>
+                  <img
+                    src={logoPreview || form.logoUrl || '/logo.png'}
+                    alt="Store Logo"
+                    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                </div>
+                <div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleLogoChange}
+                    id="logo-upload"
+                    style={{ display: 'none' }}
+                  />
+                  <label
+                    htmlFor="logo-upload"
+                    className="admin-btn admin-btn-secondary"
+                    style={{ display: 'inline-block', cursor: 'pointer', marginBottom: '8px' }}
+                  >
+                    Change Logo
+                  </label>
+                  <p style={{ fontSize: '0.72rem', color: '#64748b' }}>
+                    Recommended format: PNG or SVG with transparent background.<br/>
+                    Max size: 5MB.
+                  </p>
+                </div>
               </div>
             </div>
 

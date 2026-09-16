@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useAdmin } from '../../context/AdminContext';
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   ShoppingBag,
@@ -33,8 +33,9 @@ const pageTitle = {
 };
 
 const AdminLayout = () => {
-  const { logout } = useAdmin();
+  const { logout, storeSettings } = useAdmin();
   const location = useLocation();
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const currentTitle = pageTitle[location.pathname] || 'Dashboard';
@@ -59,8 +60,13 @@ const AdminLayout = () => {
       {/* Sidebar */}
       <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="admin-sidebar-header">
-          <div className="admin-logo brand-text" onClick={() => navigate('/admin')} style={{ cursor: 'pointer' }}>
-            ÀṢHÍRÍ <span>Admin</span>
+          <div className="admin-logo" onClick={() => navigate('/admin')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <img 
+              src={storeSettings?.logoUrl || '/logo.png'} 
+              alt="ÀṢHÍRÍ Logo" 
+              style={{ height: '32px', objectFit: 'contain' }} 
+            />
+            <span style={{ fontSize: '1rem', fontWeight: 600, color: '#64748b' }}>Admin</span>
           </div>
         </div>
 
